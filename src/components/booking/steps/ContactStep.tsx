@@ -1,7 +1,10 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Field, inputClassName } from "@/components/ui/Field";
+import { PickerField } from "@/components/ui/PickerField";
+import { CalendarIcon, ClockIcon } from "@/components/ui/icons";
+import { formatDateLong } from "@/lib/formatDate";
 import type { BookingFormState } from "../types";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -21,6 +24,8 @@ export function ContactStep({
   submitting: boolean;
 }) {
   const t = useTranslations("Booking");
+  const locale = useLocale();
+  const returnDateDisplay = formatDateLong(form.returnDate, locale);
 
   const nameValid = form.name.trim().length > 1;
   const phoneValid = PHONE_RE.test(form.phone.trim());
@@ -107,26 +112,29 @@ export function ContactStep({
       </label>
 
       {form.returnTrip && (
-        <div className="grid grid-cols-2 gap-3 rounded-lg border border-border p-3">
-          <Field label={t("returnDateLabel")} htmlFor="returnDate">
-            <input
-              id="returnDate"
-              type="date"
-              className={inputClassName}
-              value={form.returnDate}
-              min={form.date || new Date().toISOString().slice(0, 10)}
-              onChange={(e) => onChange({ returnDate: e.target.value })}
-            />
-          </Field>
-          <Field label={t("returnTimeLabel")} htmlFor="returnTime">
-            <input
-              id="returnTime"
-              type="time"
-              className={inputClassName}
-              value={form.returnTime}
-              onChange={(e) => onChange({ returnTime: e.target.value })}
-            />
-          </Field>
+        <div className="grid grid-cols-1 gap-3 rounded-lg border border-border p-3 sm:grid-cols-2">
+          <PickerField
+            id="returnDate"
+            type="date"
+            label={t("returnDateLabel")}
+            value={form.returnDate}
+            onChange={(value) => onChange({ returnDate: value })}
+            placeholder={t("chooseDate")}
+            displayValue={returnDateDisplay}
+            min={form.date || new Date().toISOString().slice(0, 10)}
+            icon={<CalendarIcon />}
+          />
+          <PickerField
+            id="returnTime"
+            type="time"
+            label={t("returnTimeLabel")}
+            value={form.returnTime}
+            onChange={(value) => onChange({ returnTime: value })}
+            placeholder={t("chooseTime")}
+            displayValue={form.returnTime}
+            step={900} // 15-minute increments, same as the outbound trip
+            icon={<ClockIcon />}
+          />
         </div>
       )}
 

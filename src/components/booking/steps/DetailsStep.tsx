@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Field, inputClassName } from "@/components/ui/Field";
 import { PickerField } from "@/components/ui/PickerField";
 import { Stepper } from "@/components/ui/Stepper";
+import { CalendarIcon, ClockIcon } from "@/components/ui/icons";
 import { detectRideType } from "@/lib/rideType";
 import {
   BUS_SURCHARGE_EUR,
@@ -14,21 +15,8 @@ import {
   recommendedVehicle,
 } from "@/lib/pricing";
 import { track } from "@/lib/analytics";
+import { formatDateLong } from "@/lib/formatDate";
 import type { BookingFormState } from "../types";
-
-const CalendarIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 text-muted">
-    <rect x="3" y="4" width="18" height="18" rx="2" />
-    <path d="M16 2v4M8 2v4M3 10h18" />
-  </svg>
-);
-
-const ClockIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 text-muted">
-    <circle cx="12" cy="12" r="9" />
-    <path d="M12 7v5l3 2" />
-  </svg>
-);
 
 export function DetailsStep({
   form,
@@ -77,20 +65,9 @@ export function DetailsStep({
   );
   const busPrice = carPrice + BUS_SURCHARGE_EUR;
 
-  // Full, unambiguous format ("29 september 2026") — matches what the
-  // customer will also see repeated on the confirmation screen/email.
-  // A native date input can (rarely, mid-edit via keyboard segment
-  // navigation) hold a value like "0000-01-01" or similar that Date()
-  // parses to an out-of-range/invalid instant — formatting that used to
-  // throw a RangeError and crash the whole step. Guard against it and
-  // just fall back to no display text rather than ever crashing.
-  const parsedDate = form.date ? new Date(`${form.date}T00:00:00`) : null;
-  const dateDisplay =
-    parsedDate && !Number.isNaN(parsedDate.getTime())
-      ? new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(
-          parsedDate
-        )
-      : "";
+  // See lib/formatDate.ts for the crash-safety note (invalid mid-edit
+  // date values must never throw here).
+  const dateDisplay = formatDateLong(form.date, locale);
 
   // Require an actually-valid date (not just a non-empty string) so an
   // in-progress/garbled native input value can never be used to
