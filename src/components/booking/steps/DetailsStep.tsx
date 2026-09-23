@@ -1,12 +1,10 @@
 "use client";
 
+import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Field, inputClassName } from "@/components/ui/Field";
 import { detectRideType } from "@/lib/rideType";
-import {
-  BUS_SURCHARGE_EUR,
-  recommendedVehicle,
-} from "@/lib/pricing";
+import { BUS_SURCHARGE_EUR, calculateQuote, recommendedVehicle } from "@/lib/pricing";
 import type { BookingFormState } from "../types";
 
 export function DetailsStep({
@@ -30,31 +28,49 @@ export function DetailsStep({
   const vehicleType = form.vehicleManuallyChosen ? form.vehicleType : recommended;
   const showAutoSwitchNote = !form.vehicleManuallyChosen && recommended === "BUS";
 
+  // calculateQuote is a pure, client-safe function (no server/DB
+  // imports — see lib/pricing/index.ts), so we can preview the real
+  // per-vehicle price right here instead of waiting for the "Bereken
+  // vaste prijs" step. Base price doesn't depend on passengers/date/
+  // etc., only on pickup/destination, so this only recomputes when
+  // those actually change. The customer only ever sees the two final
+  // amounts (e.g. "€50" / "€65") — never the underlying "+€15" math.
+  const carPrice = useMemo(
+    () => calculateQuote({ pickup: form.pickup, destination: form.destination, vehicleType: "PERSONENAUTO" }).basePrice,
+    [form.pickup, form.destination]
+  );
+  const busPrice = carPrice + BUS_SURCHARGE_EUR;
+
   const canContinue = form.date.length > 0 && form.time.length > 0;
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-2 gap-3">
-        <Field label={t("dateLabel")} htmlFor="date">
-          <input
-            id="date"
-            type="date"
-            className={inputClassName}
-            value={form.date}
-            min={new Date().toISOString().slice(0, 10)}
-            onChange={(e) => onChange({ date: e.target.value })}
-          />
-        </Field>
-        <Field label={t("timeLabel")} htmlFor="time">
-          <input
-            id="time"
-            type="time"
-            className={inputClassName}
-            value={form.time}
-            onChange={(e) => onChange({ time: e.target.value })}
-          />
-        </Field>
-      </div>
+      <fieldset className="rounded-lg border border-border p-3.5">
+        <legend className="px-1 text-sm font-medium text-foreground">
+          {t("whenHeading")}
+        </legend>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <Field label={t("dateLabel")} htmlFor="date">
+            <input
+              id="date"
+              type="date"
+              className={inputClassName}
+              value={form.date}
+              min={new Date().toISOString().slice(0, 10)}
+              onChange={(e) => onChange({ date: e.target.value })}
+            />
+          </Field>
+          <Field label={t("timeLabel")} htmlFor="time">
+            <input
+              id="time"
+              type="time"
+              className={inputClassName}
+              value={form.time}
+              onChange={(e) => onChange({ time: e.target.value })}
+            />
+          </Field>
+        </div>
+      </fieldset>
 
       <div className="grid grid-cols-2 gap-3">
         <Field label={t("passengersLabel")} htmlFor="passengers">
@@ -92,6 +108,7 @@ export function DetailsStep({
             disabled={recommended === "BUS"}
             title={t("vehiclePersonenauto")}
             subtitle={t("vehiclePersonenautoHint")}
+            price={carPrice}
             onSelect={() =>
               onChange({ vehicleType: "PERSONENAUTO", vehicleManuallyChosen: true })
             }
@@ -100,7 +117,8 @@ export function DetailsStep({
             id="vehicle-bus"
             selected={vehicleType === "BUS"}
             title={t("vehicleBus")}
-            subtitle={t("vehicleBusHint", { surcharge: `€${BUS_SURCHARGE_EUR}` })}
+            subtitle={t("vehicleBusHint")}
+            price={busPrice}
             onSelect={() => onChange({ vehicleType: "BUS", vehicleManuallyChosen: true })}
           />
         </div>
@@ -154,6 +172,7 @@ function VehicleOption({
   disabled,
   title,
   subtitle,
+  price,
   onSelect,
 }: {
   id: string;
@@ -161,6 +180,7 @@ function VehicleOption({
   disabled?: boolean;
   title: string;
   subtitle: string;
+  price: number;
   onSelect: () => void;
 }) {
   return (
@@ -178,7 +198,10 @@ function VehicleOption({
         disabled ? "cursor-not-allowed opacity-40" : "",
       ].join(" ")}
     >
-      <span className="block text-sm font-semibold text-foreground">{title}</span>
+      <span className="flex items-baseline justify-between gap-2">
+        <span className="text-sm font-semibold text-foreground">{title}</span>
+        <span className="text-sm font-bold text-brand">€{price}</span>
+      </span>
       <span className="block text-xs text-muted">{subtitle}</span>
     </button>
   );
