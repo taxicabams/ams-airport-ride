@@ -19,6 +19,12 @@ export function ConfirmationCard({ result }: { result: BookingResult }) {
         </div>
         <h3 className="mt-3 text-xl font-semibold text-foreground">{t("title")}</h3>
         <p className="mt-1 text-sm text-muted">{t("subtitle")}</p>
+        {/* Honest about email: only claim it was sent when Resend is
+            actually configured server-side (see /api/bookings), never
+            a blanket claim that could be false in this environment. */}
+        <p className="mt-1 text-sm text-muted">
+          {result.emailConfirmed ? t("emailConfirmationSent") : t("emailConfirmationPending")}
+        </p>
       </div>
 
       <div className="rounded-xl border border-border p-4">
@@ -30,6 +36,7 @@ export function ConfirmationCard({ result }: { result: BookingResult }) {
           <Row label={t("destination")} value={form.destination} />
           <Row label={t("dateTime")} value={`${form.date} ${form.time}`} />
           <Row label={t("passengers")} value={String(form.passengers)} />
+          <Row label={t("luggage")} value={String(form.luggage)} />
           <Row
             label={t("vehicle")}
             value={

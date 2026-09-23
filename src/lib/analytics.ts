@@ -7,7 +7,8 @@
  */
 export type AnalyticsEvent =
   | "calculator_started"
-  | "price_calculated"
+  | "quote_calculated"
+  | "vehicle_selected"
   | "booking_started"
   | "booking_completed"
   | "whatsapp_clicked"

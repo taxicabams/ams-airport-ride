@@ -54,35 +54,41 @@ model Booking {
   rideType RideType
 
   pickupAddress String
-  destination    String
-  date           String // ISO date (YYYY-MM-DD) — kept as a plain string; see note in api/bookings/route.ts
-  time           String // HH:mm
+  destination   String
+  date          String // ISO date (YYYY-MM-DD) — kept as a plain string; see note in api/bookings/route.ts
+  time          String // HH:mm
 
   passengers Int
   luggage    Int
 
-  vehicleType     VehicleType
-  basePrice       Int // whole euros — v1 has no cents in any price
+  vehicleType      VehicleType
+  basePrice        Int // whole euros — v1 has no cents in any price
   vehicleSurcharge Int
-  price           Int // basePrice + surcharges + vehicleSurcharge (the total shown to the customer)
-  priceSource     String // "fixed" | "estimate" — which pricing path produced `price`
-  distanceKm      Int
-  durationMin     Int
+  price            Int // basePrice + surcharges + vehicleSurcharge (the total shown to the customer)
+  priceSource      String // "fixed" | "estimate" — which pricing path produced `price`
+  distanceKm       Int
+  durationMin      Int
 
   // Airport-transfer-only fields; null/false for private rides.
-  flightNumber String?
-  returnTrip   Boolean @default(false)
-  returnDate   String?
-  returnTime   String?
-  childSeat    Boolean @default(false)
-  notes        String?
+  flightNumber      String?
+  // Return-ride architecture (v1 doesn't collect returnPickup/
+  // returnDestination in the UI yet — the API route defaults them to
+  // the outbound trip reversed — but the columns exist now so a real
+  // return-trip UI in Phase 2 needs no migration).
+  returnTrip        Boolean @default(false)
+  returnDate        String?
+  returnTime        String?
+  returnPickup      String?
+  returnDestination String?
+  childSeat         Boolean @default(false)
+  notes             String?
 
   customerName  String
   customerPhone String
   customerEmail String
 
-  status        BookingStatus @default(NEW)
-  paymentStatus PaymentStatus @default(UNPAID)
+  status        BookingStatus  @default(NEW)
+  paymentStatus PaymentStatus  @default(UNPAID)
   paymentMethod PaymentMethod?
 
   @@index([createdAt])

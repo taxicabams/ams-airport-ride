@@ -11,8 +11,7 @@ import { QuoteStep } from "./steps/QuoteStep";
 import { ContactStep } from "./steps/ContactStep";
 import { ConfirmationCard } from "./ConfirmationCard";
 import { initialBookingForm, type BookingFormState, type BookingResult, type WizardStep } from "./types";
-
-const STEP_ORDER: WizardStep[] = ["route", "details", "quote", "contact"];
+import { STEP_ORDER } from "./stepOrder";
 
 /**
  * The whole booking flow lives in this one client component tree
@@ -45,7 +44,6 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
   async function goToQuote() {
     setStep("quote");
     setQuoteLoading(true);
-    track("price_calculated", { pickup: form.pickup, destination: form.destination });
     try {
       const res = await fetch("/api/quote", {
         method: "POST",
@@ -58,6 +56,12 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
       });
       const data = await res.json();
       setQuote(data.quote as Quote);
+      // Fired once the price is actually known, not when the request
+      // starts — "calculated" means completed.
+      track("quote_calculated", {
+        rideType: data.quote?.rideType,
+        totalPrice: data.quote?.totalPrice,
+      });
     } finally {
       setQuoteLoading(false);
     }
@@ -75,7 +79,12 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
       if (!res.ok) throw new Error("Booking failed");
       const data = await res.json();
       track("booking_completed", { bookingId: data.bookingId });
-      setResult({ bookingId: data.bookingId, quote: data.quote as Quote, form });
+      setResult({
+        bookingId: data.bookingId,
+        quote: data.quote as Quote,
+        form,
+        emailConfirmed: Boolean(data.emailConfigured),
+      });
       setStep("confirmed");
     } catch {
       setSubmitError("error");

@@ -18,6 +18,13 @@ export type BookingFormState = {
   returnTrip: boolean;
   returnDate: string;
   returnTime: string;
+  // Not collected in the v1 UI yet (a return leg is assumed to mirror
+  // the outbound pickup/destination in reverse — see the API route),
+  // but present here so the type/validation/DB pipeline is already
+  // consistent end-to-end for when Phase 2 adds the fields to
+  // ContactStep. See the plan's "return ride architecture" note.
+  returnPickup: string;
+  returnDestination: string;
   childSeat: boolean;
 };
 
@@ -38,6 +45,8 @@ export const initialBookingForm: BookingFormState = {
   returnTrip: false,
   returnDate: "",
   returnTime: "",
+  returnPickup: "",
+  returnDestination: "",
   childSeat: false,
 };
 
@@ -47,4 +56,6 @@ export type BookingResult = {
   bookingId: string;
   quote: Quote;
   form: BookingFormState;
+  /** Whether the server actually attempted to send confirmation email(s) — see lib/email.ts's isEmailConfigured(). */
+  emailConfirmed: boolean;
 };

@@ -36,6 +36,7 @@ export function QuoteStep({
         <p className="mt-1 text-4xl font-bold tracking-tight text-brand">
           €{quote.totalPrice}
         </p>
+        <p className="mt-2 text-xs font-medium text-muted">{t("noHiddenCosts")}</p>
       </div>
 
       <p className="text-center text-sm text-muted">{t("paymentNote")}</p>

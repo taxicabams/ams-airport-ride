@@ -11,6 +11,17 @@ function getResendClient(): Resend | null {
   return new Resend(apiKey);
 }
 
+/**
+ * Whether the server is actually able to send email right now.
+ * POST /api/bookings reports this back to the client so the
+ * confirmation screen never claims "we emailed you" when that's not
+ * true yet — see the honesty rule in the plan (no claims we can't back
+ * up operationally).
+ */
+export function isEmailConfigured(): boolean {
+  return Boolean(process.env.RESEND_API_KEY);
+}
+
 function formatPrice(cents: number): string {
   return `€${cents}`;
 }

@@ -72,4 +72,11 @@ export function calculateQuote(input: QuoteInput): Quote {
 }
 
 export type { VehicleType } from "./vehicle";
-export { BUS_SURCHARGE_EUR, PERSONENAUTO_MAX_PASSENGERS, PERSONENAUTO_MAX_LUGGAGE, recommendedVehicle } from "./vehicle";
+export {
+  BUS_SURCHARGE_EUR,
+  PERSONENAUTO_MAX_PASSENGERS,
+  PERSONENAUTO_MAX_LUGGAGE,
+  BUS_MAX_PASSENGERS,
+  BUS_MAX_LUGGAGE,
+  recommendedVehicle,
+} from "./vehicle";

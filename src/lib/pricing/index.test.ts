@@ -65,6 +65,27 @@ describe("calculateQuote — curated Schiphol routes", () => {
     });
     expect(quote.basePrice).toBe(85);
   });
+
+  it("prices Schiphol <-> Amsterdam West as a fixed €45", () => {
+    const quote = calculateQuote({
+      pickup: "Schiphol",
+      destination: "Amsterdam West",
+      vehicleType: "PERSONENAUTO",
+    });
+    expect(quote.rideType).toBe("AIRPORT_TRANSFER");
+    expect(quote.source).toBe("fixed");
+    expect(quote.basePrice).toBe(45);
+  });
+
+  it("prices Schiphol <-> Almere as a fixed €80", () => {
+    const quote = calculateQuote({
+      pickup: "Schiphol",
+      destination: "Almere",
+      vehicleType: "PERSONENAUTO",
+    });
+    expect(quote.source).toBe("fixed");
+    expect(quote.basePrice).toBe(80);
+  });
 });
 
 describe("calculateQuote — Bus vehicle surcharge", () => {
@@ -96,6 +117,17 @@ describe("calculateQuote — private rides (not touching Schiphol)", () => {
     });
     expect(quote.rideType).toBe("PRIVATE_RIDE");
     expect(quote.source).toBe("estimate");
+  });
+
+  it("Amsterdam -> Utrecht is a private ride, priced by the fallback formula", () => {
+    const quote = calculateQuote({
+      pickup: "Amsterdam",
+      destination: "Utrecht",
+      vehicleType: "PERSONENAUTO",
+    });
+    expect(quote.rideType).toBe("PRIVATE_RIDE");
+    expect(quote.source).toBe("estimate");
+    expect(quote.basePrice).toBeGreaterThan(0);
   });
 });
 

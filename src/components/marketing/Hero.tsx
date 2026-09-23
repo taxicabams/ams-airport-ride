@@ -7,7 +7,12 @@ export async function Hero() {
   return (
     <section className="bg-gradient-to-b from-brand/5 to-background">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-20">
-        <div>
+        {/* Mobile: the calculator comes first — "no long explanation
+            before the calculator begins" — the customer should see
+            "book your taxi" and start typing immediately, with the
+            supporting copy right below it. Desktop keeps the original
+            side-by-side layout (order reset at the lg breakpoint). */}
+        <div className="order-2 lg:order-1">
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
             {t("title")}
           </h1>
@@ -17,7 +22,9 @@ export async function Hero() {
           </p>
         </div>
 
-        <BookingWidget />
+        <div className="order-1 lg:order-2">
+          <BookingWidget />
+        </div>
       </div>
     </section>
   );

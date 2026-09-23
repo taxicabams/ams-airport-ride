@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { calculateQuote } from "@/lib/pricing";
 import { bookingInputSchema } from "@/lib/validation";
-import { sendBookingEmails } from "@/lib/email";
+import { sendBookingEmails, isEmailConfigured } from "@/lib/email";
 import { routing } from "@/i18n/routing";
 
 export async function POST(request: Request) {
@@ -51,6 +51,12 @@ export async function POST(request: Request) {
       returnTrip: input.returnTrip,
       returnDate: input.returnDate || null,
       returnTime: input.returnTime || null,
+      // v1's UI doesn't collect a separate return address yet — when a
+      // customer checks "return trip" we default it to the outbound
+      // leg reversed (the common case), while still honoring an
+      // explicit value if Phase 2's UI ever sends one.
+      returnPickup: input.returnTrip ? input.returnPickup || input.destination : null,
+      returnDestination: input.returnTrip ? input.returnDestination || input.pickup : null,
       childSeat: input.childSeat,
       notes: input.notes || null,
       customerName: input.name,
@@ -65,5 +71,12 @@ export async function POST(request: Request) {
   // failing email provider shouldn't delay or fail this response.
   void sendBookingEmails(booking, locale);
 
-  return NextResponse.json({ bookingId: booking.id, quote });
+  return NextResponse.json({
+    bookingId: booking.id,
+    quote,
+    // Checked synchronously (no need to await the actual send) so the
+    // confirmation screen can honestly say whether an email was even
+    // attempted — see ConfirmationCard's emailConfirmed handling.
+    emailConfigured: isEmailConfigured(),
+  });
 }
