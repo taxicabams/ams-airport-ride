@@ -1,0 +1,128 @@
+{
+  "Metadata": {
+    "title": "AMS Airport Ride — Schiphol Taxi with Fixed Price",
+    "description": "Book your Schiphol taxi with a fixed price upfront. Also for private rides between Dutch cities. Pay easily after your ride."
+  },
+  "Nav": {
+    "home": "Home",
+    "routes": "Routes",
+    "about": "About us",
+    "contact": "Contact",
+    "faq": "FAQ",
+    "bookNow": "Book now"
+  },
+  "Hero": {
+    "title": "Schiphol taxi — fixed price upfront",
+    "subtitle": "Enter your address, see the fixed price instantly, and book in two minutes. Also for rides between other Dutch cities.",
+    "trustLine": "Fixed price upfront. Pay easily after your ride with card or cash."
+  },
+  "Booking": {
+    "heading": "Calculate your fixed price",
+    "step": "Step {current} of {total}",
+    "pickupLabel": "Pickup address",
+    "pickupPlaceholder": "E.g. Schiphol Airport or your address",
+    "destinationLabel": "Destination",
+    "destinationPlaceholder": "E.g. Amsterdam Central",
+    "dateLabel": "Date",
+    "timeLabel": "Time",
+    "passengersLabel": "Number of passengers",
+    "luggageLabel": "Number of bags",
+    "vehicleLabel": "Vehicle",
+    "vehiclePersonenauto": "Sedan",
+    "vehiclePersonenautoHint": "Up to 4 passengers",
+    "vehicleBus": "Van / 7-seater",
+    "vehicleBusHint": "Up to 8 passengers · +{surcharge}",
+    "vehicleAutoSwitchNote": "For {passengers}+ people you need a van — we've already selected it for you.",
+    "flightNumberLabel": "Flight number (optional)",
+    "flightNumberPlaceholder": "E.g. KL1234",
+    "flightNumberHint": "We monitor your flight so your driver is ready on time, even if it's delayed.",
+    "backButton": "Back",
+    "nextButton": "Next",
+    "calculateButton": "Calculate fixed price",
+    "calculating": "Calculating price…",
+    "priceLabel": "Fixed price",
+    "priceBreakdownToggle": "Show price breakdown",
+    "priceBase": "Base price",
+    "priceVehicleSurcharge": "Vehicle surcharge",
+    "priceSurcharge": "Surcharge",
+    "paymentNote": "Fixed price upfront. Pay easily after your ride with card or cash.",
+    "bookButton": "Book this ride",
+    "nameLabel": "Name",
+    "phoneLabel": "Phone number",
+    "emailLabel": "Email address",
+    "notesLabel": "Notes (optional)",
+    "returnTripLabel": "I'd also like to book a return trip",
+    "returnDateLabel": "Return date",
+    "returnTimeLabel": "Return time",
+    "childSeatLabel": "Child seat needed",
+    "submitButton": "Confirm booking",
+    "submitting": "Booking…",
+    "submitError": "Something went wrong while booking. Please try again or contact us by phone.",
+    "requiredField": "This field is required",
+    "invalidEmail": "Enter a valid email address",
+    "invalidPhone": "Enter a valid phone number",
+    "orContact": "Prefer to call or message?",
+    "callUs": "Call us",
+    "whatsappUs": "WhatsApp us",
+    "whatsappPrefill": "Hello AMS Airport Ride, I'd like to book a ride."
+  },
+  "Confirmation": {
+    "title": "Your booking is confirmed",
+    "subtitle": "Thank you! We've received your booking. A confirmation has been sent to your email.",
+    "bookingRef": "Booking reference",
+    "detailsTitle": "Ride details",
+    "pickup": "Pickup address",
+    "destination": "Destination",
+    "dateTime": "Date and time",
+    "passengers": "Passengers",
+    "vehicle": "Vehicle",
+    "price": "Fixed price",
+    "flightNumber": "Flight number",
+    "paymentTitle": "Payment",
+    "paymentBody": "Fixed price upfront. Pay easily after your ride with card or cash.",
+    "schipholTitle": "Where will you find your driver?",
+    "contactTitle": "Questions about your booking?",
+    "backHome": "Back to home"
+  },
+  "Schiphol": {
+    "title": "Where will you find your driver at Schiphol?",
+    "body": "Your driver will be waiting for you at Schiphol after you clear customs. They'll contact you by phone or text to confirm the exact meeting spot — usually near the Meeting Point at Schiphol Plaza. Free Wi-Fi (\"Schiphol_Free_Wi-Fi\") is available throughout the airport, so you're always reachable.",
+    "note": "Connecting flight or a delay? Add your flight number when booking — we monitor it automatically."
+  },
+  "Trust": {
+    "fixedPriceTitle": "Fixed price upfront",
+    "fixedPriceBody": "No surprises afterwards. The price you see is the price you pay.",
+    "availableTitle": "Available 24/7",
+    "availableBody": "Early flight or a late arrival — we're always there for you.",
+    "experiencedTitle": "Experienced drivers",
+    "experiencedBody": "Our drivers know Schiphol and the region inside out.",
+    "paymentTitle": "Pay after your ride",
+    "paymentBody": "Easily by card or cash, directly with the driver."
+  },
+  "HowItWorks": {
+    "title": "Booking your taxi is this simple",
+    "step1Title": "Enter your address",
+    "step1Body": "Fill in your pickup address and destination.",
+    "step2Title": "See the fixed price",
+    "step2Body": "A clear total price right away, no surprises.",
+    "step3Title": "Book",
+    "step3Body": "Fill in your details and confirm your ride.",
+    "step4Title": "Hop in",
+    "step4Body": "Your driver is ready. Pay only after your ride."
+  },
+  "Routes": {
+    "title": "Popular Schiphol routes",
+    "subtitle": "Fixed prices for the most requested rides to and from Schiphol.",
+    "viewAll": "View all routes",
+    "fixedPrice": "Fixed price: {price}"
+  },
+  "Faq": {
+    "title": "Frequently asked questions"
+  },
+  "Footer": {
+    "tagline": "Reliable taxi and airport transfers across the Netherlands.",
+    "company": "Company",
+    "support": "Support",
+    "rights": "All rights reserved."
+  }
+}

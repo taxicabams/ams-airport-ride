@@ -1,0 +1,128 @@
+{
+  "Metadata": {
+    "title": "AMS Airport Ride — Taxi Schiphol met vaste prijs",
+    "description": "Boek uw taxi van en naar Schiphol met een vaste prijs vooraf. Ook voor privéritten tussen Nederlandse steden. Betaal eenvoudig na de rit."
+  },
+  "Nav": {
+    "home": "Home",
+    "routes": "Routes",
+    "about": "Over ons",
+    "contact": "Contact",
+    "faq": "Veelgestelde vragen",
+    "bookNow": "Nu boeken"
+  },
+  "Hero": {
+    "title": "Taxi van en naar Schiphol — vaste prijs vooraf",
+    "subtitle": "Vul uw adres in, zie direct de vaste prijs en boek in twee minuten. Ook voor ritten tussen andere Nederlandse steden.",
+    "trustLine": "Vaste prijs vooraf. Betaal eenvoudig na de rit met PIN of contant."
+  },
+  "Booking": {
+    "heading": "Bereken uw vaste prijs",
+    "step": "Stap {current} van {total}",
+    "pickupLabel": "Ophaaladres",
+    "pickupPlaceholder": "Bijv. Schiphol Airport of uw adres",
+    "destinationLabel": "Bestemming",
+    "destinationPlaceholder": "Bijv. Amsterdam Centrum",
+    "dateLabel": "Datum",
+    "timeLabel": "Tijd",
+    "passengersLabel": "Aantal passagiers",
+    "luggageLabel": "Aantal koffers/tassen",
+    "vehicleLabel": "Voertuig",
+    "vehiclePersonenauto": "Personenauto",
+    "vehiclePersonenautoHint": "Tot 4 passagiers",
+    "vehicleBus": "Bus / 7-persoon",
+    "vehicleBusHint": "Tot 8 passagiers · +{surcharge}",
+    "vehicleAutoSwitchNote": "Bij {passengers}+ personen is een bus nodig — we hebben deze alvast voor u geselecteerd.",
+    "flightNumberLabel": "Vluchtnummer (optioneel)",
+    "flightNumberPlaceholder": "Bijv. KL1234",
+    "flightNumberHint": "Wij houden uw vlucht in de gaten zodat uw chauffeur op tijd klaarstaat, ook bij vertraging.",
+    "backButton": "Vorige",
+    "nextButton": "Volgende",
+    "calculateButton": "Bereken vaste prijs",
+    "calculating": "Prijs berekenen…",
+    "priceLabel": "Vaste prijs",
+    "priceBreakdownToggle": "Prijsopbouw tonen",
+    "priceBase": "Basisprijs",
+    "priceVehicleSurcharge": "Voertuigtoeslag",
+    "priceSurcharge": "Toeslag",
+    "paymentNote": "Vaste prijs vooraf. Betaal eenvoudig na de rit met PIN of contant.",
+    "bookButton": "Boek deze rit",
+    "nameLabel": "Naam",
+    "phoneLabel": "Telefoonnummer",
+    "emailLabel": "E-mailadres",
+    "notesLabel": "Opmerkingen (optioneel)",
+    "returnTripLabel": "Ik wil ook een retourrit boeken",
+    "returnDateLabel": "Retourdatum",
+    "returnTimeLabel": "Retourtijd",
+    "childSeatLabel": "Kinderzitje nodig",
+    "submitButton": "Bevestig boeking",
+    "submitting": "Bezig met boeken…",
+    "submitError": "Er ging iets mis bij het boeken. Probeer het opnieuw of neem telefonisch contact op.",
+    "requiredField": "Dit veld is verplicht",
+    "invalidEmail": "Vul een geldig e-mailadres in",
+    "invalidPhone": "Vul een geldig telefoonnummer in",
+    "orContact": "Liever bellen of appen?",
+    "callUs": "Bel ons",
+    "whatsappUs": "WhatsApp ons",
+    "whatsappPrefill": "Hallo AMS Airport Ride, ik wil graag een rit boeken."
+  },
+  "Confirmation": {
+    "title": "Uw boeking is bevestigd",
+    "subtitle": "Bedankt! We hebben uw boeking ontvangen. Een bevestiging is naar uw e-mail verzonden.",
+    "bookingRef": "Boekingsnummer",
+    "detailsTitle": "Ritgegevens",
+    "pickup": "Ophaaladres",
+    "destination": "Bestemming",
+    "dateTime": "Datum en tijd",
+    "passengers": "Passagiers",
+    "vehicle": "Voertuig",
+    "price": "Vaste prijs",
+    "flightNumber": "Vluchtnummer",
+    "paymentTitle": "Betaling",
+    "paymentBody": "Vaste prijs vooraf. Betaal eenvoudig na de rit met PIN of contant.",
+    "schipholTitle": "Waar vindt u uw chauffeur?",
+    "contactTitle": "Vragen over uw boeking?",
+    "backHome": "Terug naar home"
+  },
+  "Schiphol": {
+    "title": "Waar vindt u uw chauffeur op Schiphol?",
+    "body": "Uw chauffeur staat op Schiphol op u te wachten nadat u door de douane bent. Hij of zij neemt telefonisch of per sms contact met u op om de exacte plek af te spreken — meestal bij het Meeting Point op Schiphol Plaza. Gratis wifi (\"Schiphol_Free_Wi-Fi\") is overal op de luchthaven beschikbaar, zodat u altijd bereikbaar bent.",
+    "note": "Reist u met een aansluitende vlucht of vertraging? Vul uw vluchtnummer in bij het boeken — wij houden uw vlucht automatisch in de gaten."
+  },
+  "Trust": {
+    "fixedPriceTitle": "Vaste prijs vooraf",
+    "fixedPriceBody": "Geen verrassingen achteraf. De prijs die u ziet, is de prijs die u betaalt.",
+    "availableTitle": "24/7 bereikbaar",
+    "availableBody": "Vroege vlucht of late aankomst — we zijn er altijd voor u.",
+    "experiencedTitle": "Ervaren chauffeurs",
+    "experiencedBody": "Onze chauffeurs kennen Schiphol en de regio op hun duimpje.",
+    "paymentTitle": "Betalen na de rit",
+    "paymentBody": "Eenvoudig met PIN of contant, rechtstreeks bij de chauffeur."
+  },
+  "HowItWorks": {
+    "title": "Zo eenvoudig boekt u uw taxi",
+    "step1Title": "Adres invullen",
+    "step1Body": "Vul uw ophaaladres en bestemming in.",
+    "step2Title": "Vaste prijs zien",
+    "step2Body": "Direct een duidelijke totaalprijs, geen verrassingen.",
+    "step3Title": "Boeken",
+    "step3Body": "Vul uw gegevens in en bevestig uw rit.",
+    "step4Title": "Instappen",
+    "step4Body": "Uw chauffeur staat klaar. Betaal pas na de rit."
+  },
+  "Routes": {
+    "title": "Populaire Schiphol-routes",
+    "subtitle": "Vaste prijzen voor de meest gevraagde ritten van en naar Schiphol.",
+    "viewAll": "Bekijk alle routes",
+    "fixedPrice": "Vaste prijs: {price}"
+  },
+  "Faq": {
+    "title": "Veelgestelde vragen"
+  },
+  "Footer": {
+    "tagline": "Betrouwbare taxi- en airporttransfers in heel Nederland.",
+    "company": "Bedrijf",
+    "support": "Support",
+    "rights": "Alle rechten voorbehouden."
+  }
+}

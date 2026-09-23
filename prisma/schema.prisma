@@ -1,0 +1,90 @@
+// Prisma schema for AMS Airport Ride.
+// Why Prisma (vs. writing raw SQL): it gives us a typed client generated
+// from this file, so every query is checked against the real schema at
+// compile time, and schema changes (e.g. adding an admin dashboard later)
+// go through reviewable migrations instead of hand-run SQL scripts.
+
+// Prisma 7 generates a plain TS/ESM client into our own source tree
+// (instead of node_modules) and requires a "driver adapter" at runtime
+// rather than reading the connection URL from this file directly — see
+// prisma.config.ts (used by the CLI) and src/lib/db.ts (used at runtime).
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RideType {
+  AIRPORT_TRANSFER
+  PRIVATE_RIDE
+}
+
+enum VehicleType {
+  PERSONENAUTO
+  BUS
+}
+
+enum BookingStatus {
+  NEW
+  CONFIRMED
+  ASSIGNED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  ONLINE
+}
+
+model Booking {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  locale    String
+
+  rideType RideType
+
+  pickupAddress String
+  destination    String
+  date           String // ISO date (YYYY-MM-DD) — kept as a plain string; see note in api/bookings/route.ts
+  time           String // HH:mm
+
+  passengers Int
+  luggage    Int
+
+  vehicleType     VehicleType
+  basePrice       Int // whole euros — v1 has no cents in any price
+  vehicleSurcharge Int
+  price           Int // basePrice + surcharges + vehicleSurcharge (the total shown to the customer)
+  priceSource     String // "fixed" | "estimate" — which pricing path produced `price`
+  distanceKm      Int
+  durationMin     Int
+
+  // Airport-transfer-only fields; null/false for private rides.
+  flightNumber String?
+  returnTrip   Boolean @default(false)
+  returnDate   String?
+  returnTime   String?
+  childSeat    Boolean @default(false)
+  notes        String?
+
+  customerName  String
+  customerPhone String
+  customerEmail String
+
+  status        BookingStatus @default(NEW)
+  paymentStatus PaymentStatus @default(UNPAID)
+  paymentMethod PaymentMethod?
+
+  @@index([createdAt])
+  @@index([rideType])
+}
