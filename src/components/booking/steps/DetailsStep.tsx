@@ -77,13 +77,25 @@ export function DetailsStep({
   );
   const busPrice = carPrice + BUS_SURCHARGE_EUR;
 
-  const dateDisplay = form.date
-    ? new Intl.DateTimeFormat(locale, { weekday: "short", day: "numeric", month: "short" }).format(
-        new Date(`${form.date}T00:00:00`)
-      )
-    : "";
+  // Full, unambiguous format ("29 september 2026") — matches what the
+  // customer will also see repeated on the confirmation screen/email.
+  // A native date input can (rarely, mid-edit via keyboard segment
+  // navigation) hold a value like "0000-01-01" or similar that Date()
+  // parses to an out-of-range/invalid instant — formatting that used to
+  // throw a RangeError and crash the whole step. Guard against it and
+  // just fall back to no display text rather than ever crashing.
+  const parsedDate = form.date ? new Date(`${form.date}T00:00:00`) : null;
+  const dateDisplay =
+    parsedDate && !Number.isNaN(parsedDate.getTime())
+      ? new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(
+          parsedDate
+        )
+      : "";
 
-  const canContinue = form.date.length > 0 && form.time.length > 0;
+  // Require an actually-valid date (not just a non-empty string) so an
+  // in-progress/garbled native input value can never be used to
+  // continue to the price step.
+  const canContinue = dateDisplay.length > 0 && form.time.length > 0;
 
   function selectVehicle(vehicle: "PERSONENAUTO" | "BUS") {
     track("vehicle_selected", { vehicleType: vehicle });

@@ -1,14 +1,31 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 /**
- * A native <input type="date"|"time"> that LOOKS like a friendly
- * "Kies datum" / "Kies tijd" button instead of the browser's raw empty
- * placeholder ("dd-mm-jjjj" / "--:--"). The real input stays fully
- * present and interactive (just visually transparent) so mobile still
- * gets the native OS date/time picker on tap — no calendar library, no
- * new dependency.
+ * A native <input type="date"|"time"> styled as a friendly "Kies
+ * datum" / "Kies tijd" button instead of the browser's raw empty
+ * placeholder ("dd-mm-jjjj" / "--:--") — no calendar library, no new
+ * dependency.
+ *
+ * Two earlier attempts, both fixed after finding real problems:
+ * 1. An invisible (opacity-0) real input *behind* a fake visible div.
+ *    Known-unreliable on iOS Safari: a zero-opacity control sometimes
+ *    only registers the first tap as a generic focus event and needs a
+ *    second tap before the native picker actually opens.
+ * 2. Making the real (now visible/opaque) input's own text permanently
+ *    transparent, with our formatted label painted on top. Tap
+ *    reliability was fixed, but this broke desktop keyboard editing:
+ *    with the native day/month/year segments invisible, a sighted
+ *    keyboard user typing a date couldn't see which segment was
+ *    selected or what they'd typed.
+ *
+ * This version: the real, fully-opaque input is always the one thing
+ * the user taps/clicks (fixing #1) — but its own text is only made
+ * transparent (in favor of our overlay) while it's NOT focused. The
+ * moment it gains focus (click, tap, or Tab), the native text becomes
+ * visible again so typing/picking has normal visual feedback, and our
+ * overlay's placeholder/formatted text hides so the two don't overlap.
  */
 export function PickerField({
   id,
@@ -28,22 +45,20 @@ export function PickerField({
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
-  /** Formatted text to show once a value is picked, e.g. "wo 23 sep". */
+  /** Formatted text to show once a value is picked, e.g. "29 september 2026". */
   displayValue?: string;
   min?: string;
   step?: number;
   icon: ReactNode;
 }) {
+  const [focused, setFocused] = useState(false);
+
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="text-sm font-medium text-foreground">
         {label}
       </label>
       <div className="relative">
-        {/* The real input stays interactive but invisible — it's what
-            actually opens the native picker and receives keyboard
-            focus. `peer` lets the visible div below react to that
-            focus, since the div itself is pointer-events-none. */}
         <input
           id={id}
           type={type}
@@ -51,13 +66,22 @@ export function PickerField({
           min={min}
           step={step}
           onChange={(e) => onChange(e.target.value)}
-          className="peer absolute inset-0 h-full w-full cursor-pointer opacity-0"
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          className={[
+            "w-full appearance-none rounded-lg border border-border bg-background px-3.5 py-2.5 text-base shadow-sm outline-none transition",
+            "[color-scheme:light] dark:[color-scheme:dark]",
+            "[&::-webkit-calendar-picker-indicator]:opacity-0",
+            "focus:border-brand focus:ring-2 focus:ring-brand/20",
+            focused ? "text-foreground" : "text-transparent caret-transparent",
+          ].join(" ")}
         />
-        <div
-          aria-hidden
-          className="pointer-events-none flex items-center justify-between gap-2 rounded-lg border border-border bg-background px-3.5 py-2.5 text-base shadow-sm transition peer-focus:border-brand peer-focus:ring-2 peer-focus:ring-brand/20"
-        >
-          <span className={value ? "text-foreground" : "text-muted"}>
+        {/* Purely visual — the real input above is the only thing that
+            receives taps/clicks/focus. Text hides while focused so it
+            never overlaps the now-visible native segments; the icon
+            stays put either way. */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-between gap-2 px-3.5 py-2.5 text-base">
+          <span className={focused ? "invisible" : value ? "text-foreground" : "text-muted"}>
             {value ? displayValue : placeholder}
           </span>
           {icon}
