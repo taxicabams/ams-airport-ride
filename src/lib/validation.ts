@@ -1,6 +1,17 @@
 import { z } from "zod";
 import { BUS_MAX_PASSENGERS, BUS_MAX_LUGGAGE } from "./pricing/vehicle";
 
+export const placesAutocompleteInputSchema = z.object({
+  input: z.string().trim().min(1).max(200),
+  sessionToken: z.string().trim().min(1).max(200),
+  locale: z.enum(["nl", "en"]).default("nl"),
+});
+
+export const placesDetailsInputSchema = z.object({
+  placeId: z.string().trim().min(1).max(500),
+  sessionToken: z.string().trim().min(1).max(200),
+});
+
 export const quoteInputSchema = z.object({
   pickup: z.string().trim().min(2),
   destination: z.string().trim().min(2),

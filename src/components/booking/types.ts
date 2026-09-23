@@ -4,6 +4,19 @@ import type { Quote } from "@/lib/pricing";
 export type BookingFormState = {
   pickup: string;
   destination: string;
+  // Set only when the customer picks a real Google Places suggestion
+  // for that field (never just from typing) — see AddressField and
+  // RouteStep. `undefined` means "not a resolved address," which
+  // RouteStep uses to block Next, independent of whether the text
+  // field itself is empty. Inert in Phase 2A: the pricing engine still
+  // reads `pickup`/`destination` as plain strings; 2B is what starts
+  // using these coordinates for distance calculation.
+  pickupPlaceId?: string;
+  pickupLat?: number;
+  pickupLng?: number;
+  destinationPlaceId?: string;
+  destinationLat?: number;
+  destinationLng?: number;
   date: string;
   time: string;
   passengers: number;
