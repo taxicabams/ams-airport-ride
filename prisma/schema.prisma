@@ -64,17 +64,30 @@ model Booking {
   vehicleType      VehicleType
   basePrice        Int // whole euros — v1 has no cents in any price
   vehicleSurcharge Int
-  price            Int // basePrice + surcharges + vehicleSurcharge (the total shown to the customer)
+  price            Int // basePrice + surcharges + vehicleSurcharge — the OUTBOUND leg's total
   priceSource      String // "fixed" | "estimate" — which pricing path produced `price`
-  distanceKm       Int
+  distanceKm       Float // Float since Phase 2B: real Google Routes distances aren't whole km
   durationMin      Int
+  distanceSource   String      @default("estimate") // "google" | "estimate" — see Quote.distanceSource
+
+  // The grand total actually shown/charged: `price` alone when there's
+  // no return trip, or price + returnPrice when there is. Stored
+  // explicitly (not left to be recomputed from the two legs) so it's
+  // never ambiguous what the customer was quoted.
+  totalPrice Int
+
+  // Return-leg pricing — same shape as the outbound fields above, all
+  // null when returnTrip is false. Computed with the exact same pricing
+  // engine, just called a second time with pickup/destination swapped
+  // (see /api/bookings) — never a separate/ad-hoc calculation.
+  returnBasePrice        Int?
+  returnVehicleSurcharge Int?
+  returnPrice            Int?
+  returnDistanceKm       Float?
+  returnDurationMin      Int?
 
   // Airport-transfer-only fields; null/false for private rides.
   flightNumber      String?
-  // Return-ride architecture (v1 doesn't collect returnPickup/
-  // returnDestination in the UI yet — the API route defaults them to
-  // the outbound trip reversed — but the columns exist now so a real
-  // return-trip UI in Phase 2 needs no migration).
   returnTrip        Boolean @default(false)
   returnDate        String?
   returnTime        String?

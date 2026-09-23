@@ -131,6 +131,45 @@ describe("calculateQuote — private rides (not touching Schiphol)", () => {
   });
 });
 
+describe("calculateQuote — Google Routes override (Phase 2B)", () => {
+  it("uses the real distance/duration when a routeOverride is given, and reports distanceSource", () => {
+    const withoutOverride = calculateQuote({
+      pickup: "Utrecht",
+      destination: "Rotterdam",
+      vehicleType: "PERSONENAUTO",
+    });
+    expect(withoutOverride.distanceSource).toBe("estimate");
+
+    const withOverride = calculateQuote({
+      pickup: "Utrecht",
+      destination: "Rotterdam",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 57.3, durationMin: 42 },
+    });
+
+    expect(withOverride.distanceKm).toBe(57.3);
+    expect(withOverride.durationMin).toBe(42);
+    expect(withOverride.distanceSource).toBe("google");
+    // The fallback formula's price now derives from the *real* distance,
+    // not the haversine guess — so it can legitimately differ.
+    expect(withOverride.basePrice).toBeGreaterThan(0);
+  });
+
+  it("never overrides a curated fixed price's basePrice, even with a routeOverride present", () => {
+    const quote = calculateQuote({
+      pickup: "Schiphol",
+      destination: "Centrum",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 999, durationMin: 999 }, // deliberately absurd
+    });
+    expect(quote.source).toBe("fixed");
+    expect(quote.basePrice).toBe(50); // unchanged from the curated staticRoutes.ts value
+    // But the *displayed* distance/duration do reflect the real route:
+    expect(quote.distanceKm).toBe(999);
+    expect(quote.distanceSource).toBe("google");
+  });
+});
+
 describe("staticRoutes — approval flag", () => {
   it("is not marked as client-approved yet (flip this only once the client signs off)", () => {
     expect(PRICES_APPROVED_BY_CLIENT).toBe(false);

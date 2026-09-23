@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { calculateQuote } from "@/lib/pricing";
+import { computeQuoteWithRoute } from "@/lib/computeQuote";
 import { bookingInputSchema } from "@/lib/validation";
 import { sendBookingEmails, isEmailConfigured } from "@/lib/email";
 import { routing } from "@/i18n/routing";
@@ -18,12 +18,37 @@ export async function POST(request: Request) {
   // Always recompute the price from scratch on the server — the price a
   // client sent along with the form could have been edited in devtools,
   // so the number we actually charge/store must never come from the
-  // request body.
-  const quote = calculateQuote({
+  // request body. Same pricing engine, same Google Routes lookup as
+  // /api/quote (see computeQuoteWithRoute) — never a second,
+  // hand-rolled calculation that could drift from what the customer
+  // was shown.
+  const quote = await computeQuoteWithRoute({
     pickup: input.pickup,
     destination: input.destination,
     vehicleType: input.vehicleType,
+    pickupLat: input.pickupLat,
+    pickupLng: input.pickupLng,
+    destinationLat: input.destinationLat,
+    destinationLng: input.destinationLng,
   });
+
+  // A return leg is priced by calling the exact same engine a second
+  // time with pickup/destination swapped (and the coordinates swapped
+  // to match) — not a separate formula. Falls back the same way if
+  // Google Routes is unavailable for this second call.
+  const returnQuote = input.returnTrip
+    ? await computeQuoteWithRoute({
+        pickup: input.returnPickup || input.destination,
+        destination: input.returnDestination || input.pickup,
+        vehicleType: input.vehicleType,
+        pickupLat: input.destinationLat,
+        pickupLng: input.destinationLng,
+        destinationLat: input.pickupLat,
+        destinationLng: input.pickupLng,
+      })
+    : null;
+
+  const totalPrice = quote.totalPrice + (returnQuote?.totalPrice ?? 0);
 
   const localeHeader = request.headers.get("x-locale");
   const locale = routing.locales.includes(localeHeader as never)
@@ -47,6 +72,13 @@ export async function POST(request: Request) {
       priceSource: quote.source,
       distanceKm: quote.distanceKm,
       durationMin: quote.durationMin,
+      distanceSource: quote.distanceSource,
+      totalPrice,
+      returnBasePrice: returnQuote?.basePrice ?? null,
+      returnVehicleSurcharge: returnQuote?.vehicleSurcharge ?? null,
+      returnPrice: returnQuote?.totalPrice ?? null,
+      returnDistanceKm: returnQuote?.distanceKm ?? null,
+      returnDurationMin: returnQuote?.durationMin ?? null,
       flightNumber: input.flightNumber || null,
       returnTrip: input.returnTrip,
       returnDate: input.returnDate || null,
@@ -54,7 +86,7 @@ export async function POST(request: Request) {
       // v1's UI doesn't collect a separate return address yet — when a
       // customer checks "return trip" we default it to the outbound
       // leg reversed (the common case), while still honoring an
-      // explicit value if Phase 2's UI ever sends one.
+      // explicit value if a future UI ever sends one.
       returnPickup: input.returnTrip ? input.returnPickup || input.destination : null,
       returnDestination: input.returnTrip ? input.returnDestination || input.pickup : null,
       childSeat: input.childSeat,
@@ -74,6 +106,8 @@ export async function POST(request: Request) {
   return NextResponse.json({
     bookingId: booking.id,
     quote,
+    returnQuote,
+    totalPrice,
     // Checked synchronously (no need to await the actual send) so the
     // confirmation screen can honestly say whether an email was even
     // attempted — see ConfirmationCard's emailConfirmed handling.

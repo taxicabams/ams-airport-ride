@@ -8,6 +8,16 @@ export type QuoteInput = {
   pickup: string;
   destination: string;
   vehicleType: VehicleType;
+  /**
+   * Real distance/duration from Google Routes (Phase 2B), when we have
+   * resolved coordinates for both sides — see /api/quote. Optional and
+   * additive: every existing caller that only has free-text addresses
+   * keeps working exactly as before, falling back to the haversine
+   * estimate. Curated fixed prices (staticRoutes.ts) never change
+   * because of this — only the *displayed* distance/duration and the
+   * *fallback formula's* input distance benefit from the real number.
+   */
+  routeOverride?: { distanceKm: number; durationMin: number };
 };
 
 export type Surcharge = { label: string; amount: number };
@@ -22,6 +32,8 @@ export type Quote = {
   durationMin: number;
   /** "fixed" = matched one of our curated Schiphol routes, "estimate" = fallback formula. */
   source: "fixed" | "estimate";
+  /** Where distanceKm/durationMin came from — independent of `source` (price). */
+  distanceSource: "google" | "estimate";
 };
 
 /**
@@ -29,8 +41,8 @@ export type Quote = {
  * shown to the customer: basisprijs/routeprijs + toeslagen +
  * voertuigtoeslag = vaste totaalprijs (the client's own formula). Kept
  * deliberately free of any UI or persistence concerns so it's easy to
- * unit test and easy to swap for a Google-Maps-backed version in Phase 2
- * without touching the booking wizard or the API route that calls this.
+ * unit test — it never calls Google itself; the caller (an API route)
+ * resolves a real route first and passes it in as `routeOverride`.
  */
 export function calculateQuote(input: QuoteInput): Quote {
   const rideType = detectRideType(input.pickup, input.destination);
@@ -42,10 +54,12 @@ export function calculateQuote(input: QuoteInput): Quote {
 
   // Price and distance/duration are deliberately sourced independently:
   // a curated fixed price (staticRoutes.ts) says nothing about distance,
-  // so distance/duration always come from the one shared estimator
-  // (see the comment on estimateDistanceDuration) whether or not the
-  // price itself was a static lookup or the fallback formula.
-  const { distanceKm, durationMin } = estimateDistanceDuration(origin, destination);
+  // so distance/duration always come from the best available estimator
+  // — real Google Routes data when the caller has it, otherwise the
+  // haversine fallback (see estimateDistanceDuration) — whether or not
+  // the price itself was a static lookup or the fallback formula.
+  const { distanceKm, durationMin } =
+    input.routeOverride ?? estimateDistanceDuration(origin, destination);
   const basePrice = staticRoute
     ? staticRoute.basePrice
     : estimateFallback(distanceKm, rideType);
@@ -68,6 +82,7 @@ export function calculateQuote(input: QuoteInput): Quote {
     distanceKm,
     durationMin,
     source: staticRoute ? "fixed" : "estimate",
+    distanceSource: input.routeOverride ? "google" : "estimate",
   };
 }
 

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { calculateQuote } from "@/lib/pricing";
+import { computeQuoteWithRoute } from "@/lib/computeQuote";
 import { quoteInputSchema } from "@/lib/validation";
 
 export async function POST(request: Request) {
@@ -10,6 +10,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_input" }, { status: 400 });
   }
 
-  const quote = calculateQuote(parsed.data);
+  const quote = await computeQuoteWithRoute(parsed.data);
   return NextResponse.json({ quote });
 }
