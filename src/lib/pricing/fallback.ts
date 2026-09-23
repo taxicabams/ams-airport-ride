@@ -39,11 +39,17 @@ function haversineKm(a: Location, b: Location): number {
  */
 const UNKNOWN_LOCATION_ASSUMED_KM = 25;
 
-export function estimateFallback(
+/**
+ * Distance/duration estimation, shared by every pricing path — not just
+ * this fallback formula. Even when a route has a curated fixed PRICE
+ * (staticRoutes.ts), its displayed distance/duration still comes from
+ * here, so there's exactly one estimation method in the codebase rather
+ * than duplicated numbers that could disagree.
+ */
+export function estimateDistanceDuration(
   origin: Location | undefined,
-  destination: Location | undefined,
-  rideType: RideType
-): { basePrice: number; distanceKm: number; durationMin: number } {
+  destination: Location | undefined
+): { distanceKm: number; durationMin: number } {
   const distanceKm =
     origin && destination
       ? Math.round(haversineKm(origin, destination) * ROAD_DISTANCE_FACTOR)
@@ -51,12 +57,16 @@ export function estimateFallback(
 
   const durationMin = Math.max(15, Math.round(distanceKm * 1.2));
 
+  return { distanceKm, durationMin };
+}
+
+/**
+ * @param distanceKm Pass the already-computed value from
+ * `estimateDistanceDuration` (calculateQuote does this for every route,
+ * static-priced or not) rather than recomputing it here.
+ */
+export function estimateFallback(distanceKm: number, rideType: RideType): number {
   const airportSurcharge = rideType === "AIRPORT_TRANSFER" ? AIRPORT_SURCHARGE_EUR : 0;
   const raw = BASE_FEE_EUR + distanceKm * RATE_PER_KM_EUR + airportSurcharge;
-
-  return {
-    basePrice: Math.max(MINIMUM_PRICE_EUR, Math.round(raw)),
-    distanceKm,
-    durationMin,
-  };
+  return Math.max(MINIMUM_PRICE_EUR, Math.round(raw));
 }

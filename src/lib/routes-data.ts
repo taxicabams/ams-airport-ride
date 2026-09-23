@@ -1,4 +1,4 @@
-import { STATIC_ROUTES } from "./pricing/staticRoutes";
+import { findSchipholPrice, CANONICAL_ROUTE_FACTS } from "./pricing/staticRoutes";
 import { LOCATIONS } from "./locations";
 
 /**
@@ -139,9 +139,12 @@ function cityLabel(cityId: string, locale: Locale): string {
 }
 
 export const ROUTE_PAGES: RoutePage[] = CITY_CONTENT.flatMap((content) => {
-  const route = Object.values(STATIC_ROUTES).find(
-    (r) => r.key === [content.cityId, "schiphol"].sort().join("|")
-  )!;
+  // Price comes from the shared Schiphol price list (so it's always the
+  // same number the booking widget would quote); distance/duration come
+  // from CANONICAL_ROUTE_FACTS, the small researched dataset kept just
+  // for these 6 hand-authored pages — see staticRoutes.ts.
+  const basePrice = findSchipholPrice(content.cityId)!;
+  const { distanceKm, durationMin } = CANONICAL_ROUTE_FACTS[content.cityId];
 
   return [
     {
@@ -150,9 +153,9 @@ export const ROUTE_PAGES: RoutePage[] = CITY_CONTENT.flatMap((content) => {
       destinationId: content.cityId,
       cityId: content.cityId,
       direction: "from-schiphol" as const,
-      basePrice: route.basePrice,
-      distanceKm: route.distanceKm,
-      durationMin: route.durationMin,
+      basePrice,
+      distanceKm,
+      durationMin,
       content,
     },
     {
@@ -161,9 +164,9 @@ export const ROUTE_PAGES: RoutePage[] = CITY_CONTENT.flatMap((content) => {
       destinationId: "schiphol",
       cityId: content.cityId,
       direction: "to-schiphol" as const,
-      basePrice: route.basePrice,
-      distanceKm: route.distanceKm,
-      durationMin: route.durationMin,
+      basePrice,
+      distanceKm,
+      durationMin,
       content,
     },
   ];

@@ -1,7 +1,7 @@
 import { matchLocation } from "../locations";
 import { detectRideType, type RideType } from "../rideType";
 import { findStaticRoute } from "./staticRoutes";
-import { estimateFallback } from "./fallback";
+import { estimateFallback, estimateDistanceDuration } from "./fallback";
 import { vehicleSurchargeFor, type VehicleType } from "./vehicle";
 
 export type QuoteInput = {
@@ -40,9 +40,15 @@ export function calculateQuote(input: QuoteInput): Quote {
   const staticRoute =
     origin && destination ? findStaticRoute(origin.id, destination.id) : undefined;
 
-  const { basePrice, distanceKm, durationMin } = staticRoute
-    ? staticRoute
-    : estimateFallback(origin, destination, rideType);
+  // Price and distance/duration are deliberately sourced independently:
+  // a curated fixed price (staticRoutes.ts) says nothing about distance,
+  // so distance/duration always come from the one shared estimator
+  // (see the comment on estimateDistanceDuration) whether or not the
+  // price itself was a static lookup or the fallback formula.
+  const { distanceKm, durationMin } = estimateDistanceDuration(origin, destination);
+  const basePrice = staticRoute
+    ? staticRoute.basePrice
+    : estimateFallback(distanceKm, rideType);
 
   // v1 has no time-of-day/day-of-week surcharges (deliberately, per the
   // client's spec) — the array exists so one can be added later without
