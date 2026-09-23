@@ -8,6 +8,12 @@ import { BookingWidget } from "@/components/booking/BookingWidget";
 
 type Locale = "nl" | "en";
 
+// Same fallback convention as sitemap.ts/robots.ts — BreadcrumbList's
+// `item` must be an absolute URL per schema.org (a relative one fails
+// Google's Rich Results validation), so this can't reuse getPathname()
+// alone the way in-app links do.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.amsairportride.nl";
+
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
     ROUTE_PAGES.map((route) => ({ locale, slug: route.slug }))
@@ -59,6 +65,9 @@ export default async function RoutePage({
   const t = await getTranslations("Booking");
   const localCopy = route.content.local[l];
   const faq = route.content.faq[l];
+  // Same literal generateMetadata builds — see the note there on why
+  // this isn't the {pathname, params} object form.
+  const pathname = `/${slug}`;
 
   const pickupValue = route.direction === "from-schiphol" ? "Schiphol Airport" : city;
   const destinationValue = route.direction === "from-schiphol" ? city : "Schiphol Airport";
@@ -84,8 +93,18 @@ export default async function RoutePage({
       {
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: "/" },
-          { "@type": "ListItem", position: 2, name: title },
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: `${SITE_URL}${getPathname({ locale: l, href: "/" })}`,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: title,
+            item: `${SITE_URL}${getPathname({ locale: l, href: pathname })}`,
+          },
         ],
       },
     ],

@@ -50,6 +50,7 @@ export function AddressField({
   unavailableLabel: string;
 }) {
   const listboxId = useId();
+  const errorId = useId();
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
   const [state, setState] = useState<FetchState>("idle");
   const [open, setOpen] = useState(false);
@@ -169,6 +170,8 @@ export function AddressField({
           aria-controls={listboxId}
           aria-autocomplete="list"
           aria-activedescendant={activeIndex >= 0 ? `${listboxId}-${activeIndex}` : undefined}
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? errorId : undefined}
           className={inputClassName}
           placeholder={placeholder}
           value={value}
@@ -219,7 +222,11 @@ export function AddressField({
           </ul>
         )}
       </div>
-      {error && <p className="text-xs font-medium text-red-600">{error}</p>}
+      {error && (
+        <p id={errorId} className="text-xs font-medium text-red-600">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

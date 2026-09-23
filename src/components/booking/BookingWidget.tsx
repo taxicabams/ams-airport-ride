@@ -204,7 +204,7 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
             submitting={submitting}
           />
           {submitError && (
-            <p className="mt-3 text-center text-sm text-red-600">{t("submitError")}</p>
+            <p role="alert" className="mt-3 text-center text-sm text-red-600">{t("submitError")}</p>
           )}
         </>
       )}

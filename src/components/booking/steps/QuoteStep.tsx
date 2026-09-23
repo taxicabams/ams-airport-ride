@@ -41,7 +41,7 @@ export function QuoteStep({
   if (error || !quote) {
     return (
       <div className="flex flex-col items-center gap-3 py-10 text-center">
-        <p className="text-sm font-medium text-red-600">{t("quoteError")}</p>
+        <p role="alert" className="text-sm font-medium text-red-600">{t("quoteError")}</p>
         <div className="mt-2 flex gap-3">
           <button
             type="button"

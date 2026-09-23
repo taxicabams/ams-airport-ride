@@ -180,7 +180,9 @@ export function DetailsStep({
               />
             </div>
             {showReturnError && (
-              <p className="mt-2 text-xs font-medium text-red-600">{t("returnDateTimeInvalid")}</p>
+              <p role="alert" className="mt-2 text-xs font-medium text-red-600">
+                {t("returnDateTimeInvalid")}
+              </p>
             )}
           </div>
         )}

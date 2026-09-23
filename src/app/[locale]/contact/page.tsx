@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { companyInfo } from "@/lib/companyInfo";
+import { buildAlternates } from "@/lib/seo";
+import type { AppLocale } from "@/i18n/routing";
 
 type Locale = "nl" | "en";
 
@@ -11,9 +13,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  return locale === "nl"
+  const base = locale === "nl"
     ? { title: "Contact", description: "Neem contact op met AMS Airport Ride voor vragen over uw boeking of een zakelijke aanvraag." }
     : { title: "Contact", description: "Get in touch with AMS Airport Ride for questions about your booking or a business enquiry." };
+  return { ...base, alternates: buildAlternates(locale as AppLocale, "/contact") };
 }
 
 export default async function ContactPage({

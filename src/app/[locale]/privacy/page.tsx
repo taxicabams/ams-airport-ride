@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
+import { buildAlternates } from "@/lib/seo";
+import type { AppLocale } from "@/i18n/routing";
 
 type Locale = "nl" | "en";
 
@@ -9,7 +11,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  return { title: locale === "nl" ? "Privacyverklaring" : "Privacy Policy" };
+  return {
+    title: locale === "nl" ? "Privacyverklaring" : "Privacy Policy",
+    alternates: buildAlternates(locale as AppLocale, "/privacy"),
+  };
 }
 
 /**

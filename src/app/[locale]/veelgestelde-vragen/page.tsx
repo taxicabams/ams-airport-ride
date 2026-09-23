@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { GENERAL_FAQ } from "@/lib/faq";
+import { buildAlternates } from "@/lib/seo";
+import type { AppLocale } from "@/i18n/routing";
 
 type Locale = "nl" | "en";
 
@@ -10,9 +12,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  return locale === "nl"
+  const base = locale === "nl"
     ? { title: "Veelgestelde vragen", description: "Antwoorden op de meest gestelde vragen over boeken, prijzen, betalen en Schiphol-pickup bij AMS Airport Ride." }
     : { title: "FAQ", description: "Answers to the most common questions about booking, pricing, payment, and Schiphol pickup with AMS Airport Ride." };
+  return { ...base, alternates: buildAlternates(locale as AppLocale, "/veelgestelde-vragen") };
 }
 
 export default async function FaqPage({
