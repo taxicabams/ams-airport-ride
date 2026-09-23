@@ -27,8 +27,8 @@ const latLngSchema = z.object({
 
 export const quoteInputSchema = z
   .object({
-    pickup: z.string().trim().min(2),
-    destination: z.string().trim().min(2),
+    pickup: z.string().trim().min(2).max(200),
+    destination: z.string().trim().min(2).max(200),
     vehicleType: z.enum(["PERSONENAUTO", "BUS"]),
   })
   .merge(latLngSchema);
@@ -67,10 +67,10 @@ export function isReturnDateTimeValid(
  */
 export const bookingInputSchema = z
   .object({
-    pickup: z.string().trim().min(2),
-    destination: z.string().trim().min(2),
-    date: z.string().min(1),
-    time: z.string().min(1),
+    pickup: z.string().trim().min(2).max(200),
+    destination: z.string().trim().min(2).max(200),
+    date: z.string().min(1).max(20),
+    time: z.string().min(1).max(20),
     passengers: z.number().int().min(1).max(BUS_MAX_PASSENGERS),
     luggage: z.number().int().min(0).max(BUS_MAX_LUGGAGE),
     vehicleType: z.enum(["PERSONENAUTO", "BUS"]),
@@ -80,8 +80,8 @@ export const bookingInputSchema = z
     email: z.string().trim().max(320).email(),
     notes: z.string().trim().max(1000).optional().default(""),
     returnTrip: z.boolean().default(false),
-    returnDate: z.string().optional().default(""),
-    returnTime: z.string().optional().default(""),
+    returnDate: z.string().max(20).optional().default(""),
+    returnTime: z.string().max(20).optional().default(""),
     // Not collected by the v1 UI yet — see BookingFormState — but already
     // part of the contract so the return-ride data architecture (Prisma
     // included) doesn't need a breaking change later.

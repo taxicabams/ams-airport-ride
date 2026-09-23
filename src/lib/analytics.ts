@@ -13,7 +13,9 @@ export type AnalyticsEvent =
   | "booking_completed"
   | "whatsapp_clicked"
   | "phone_clicked"
-  | "route_searched";
+  | "route_searched"
+  | "return_selected"
+  | "airport_transfer_selected";
 
 export function track(event: AnalyticsEvent, data?: Record<string, unknown>) {
   if (process.env.NODE_ENV !== "production") {

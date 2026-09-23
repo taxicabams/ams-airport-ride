@@ -32,7 +32,9 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
     destination: initialDestination,
   });
   const [quote, setQuote] = useState<Quote | null>(null);
+  const [returnQuote, setReturnQuote] = useState<Quote | null>(null);
   const [quoteLoading, setQuoteLoading] = useState(false);
+  const [quoteError, setQuoteError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [result, setResult] = useState<BookingResult | null>(null);
@@ -41,27 +43,66 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
     setForm((prev) => ({ ...prev, ...update }));
   }
 
+  async function fetchQuote(params: {
+    pickup: string;
+    destination: string;
+    pickupLat?: number;
+    pickupLng?: number;
+    destinationLat?: number;
+    destinationLng?: number;
+  }): Promise<Quote> {
+    const res = await fetch("/api/quote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...params, vehicleType: form.vehicleType }),
+    });
+    // A non-2xx response (e.g. the API's 503 fallback, or a network-level
+    // failure) must never be parsed as a quote — without this check,
+    // `data.quote` would silently be `undefined` and the customer would
+    // be stuck on QuoteStep's loading spinner forever (it only clears on
+    // a truthy quote). Throwing here is what lets goToQuote's catch
+    // below show a real error instead.
+    if (!res.ok) throw new Error("quote_failed");
+    const data = await res.json();
+    return data.quote as Quote;
+  }
+
   async function goToQuote() {
     setStep("quote");
     setQuoteLoading(true);
+    setQuoteError(null);
     try {
-      const res = await fetch("/api/quote", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pickup: form.pickup,
-          destination: form.destination,
-          vehicleType: form.vehicleType,
-        }),
+      const outbound = await fetchQuote({
+        pickup: form.pickup,
+        destination: form.destination,
+        pickupLat: form.pickupLat,
+        pickupLng: form.pickupLng,
+        destinationLat: form.destinationLat,
+        destinationLng: form.destinationLng,
       });
-      const data = await res.json();
-      setQuote(data.quote as Quote);
-      // Fired once the price is actually known, not when the request
-      // starts — "calculated" means completed.
-      track("quote_calculated", {
-        rideType: data.quote?.rideType,
-        totalPrice: data.quote?.totalPrice,
-      });
+      setQuote(outbound);
+      track("quote_calculated", { rideType: outbound.rideType, totalPrice: outbound.totalPrice });
+
+      // A return leg is quoted by calling the exact same endpoint again
+      // with pickup/destination (and their coordinates) swapped — never
+      // a separate calculation. See the plan's return-trip pricing note.
+      if (form.returnTrip) {
+        const back = await fetchQuote({
+          pickup: form.destination,
+          destination: form.pickup,
+          pickupLat: form.destinationLat,
+          pickupLng: form.destinationLng,
+          destinationLat: form.pickupLat,
+          destinationLng: form.pickupLng,
+        });
+        setReturnQuote(back);
+      } else {
+        setReturnQuote(null);
+      }
+    } catch {
+      setQuote(null);
+      setReturnQuote(null);
+      setQuoteError("error");
     } finally {
       setQuoteLoading(false);
     }
@@ -82,6 +123,8 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
       setResult({
         bookingId: data.bookingId,
         quote: data.quote as Quote,
+        returnQuote: (data.returnQuote as Quote | null) ?? null,
+        totalPrice: data.totalPrice as number,
         form,
         emailConfirmed: Boolean(data.emailConfigured),
       });
@@ -137,7 +180,12 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
       {step === "quote" && (
         <QuoteStep
           quote={quote}
+          returnQuote={returnQuote}
+          pickup={form.pickup}
+          destination={form.destination}
           loading={quoteLoading}
+          error={quoteError}
+          onRetry={goToQuote}
           onBack={() => setStep("details")}
           onBook={() => {
             track("booking_started");

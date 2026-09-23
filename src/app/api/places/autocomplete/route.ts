@@ -1,8 +1,26 @@
 import { NextResponse } from "next/server";
 import { placesProvider, PlacesNotConfiguredError } from "@/lib/places";
 import { placesAutocompleteInputSchema } from "@/lib/validation";
+import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
+
+// Keystroke-debounced on the client (~300ms), so normal typing is well
+// under this — this only stops a script bypassing the debounce and
+// hammering an endpoint that bills per request against our Google Cloud
+// project.
+const RATE_LIMIT = { limit: 40, windowMs: 60_000 };
 
 export async function POST(request: Request) {
+  const { allowed, retryAfterSeconds } = checkRateLimit(
+    `places-autocomplete:${getClientIp(request)}`,
+    RATE_LIMIT
+  );
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(retryAfterSeconds) } }
+    );
+  }
+
   const body = await request.json().catch(() => null);
   const parsed = placesAutocompleteInputSchema.safeParse(body);
 

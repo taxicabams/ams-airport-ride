@@ -8,9 +8,9 @@ export type BookingFormState = {
   // for that field (never just from typing) — see AddressField and
   // RouteStep. `undefined` means "not a resolved address," which
   // RouteStep uses to block Next, independent of whether the text
-  // field itself is empty. Inert in Phase 2A: the pricing engine still
-  // reads `pickup`/`destination` as plain strings; 2B is what starts
-  // using these coordinates for distance calculation.
+  // field itself is empty. The lat/lng pair is sent to /api/quote and
+  // /api/bookings, which use it for a real Google Routes distance
+  // (Phase 2B) — see lib/computeQuote.ts.
   pickupPlaceId?: string;
   pickupLat?: number;
   pickupLng?: number;
@@ -68,6 +68,9 @@ export type WizardStep = "route" | "details" | "quote" | "contact" | "confirmed"
 export type BookingResult = {
   bookingId: string;
   quote: Quote;
+  /** Set only when the customer booked a return trip — the same pricing engine, called again with pickup/destination swapped. */
+  returnQuote: Quote | null;
+  totalPrice: number;
   form: BookingFormState;
   /** Whether the server actually attempted to send confirmation email(s) — see lib/email.ts's isEmailConfigured(). */
   emailConfirmed: boolean;

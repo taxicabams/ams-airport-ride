@@ -8,7 +8,7 @@ export function ConfirmationCard({ result }: { result: BookingResult }) {
   const t = useTranslations("Confirmation");
   const tb = useTranslations("Booking");
   const locale = useLocale() as "nl" | "en";
-  const { form, quote, bookingId } = result;
+  const { form, quote, returnQuote, totalPrice, bookingId } = result;
   const isAirport = quote.rideType === "AIRPORT_TRANSFER";
 
   return (
@@ -46,9 +46,30 @@ export function ConfirmationCard({ result }: { result: BookingResult }) {
           {isAirport && form.flightNumber && (
             <Row label={t("flightNumber")} value={form.flightNumber} />
           )}
-          <Row label={t("price")} value={`€${quote.totalPrice}`} strong />
+          <Row label={returnQuote ? tb("outboundTripLabel") : t("price")} value={`€${quote.totalPrice}`} strong={!returnQuote} />
         </dl>
       </div>
+
+      {returnQuote && (
+        <div className="rounded-xl border border-border p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted">
+            {tb("returnTripSummaryLabel")}
+          </p>
+          <dl className="mt-3 space-y-2 text-sm">
+            <Row label={t("pickup")} value={form.returnPickup || form.destination} />
+            <Row label={t("destination")} value={form.returnDestination || form.pickup} />
+            <Row label={t("dateTime")} value={`${form.returnDate} ${form.returnTime}`} />
+            <Row label={t("price")} value={`€${returnQuote.totalPrice}`} />
+          </dl>
+        </div>
+      )}
+
+      {returnQuote && (
+        <div className="flex items-center justify-between rounded-xl bg-brand/5 px-4 py-3">
+          <p className="text-sm font-semibold text-foreground">{tb("totalLabel")}</p>
+          <p className="text-xl font-bold text-brand">€{totalPrice}</p>
+        </div>
+      )}
 
       <div className="rounded-xl bg-muted-background p-4">
         <p className="text-sm font-semibold text-foreground">{t("paymentTitle")}</p>

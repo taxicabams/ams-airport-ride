@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Field, inputClassName } from "@/components/ui/Field";
 import { PickerField } from "@/components/ui/PickerField";
 import { Stepper } from "@/components/ui/Stepper";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { CalendarIcon, ClockIcon } from "@/components/ui/icons";
 import { detectRideType } from "@/lib/rideType";
 import {
@@ -16,6 +17,7 @@ import {
 } from "@/lib/pricing";
 import { track } from "@/lib/analytics";
 import { formatDateLong } from "@/lib/formatDate";
+import { isReturnDateTimeValid } from "@/lib/validation";
 import type { BookingFormState } from "../types";
 
 export function DetailsStep({
@@ -33,6 +35,13 @@ export function DetailsStep({
   const locale = useLocale();
   const rideType = detectRideType(form.pickup, form.destination);
   const isAirport = rideType === "AIRPORT_TRANSFER";
+
+  // Fired once per mount when Schiphol is part of the route — pickup/
+  // destination are fixed by the time the customer reaches this step,
+  // so this doesn't re-fire on unrelated re-renders.
+  useEffect(() => {
+    if (isAirport) track("airport_transfer_selected");
+  }, [isAirport]);
 
   const recommended = recommendedVehicle(form.passengers, form.luggage);
   // Auto-switch the vehicle when capacity requires it, unless the
@@ -68,11 +77,24 @@ export function DetailsStep({
   // See lib/formatDate.ts for the crash-safety note (invalid mid-edit
   // date values must never throw here).
   const dateDisplay = formatDateLong(form.date, locale);
+  const returnDateDisplay = formatDateLong(form.returnDate, locale);
+
+  // Same rule the server enforces (lib/validation.ts's zod .refine()) —
+  // imported, not re-implemented, so the client and server can never
+  // disagree about what counts as a valid return date/time.
+  const returnDateTimeValid =
+    !form.returnTrip || isReturnDateTimeValid(form.date, form.time, form.returnDate, form.returnTime);
+  const showReturnError =
+    form.returnTrip && form.returnDate.length > 0 && form.returnTime.length > 0 && !returnDateTimeValid;
 
   // Require an actually-valid date (not just a non-empty string) so an
   // in-progress/garbled native input value can never be used to
-  // continue to the price step.
-  const canContinue = dateDisplay.length > 0 && form.time.length > 0;
+  // continue to the price step. A return trip additionally needs its
+  // own valid date/time, strictly after the outbound leg.
+  const canContinue =
+    dateDisplay.length > 0 &&
+    form.time.length > 0 &&
+    (!form.returnTrip || (returnDateDisplay.length > 0 && form.returnTime.length > 0 && returnDateTimeValid));
 
   function selectVehicle(vehicle: "PERSONENAUTO" | "BUS") {
     track("vehicle_selected", { vehicleType: vehicle });
@@ -109,6 +131,59 @@ export function DetailsStep({
             icon={<ClockIcon />}
           />
         </div>
+
+        <div className="mt-4">
+          <SegmentedControl
+            value={form.returnTrip ? "return" : "oneWay"}
+            onChange={(value) => {
+              const nextReturnTrip = value === "return";
+              track("return_selected", { returnTrip: nextReturnTrip });
+              onChange({ returnTrip: nextReturnTrip });
+            }}
+            options={[
+              { value: "oneWay", label: t("oneWayLabel") },
+              { value: "return", label: t("returnLabel") },
+            ]}
+          />
+        </div>
+
+        {form.returnTrip && (
+          <div className="mt-3 border-t border-border pt-3">
+            {/* The return route is always the outbound leg reversed —
+                no separate address fields to fill in, per the client's
+                "keep it simple" requirement. */}
+            <p className="mb-2 text-xs text-muted">
+              {form.destination || "…"} → {form.pickup || "…"}
+            </p>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <PickerField
+                id="returnDate"
+                type="date"
+                label={t("returnDateLabel")}
+                value={form.returnDate}
+                onChange={(value) => onChange({ returnDate: value })}
+                placeholder={t("chooseDate")}
+                displayValue={returnDateDisplay}
+                min={form.date || new Date().toISOString().slice(0, 10)}
+                icon={<CalendarIcon />}
+              />
+              <PickerField
+                id="returnTime"
+                type="time"
+                label={t("returnTimeLabel")}
+                value={form.returnTime}
+                onChange={(value) => onChange({ returnTime: value })}
+                placeholder={t("chooseTime")}
+                displayValue={form.returnTime}
+                step={900}
+                icon={<ClockIcon />}
+              />
+            </div>
+            {showReturnError && (
+              <p className="mt-2 text-xs font-medium text-red-600">{t("returnDateTimeInvalid")}</p>
+            )}
+          </div>
+        )}
       </fieldset>
 
       <div className="grid grid-cols-2 gap-3">
