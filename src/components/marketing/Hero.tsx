@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { BookingWidget } from "@/components/booking/BookingWidget";
-import { PriceTagIcon, PaymentIcon, ReceiptIcon } from "@/components/ui/icons";
+import { PriceTagIcon, PaymentIcon, ReceiptIcon, DoorIcon } from "@/components/ui/icons";
 import { AmsterdamSkyline } from "./AmsterdamSkyline";
 
 export async function Hero() {
@@ -12,6 +12,7 @@ export async function Hero() {
     { icon: <PriceTagIcon className="h-4 w-4 shrink-0" />, label: t("trustPoint1") },
     { icon: <PaymentIcon className="h-4 w-4 shrink-0" />, label: t("trustPoint2") },
     { icon: <ReceiptIcon className="h-4 w-4 shrink-0" />, label: t("trustPoint3") },
+    { icon: <DoorIcon className="h-4 w-4 shrink-0" />, label: t("trustPoint4") },
   ];
 
   return (

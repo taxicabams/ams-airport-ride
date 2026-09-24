@@ -1,3 +1,9 @@
+import {
+  PERSONENAUTO_MAX_PASSENGERS,
+  BUS_MAX_PASSENGERS,
+  BUS_MAX_LUGGAGE,
+} from "./pricing/vehicle";
+
 export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
   nl: [
     {
@@ -20,6 +26,26 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
       q: "Wat als mijn vlucht vertraging heeft?",
       a: "Vul uw vluchtnummer in bij het boeken — wij houden uw vlucht automatisch in de gaten, zodat uw chauffeur ook bij vertraging op tijd klaarstaat.",
     },
+    {
+      q: "Wat kost een taxi van Amsterdam naar Schiphol?",
+      a: "Voor Amsterdam geldt een vaste prijs vanaf €45, afhankelijk van de precieze wijk. Vul uw ophaaladres en Schiphol als bestemming in bij de calculator om direct uw exacte vaste prijs te zien.",
+    },
+    {
+      q: "Krijg ik een bon?",
+      a: "Ja, een bon is beschikbaar in de taxi. Vraag hier gerust naar bij uw chauffeur.",
+    },
+    {
+      q: "Kan ik een retourrit boeken?",
+      a: "Ja. Zet bij het boeken de optie 'Retour' aan en vul uw retourdatum en -tijd in — u ziet dan direct de vaste prijs voor de heenrit én de retourrit samen.",
+    },
+    {
+      q: "Kan ik voor iemand anders boeken?",
+      a: "Ja, dat kan. Vul bij de boeking gewoon de naam en het telefoonnummer van de reiziger zelf in, zodat de chauffeur die persoon kan bereiken.",
+    },
+    {
+      q: "Kan ik met meerdere personen en veel bagage reizen?",
+      a: `Zeker. Onze Personenauto biedt plaats aan tot ${PERSONENAUTO_MAX_PASSENGERS} passagiers. Heeft u meer passagiers of bagage nodig, dan selecteren wij automatisch de Bus / 7-persoons, met plaats voor tot ${BUS_MAX_PASSENGERS} passagiers en ${BUS_MAX_LUGGAGE} koffers.`,
+    },
   ],
   en: [
     {
@@ -41,6 +67,26 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     {
       q: "What if my flight is delayed?",
       a: "Add your flight number when booking — we monitor your flight automatically, so your driver is ready on time even if it's delayed.",
+    },
+    {
+      q: "How much is a taxi from Amsterdam to Schiphol?",
+      a: "For Amsterdam, a fixed price from €45 applies, depending on the exact neighborhood. Enter your pickup address and Schiphol as your destination in the calculator to see your exact fixed price right away.",
+    },
+    {
+      q: "Do I receive a receipt?",
+      a: "Yes, a receipt is available in the taxi. Feel free to ask your driver for one.",
+    },
+    {
+      q: "Can I book a return trip?",
+      a: "Yes. Turn on the 'Return' option when booking and enter your return date and time — you'll immediately see the fixed price for the outbound and return trip together.",
+    },
+    {
+      q: "Can I book for someone else?",
+      a: "Yes, that's fine. Just enter the traveller's own name and phone number when booking, so the driver can reach that person directly.",
+    },
+    {
+      q: "Can I travel with several passengers and luggage?",
+      a: `Absolutely. Our Sedan seats up to ${PERSONENAUTO_MAX_PASSENGERS} passengers. If you need more passengers or luggage space, we automatically select the Van / 7-seater, with room for up to ${BUS_MAX_PASSENGERS} passengers and ${BUS_MAX_LUGGAGE} bags.`,
     },
   ],
 };

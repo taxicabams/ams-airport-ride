@@ -15,30 +15,63 @@
     "bookNow": "Nu boeken"
   },
   "Hero": {
-    "eyebrow": "Schiphol taxi & Amsterdam",
+    "eyebrow": "Schiphol taxi",
     "title": "Taxi van en naar Schiphol",
     "priceMessage": "Vaste prijs vanaf €35",
-    "subtitle": "Van deur tot deur. Geen taxameter en geen verrassingen.",
+    "subtitle": "Van deur tot deur. Geen taxameter, geen verrassingen.",
     "trustLine": "Vaste prijs vooraf. Betaal eenvoudig na de rit met PIN of contant.",
     "trustPoint1": "Vaste prijs vooraf",
     "trustPoint2": "PIN of contant",
     "trustPoint3": "Bon beschikbaar in de taxi",
+    "trustPoint4": "Deur-tot-deur service",
     "priceCardTitle": "Schiphol vanaf €35",
     "priceCardRouteA": "Amsterdam → Schiphol",
     "priceCardRouteB": "Schiphol → Amsterdam"
   },
+  "PopularRoute": {
+    "title": "Populaire route",
+    "route": "Amsterdam ↔ Schiphol",
+    "price": "Vanaf €45",
+    "note": "Vaste prijs vooraf.",
+    "cta": "Bereken mijn prijs →",
+    "disclaimer": "De exacte prijs wordt berekend op basis van je ophaaladres en bestemming."
+  },
   "AmsterdamTaxi": {
     "title": "Ook een taxi in Amsterdam?",
-    "body": "Niet naar Schiphol? Geen probleem. Boek ook een gewone taxirit binnen Amsterdam, bijvoorbeeld van huis naar werk, station, hotel, restaurant of een ander adres.",
-    "cta": "Bereken je ritprijs"
+    "body": "Niet naar Schiphol? Geen probleem. Je kunt AMS Airport Ride ook gebruiken voor gewone taxiritten binnen Amsterdam.",
+    "fromLabel": "Van:",
+    "example1": "huis → werk",
+    "example2": "station → huis",
+    "example3": "hotel → restaurant",
+    "example4": "Amsterdam Noord → Amsterdam Zuid",
+    "example5": "Osdorp → Amsterdam Centrum",
+    "example6": "of ieder ander adres in Amsterdam",
+    "outro": "Vul je vertrekadres en bestemming in en bekijk direct je vaste prijs.",
+    "cta": "Bereken mijn prijs →"
   },
   "PaymentTrust": {
     "title": "Betaal na je rit",
+    "intro": "Geen online betaling nodig.",
     "body": "Betaal eenvoudig bij de chauffeur met PIN of contant.",
     "receipt": "Een bon is beschikbaar in de taxi."
   },
+  "Vehicles": {
+    "title": "Comfortabel onderweg",
+    "sedanTitle": "Sedan",
+    "sedanCapacity": "1–{max} passagiers",
+    "busTitle": "Taxi bus",
+    "busCapacity": "Tot {max} passagiers"
+  },
+  "SchipholSteps": {
+    "title": "Aankomst op Schiphol",
+    "step1": "Haal je bagage op",
+    "step2": "Ga door de douane",
+    "step3": "Neem contact op met je chauffeur",
+    "step4": "Je chauffeur bevestigt het ontmoetingspunt",
+    "step5": "Stap in en vertrek"
+  },
   "Booking": {
-    "heading": "Bereken mijn vaste prijs",
+    "heading": "Bereken mijn vaste prijs →",
     "backToHome": "← Terug naar home",
     "step": "Stap {current} van {total}",
     "pickupLabel": "Vertrekadres",
@@ -152,17 +185,28 @@
     "title": "Populaire Schiphol-routes",
     "subtitle": "Vaste prijzen voor de meest gevraagde ritten van en naar Schiphol.",
     "viewAll": "Bekijk alle routes",
-    "fixedPrice": "Vaste prijs: {price}"
+    "fixedPrice": "Vanaf {price}"
   },
   "Faq": {
     "title": "Veelgestelde vragen"
   },
   "Footer": {
-    "tagline": "Betrouwbare taxi- en airporttransfers in heel Nederland.",
+    "tagline": "Taxi Amsterdam & Schiphol.",
     "company": "Bedrijf",
     "support": "Support",
     "rights": "Alle rechten voorbehouden.",
     "aboutLink": "Over ons",
-    "termsLink": "Algemene voorwaarden"
+    "termsLink": "Algemene voorwaarden",
+    "servicesTitle": "Diensten",
+    "serviceAmsterdam": "Taxi Amsterdam",
+    "serviceSchiphol": "Schiphol Taxi",
+    "serviceAirportTransfers": "Airport transfers",
+    "servicePrivateRides": "Privéritten",
+    "helpTitle": "Help",
+    "bookLink": "Boeken",
+    "paymentTitle": "Betaling",
+    "paymentCard": "PIN / kaart",
+    "paymentCash": "Contant",
+    "paymentReceipt": "Bon beschikbaar"
   }
 }

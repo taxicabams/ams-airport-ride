@@ -59,3 +59,19 @@ export const LuggageIcon = ({ className = "shrink-0" }: { className?: string }) 
     <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M9 11v6M15 11v6" />
   </svg>
 );
+
+/**
+ * A larger, more detailed sedan silhouette — used for the vehicle
+ * visual placeholder (see VehicleShowcase.tsx), not the small inline
+ * trust icons above. Same hand-drawn-SVG approach, no icon library.
+ */
+export const CarIcon = ({ className = "shrink-0" }: { className?: string }) => (
+  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    <path d="M8 38 12 26a4 4 0 0 1 3.8-2.7h32.4A4 4 0 0 1 52 26l4 12" strokeLinejoin="round" />
+    <rect x="6" y="38" width="52" height="12" rx="3" />
+    <path d="M18 23.3 21 15h22l3 8.3" strokeLinejoin="round" />
+    <circle cx="18" cy="50" r="5" />
+    <circle cx="46" cy="50" r="5" />
+    <path d="M6 44h6M52 44h6" />
+  </svg>
+);

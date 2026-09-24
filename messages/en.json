@@ -15,30 +15,63 @@
     "bookNow": "Book now"
   },
   "Hero": {
-    "eyebrow": "Schiphol taxi & Amsterdam",
+    "eyebrow": "Schiphol taxi",
     "title": "Taxi to and from Schiphol",
     "priceMessage": "Fixed price from €35",
-    "subtitle": "Door-to-door service. No meter and no surprises.",
+    "subtitle": "Door-to-door service. No meter, no surprises.",
     "trustLine": "Fixed price upfront. Pay easily after your ride with card or cash.",
     "trustPoint1": "Fixed price upfront",
     "trustPoint2": "Card or cash",
     "trustPoint3": "Receipt available in the taxi",
+    "trustPoint4": "Door-to-door service",
     "priceCardTitle": "Schiphol from €35",
     "priceCardRouteA": "Amsterdam → Schiphol",
     "priceCardRouteB": "Schiphol → Amsterdam"
   },
+  "PopularRoute": {
+    "title": "Popular route",
+    "route": "Amsterdam ↔ Schiphol",
+    "price": "From €45",
+    "note": "Fixed price upfront.",
+    "cta": "Calculate my price →",
+    "disclaimer": "Your exact price is calculated based on your pickup address and destination."
+  },
   "AmsterdamTaxi": {
     "title": "Need a taxi in Amsterdam?",
-    "body": "Not going to Schiphol? No problem. We also provide regular taxi rides within Amsterdam — from home to work, the station, hotel, restaurant or any other address.",
-    "cta": "Calculate your fare"
+    "body": "Not going to Schiphol? No problem. AMS Airport Ride also provides regular taxi rides within Amsterdam.",
+    "fromLabel": "From:",
+    "example1": "home → work",
+    "example2": "station → home",
+    "example3": "hotel → restaurant",
+    "example4": "Amsterdam North → Amsterdam South",
+    "example5": "Osdorp → Amsterdam Centre",
+    "example6": "or any other address in Amsterdam",
+    "outro": "Enter your pickup and destination to see your fixed price.",
+    "cta": "Calculate my price →"
   },
   "PaymentTrust": {
     "title": "Pay after your ride",
-    "body": "Pay directly to the driver by card or cash.",
+    "intro": "No online payment required.",
+    "body": "Pay directly to your driver by card or cash.",
     "receipt": "A receipt is available in the taxi."
   },
+  "Vehicles": {
+    "title": "Comfortable rides",
+    "sedanTitle": "Sedan",
+    "sedanCapacity": "1–{max} passengers",
+    "busTitle": "Taxi van",
+    "busCapacity": "Up to {max} passengers"
+  },
+  "SchipholSteps": {
+    "title": "Arriving at Schiphol",
+    "step1": "Collect your luggage",
+    "step2": "Clear customs",
+    "step3": "Contact your driver",
+    "step4": "Your driver confirms the meeting point",
+    "step5": "Start your journey"
+  },
   "Booking": {
-    "heading": "Calculate my fixed price",
+    "heading": "Calculate my fixed price →",
     "backToHome": "← Back to home",
     "step": "Step {current} of {total}",
     "pickupLabel": "Pickup address",
@@ -152,17 +185,28 @@
     "title": "Popular Schiphol routes",
     "subtitle": "Fixed prices for the most requested rides to and from Schiphol.",
     "viewAll": "View all routes",
-    "fixedPrice": "Fixed price: {price}"
+    "fixedPrice": "From {price}"
   },
   "Faq": {
     "title": "Frequently asked questions"
   },
   "Footer": {
-    "tagline": "Reliable taxi and airport transfers across the Netherlands.",
+    "tagline": "Amsterdam & Schiphol Taxi.",
     "company": "Company",
     "support": "Support",
     "rights": "All rights reserved.",
     "aboutLink": "About us",
-    "termsLink": "Terms and Conditions"
+    "termsLink": "Terms and Conditions",
+    "servicesTitle": "Services",
+    "serviceAmsterdam": "Amsterdam Taxi",
+    "serviceSchiphol": "Schiphol Taxi",
+    "serviceAirportTransfers": "Airport transfers",
+    "servicePrivateRides": "Private rides",
+    "helpTitle": "Help",
+    "bookLink": "Book",
+    "paymentTitle": "Payment",
+    "paymentCard": "Card / PIN",
+    "paymentCash": "Cash",
+    "paymentReceipt": "Receipt available"
   }
 }

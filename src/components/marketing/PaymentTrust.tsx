@@ -21,6 +21,7 @@ export async function PaymentTrust() {
         </div>
         <div>
           <p className="font-semibold text-foreground">{t("title")}</p>
+          <p className="mt-1 text-xs font-medium text-brand">{t("intro")}</p>
           <p className="mt-1 text-sm text-muted">
             {t("body")} {t("receipt")}
           </p>

@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { Hero } from "@/components/marketing/Hero";
+import { PopularRoute } from "@/components/marketing/PopularRoute";
+import { AmsterdamTaxi } from "@/components/marketing/AmsterdamTaxi";
+import { PaymentTrust } from "@/components/marketing/PaymentTrust";
+import { VehicleShowcase } from "@/components/marketing/VehicleShowcase";
 import { TrustBadges } from "@/components/marketing/TrustBadges";
 import { HowItWorks } from "@/components/marketing/HowItWorks";
-import { PaymentTrust } from "@/components/marketing/PaymentTrust";
 import { SchipholInfoCard } from "@/components/marketing/SchipholInfoCard";
 import { RouteGrid } from "@/components/marketing/RouteGrid";
-import { AmsterdamTaxi } from "@/components/marketing/AmsterdamTaxi";
 import { FaqTeaser } from "@/components/marketing/FaqTeaser";
 import { buildAlternates } from "@/lib/seo";
 import type { AppLocale } from "@/i18n/routing";
@@ -31,23 +33,25 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  // Order follows the plan's evidence-based homepage structure: the
-  // booking widget (inside Hero) is the primary conversion element,
-  // immediately backed by trust + how-it-works, then payment/receipt
-  // reassurance (right after HowItWorks' own "pay after your ride"
-  // step), the Schiphol pickup info (never hidden only in the FAQ),
-  // route examples, the "not going to Schiphol?" section (so it reads
-  // as a natural complement right after the Schiphol-route examples,
-  // not a contradiction of the Schiphol-first hero), and finally the FAQ.
+  // Order follows the client's commercial priority list: the booking
+  // widget (inside Hero) plus the "from €35" price message first, then
+  // the single most concrete number a visitor from Amsterdam wants
+  // (PopularRoute's "Amsterdam <-> Schiphol from €45"), then "not just
+  // Schiphol" (AmsterdamTaxi) and payment/receipt reassurance, the
+  // vehicle visual + capacity summary, trust badges, how-it-works, the
+  // Schiphol pickup info (never hidden only in the FAQ), route examples,
+  // and finally the FAQ.
   return (
     <>
       <Hero />
+      <PopularRoute />
+      <AmsterdamTaxi />
+      <PaymentTrust />
+      <VehicleShowcase />
       <TrustBadges />
       <HowItWorks />
-      <PaymentTrust />
       <SchipholInfoCard />
       <RouteGrid />
-      <AmsterdamTaxi />
       <FaqTeaser />
     </>
   );
