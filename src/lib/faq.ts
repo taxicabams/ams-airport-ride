@@ -14,7 +14,7 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     },
     {
       q: "Boekt AMS Airport Ride ook ritten die niets met Schiphol te maken hebben?",
-      a: "Ja. Naast Schiphol-transfers boeken wij ook gewone privéritten tussen Nederlandse steden, bijvoorbeeld Amsterdam ↔ Utrecht of Amsterdam ↔ Rotterdam.",
+      a: "Ja. Naast Schiphol-transfers boeken wij ook gewone taxiritten binnen Amsterdam zelf — bijvoorbeeld van huis naar werk, station, hotel of restaurant — én privéritten tussen Nederlandse steden, bijvoorbeeld Amsterdam ↔ Utrecht of Amsterdam ↔ Rotterdam.",
     },
     {
       q: "Wat als mijn vlucht vertraging heeft?",
@@ -36,7 +36,7 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     },
     {
       q: "Does AMS Airport Ride also book rides that have nothing to do with Schiphol?",
-      a: "Yes. Besides Schiphol transfers, we also book regular private rides between Dutch cities, for example Amsterdam ↔ Utrecht or Amsterdam ↔ Rotterdam.",
+      a: "Yes. Besides Schiphol transfers, we also book regular taxi rides within Amsterdam itself — for example from home to work, the station, a hotel or a restaurant — as well as private rides between Dutch cities, for example Amsterdam ↔ Utrecht or Amsterdam ↔ Rotterdam.",
     },
     {
       q: "What if my flight is delayed?",

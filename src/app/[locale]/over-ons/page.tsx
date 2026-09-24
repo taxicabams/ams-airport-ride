@@ -42,9 +42,9 @@ export default async function AboutPage({
           </p>
           <p>
             Onze focus ligt op Schiphol — ritten van en naar Amsterdam, Amstelveen, Haarlem,
-            Utrecht, Rotterdam en Den Haag — maar we boeken net zo goed gewone privéritten
-            tussen andere Nederlandse steden. Eén platform, één eenvoudige manier van boeken,
-            voor elke rit.
+            Utrecht, Rotterdam en Den Haag — maar we boeken net zo goed een gewone taxirit
+            binnen Amsterdam zelf, of een privérit tussen andere Nederlandse steden. Eén
+            platform, één eenvoudige manier van boeken, voor elke rit.
           </p>
           <p>
             We geloven dat een goede taxi-ervaring begint bij duidelijkheid: een vaste prijs
@@ -62,9 +62,9 @@ export default async function AboutPage({
           </p>
           <p>
             Our focus is on Schiphol — rides to and from Amsterdam, Amstelveen, Haarlem,
-            Utrecht, Rotterdam, and The Hague — but we&apos;re just as happy to book regular
-            private rides between other Dutch cities. One platform, one simple way to book,
-            for every ride.
+            Utrecht, Rotterdam, and The Hague — but we&apos;re just as happy to book a regular
+            taxi ride within Amsterdam itself, or a private ride between other Dutch cities.
+            One platform, one simple way to book, for every ride.
           </p>
           <p>
             We believe a good taxi experience starts with clarity: a fixed price upfront,
