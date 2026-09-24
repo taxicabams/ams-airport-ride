@@ -50,7 +50,11 @@ export default async function FaqPage({
       <div className="mt-6 divide-y divide-border rounded-xl border border-border">
         {items.map((item) => (
           <details key={item.q} className="group p-4">
-            <summary className="cursor-pointer list-none font-medium text-foreground marker:content-none">
+            {/* py-2 gives the actual tappable <summary> its own height —
+                the parent <details>'s p-4 padding surrounds it but isn't
+                part of the clickable toggle area itself, so without this
+                the tap target measured only ~24px tall. */}
+            <summary className="cursor-pointer list-none py-2 font-medium text-foreground marker:content-none">
               <span className="flex items-center justify-between gap-4">
                 {item.q}
                 <span className="text-muted transition group-open:rotate-45">+</span>

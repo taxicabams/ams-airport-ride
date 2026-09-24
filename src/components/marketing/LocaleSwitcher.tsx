@@ -19,11 +19,16 @@ export function LocaleSwitcher() {
           type="button"
           aria-current={loc === locale}
           onClick={() => router.replace(pathname, { locale: loc })}
-          className={
+          className={[
+            // min-h-9 matches the app's small-control touch-target
+            // convention (Stepper, SegmentedControl) — the previous
+            // py-1-only sizing measured ~28px tall, under the
+            // recommended ~40-44px minimum for a mobile tap target.
+            "flex min-h-9 min-w-9 items-center justify-center rounded-full px-2.5",
             loc === locale
-              ? "rounded-full bg-brand px-2.5 py-1 text-brand-foreground"
-              : "rounded-full px-2.5 py-1 text-muted hover:text-foreground"
-          }
+              ? "bg-brand text-brand-foreground"
+              : "text-muted hover:text-foreground",
+          ].join(" ")}
         >
           {LABELS[loc]}
         </button>

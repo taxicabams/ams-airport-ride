@@ -18,7 +18,10 @@ export async function FaqTeaser() {
         <div className="mt-6 divide-y divide-border rounded-xl border border-border bg-background">
           {items.map((item) => (
             <details key={item.q} className="group p-4">
-              <summary className="cursor-pointer list-none font-medium text-foreground marker:content-none">
+              {/* py-2: see the note in veelgestelde-vragen/page.tsx —
+                  the parent's padding isn't part of <summary>'s own
+                  tap target. */}
+              <summary className="cursor-pointer list-none py-2 font-medium text-foreground marker:content-none">
                 <span className="flex items-center justify-between gap-4">
                   {item.q}
                   <span className="text-muted transition group-open:rotate-45">+</span>

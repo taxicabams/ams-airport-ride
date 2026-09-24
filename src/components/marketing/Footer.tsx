@@ -20,7 +20,7 @@ export async function Footer() {
             <ul className="mt-2 space-y-1 text-sm text-muted">
               <li>
                 <Link href="/over-ons" className="hover:text-brand">
-                  Over ons
+                  {t("aboutLink")}
                 </Link>
               </li>
               <li>
@@ -60,7 +60,7 @@ export async function Footer() {
               </li>
               <li>
                 <Link href="/voorwaarden" className="hover:text-brand">
-                  Algemene voorwaarden
+                  {t("termsLink")}
                 </Link>
               </li>
             </ul>
