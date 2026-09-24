@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { companyInfo } from "@/lib/companyInfo";
+import { AmsterdamSkyline } from "./AmsterdamSkyline";
 
 export async function Footer() {
   const t = await getTranslations("Footer");
@@ -8,6 +9,9 @@ export async function Footer() {
 
   return (
     <footer className="border-t border-border bg-muted-background">
+      {/* Same brand motif as the hero, thinner — ties the top and bottom
+          of every page together without repeating a whole section. */}
+      <AmsterdamSkyline className="h-6 w-full text-brand/10" />
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="grid gap-8 sm:grid-cols-3">
           <div>

@@ -26,67 +26,187 @@ function formatPrice(cents: number): string {
   return `€${cents}`;
 }
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+// Brand colors, hardcoded rather than read from globals.css's CSS
+// variables — email clients don't reliably support CSS custom
+// properties (or even <style> in some webmail contexts), so every
+// transactional email inlines the site's *light*-theme palette
+// directly. Keep these in sync with src/app/globals.css's :root block
+// if that palette ever changes.
+const BRAND_NAVY = "#0b3d59";
+const ACCENT_AMBER = "#d97706";
+const TEXT = "#0f172a";
+const MUTED = "#64748b";
+const BORDER = "#e2e8f0";
+const MUTED_BG = "#f8fafc";
+
+/**
+ * Shared wrapper every outgoing email renders through — one place that
+ * defines "what an AMS Airport Ride email looks like" (header wordmark,
+ * white content card, footer) instead of each email hand-rolling its
+ * own HTML. Table-based layout + inline styles throughout: the safest,
+ * most widely-compatible approach across email clients (Gmail, Outlook,
+ * Apple Mail), none of which reliably render a <style> block or
+ * flexbox/grid the way a browser does.
+ */
+function emailLayout(bodyHtml: string, footerNote: string): string {
+  return `<!doctype html>
+<html>
+  <body style="margin:0;padding:0;background-color:${MUTED_BG};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${MUTED_BG};padding:24px 0;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background-color:#ffffff;border-radius:12px;overflow:hidden;border:1px solid ${BORDER};">
+            <tr>
+              <td style="background-color:${BRAND_NAVY};padding:20px 28px;">
+                <span style="color:#ffffff;font-size:18px;font-weight:700;letter-spacing:-0.01em;">AMS Airport Ride</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:28px;color:${TEXT};font-size:15px;line-height:1.6;">
+                ${bodyHtml}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:16px 28px;border-top:1px solid ${BORDER};color:${MUTED};font-size:12px;line-height:1.5;">
+                ${footerNote}
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`;
+}
+
+function detailRow(label: string, value: string): string {
+  return `<tr>
+    <td style="padding:6px 0;color:${MUTED};font-size:14px;">${escapeHtml(label)}</td>
+    <td style="padding:6px 0;color:${TEXT};font-size:14px;font-weight:600;text-align:right;">${escapeHtml(value)}</td>
+  </tr>`;
+}
+
 function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
   const isAirport = booking.rideType === "AIRPORT_TRANSFER";
   const t =
     locale === "nl"
       ? {
           title: "Uw boeking is bevestigd",
+          intro: "Bedankt voor uw boeking! Hieronder vindt u de gegevens van uw rit.",
           ref: "Boekingsnummer",
           pickup: "Ophaaladres",
           destination: "Bestemming",
           when: "Datum en tijd",
-          price: "Vaste prijs",
+          priceLabel: "Vaste prijs",
           flight: "Vluchtnummer",
-          payment: "Vaste prijs vooraf. Betaal eenvoudig na de rit met PIN of contant.",
+          paymentTitle: "Betaling",
+          payment:
+            "Vaste prijs vooraf — geen taxameter, geen verrassingen achteraf. Betaal eenvoudig na de rit rechtstreeks aan de chauffeur met PIN of contant. Een bon is beschikbaar in de taxi.",
           schiphol: "Waar vindt u uw chauffeur?",
+          footer: "Dit is een automatisch gegenereerde boekingsbevestiging van AMS Airport Ride.",
         }
       : {
           title: "Your booking is confirmed",
+          intro: "Thank you for your booking! Your ride details are below.",
           ref: "Booking reference",
           pickup: "Pickup address",
           destination: "Destination",
           when: "Date and time",
-          price: "Fixed price",
+          priceLabel: "Fixed price",
           flight: "Flight number",
-          payment: "Fixed price upfront. Pay easily after your ride with card or cash.",
+          paymentTitle: "Payment",
+          payment:
+            "Fixed price upfront — no meter, no surprises afterwards. Pay easily after your ride directly to the driver by card or cash. A receipt is available in the taxi.",
           schiphol: "Where will you find your driver?",
+          footer: "This is an automated booking confirmation from AMS Airport Ride.",
         };
 
-  const lines = [
-    `<h1>${t.title}</h1>`,
-    `<p><strong>${t.ref}:</strong> ${booking.id}</p>`,
-    `<p><strong>${t.pickup}:</strong> ${booking.pickupAddress}</p>`,
-    `<p><strong>${t.destination}:</strong> ${booking.destination}</p>`,
-    `<p><strong>${t.when}:</strong> ${booking.date} ${booking.time}</p>`,
-    `<p><strong>${t.price}:</strong> ${formatPrice(booking.price)}</p>`,
+  const rows = [
+    detailRow(t.pickup, booking.pickupAddress),
+    detailRow(t.destination, booking.destination),
+    detailRow(t.when, `${booking.date} ${booking.time}`),
   ];
   if (isAirport && booking.flightNumber) {
-    lines.push(`<p><strong>${t.flight}:</strong> ${booking.flightNumber}</p>`);
+    rows.push(detailRow(t.flight, booking.flightNumber));
   }
-  if (isAirport) {
-    lines.push(`<h2>${t.schiphol}</h2>`, `<p>${getSchipholMeetingPointText(locale)}</p>`);
-  }
-  lines.push(`<p>${t.payment}</p>`);
-  return lines.join("\n");
+
+  const body = `
+    <h1 style="margin:0 0 4px;font-size:20px;color:${TEXT};">${t.title}</h1>
+    <p style="margin:0 0 20px;color:${MUTED};font-size:14px;">${t.intro}</p>
+
+    <p style="margin:0 0 16px;color:${MUTED};font-size:12px;">${t.ref}: <span style="font-family:monospace;color:${TEXT};">${escapeHtml(booking.id)}</span></p>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
+      ${rows.join("\n")}
+    </table>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${MUTED_BG};border-radius:8px;margin-bottom:20px;">
+      <tr>
+        <td style="padding:16px 20px;text-align:center;">
+          <div style="color:${MUTED};font-size:12px;text-transform:uppercase;letter-spacing:0.03em;">${t.priceLabel}</div>
+          <div style="color:${ACCENT_AMBER};font-size:28px;font-weight:700;margin-top:4px;">${formatPrice(booking.price)}</div>
+        </td>
+      </tr>
+    </table>
+
+    <p style="margin:0 0 4px;font-weight:600;color:${TEXT};font-size:14px;">${t.paymentTitle}</p>
+    <p style="margin:0 0 20px;color:${MUTED};font-size:13px;">${t.payment}</p>
+
+    ${
+      isAirport
+        ? `<div style="border:1px solid ${BRAND_NAVY}22;background-color:${BRAND_NAVY}0d;border-radius:8px;padding:16px 20px;">
+            <p style="margin:0 0 6px;font-weight:600;color:${BRAND_NAVY};font-size:14px;">${t.schiphol}</p>
+            <p style="margin:0;color:${TEXT};font-size:13px;">${escapeHtml(getSchipholMeetingPointText(locale))}</p>
+          </div>`
+        : ""
+    }
+  `;
+
+  return emailLayout(body, t.footer);
 }
 
-function internalNotificationBody(booking: Booking): string {
-  return [
-    `<h1>Nieuwe boeking (${booking.rideType})</h1>`,
-    `<p><strong>ID:</strong> ${booking.id}</p>`,
-    `<p><strong>Klant:</strong> ${booking.customerName} — ${booking.customerPhone} — ${booking.customerEmail}</p>`,
-    `<p><strong>Van:</strong> ${booking.pickupAddress}</p>`,
-    `<p><strong>Naar:</strong> ${booking.destination}</p>`,
-    `<p><strong>Wanneer:</strong> ${booking.date} ${booking.time}</p>`,
-    `<p><strong>Passagiers/bagage:</strong> ${booking.passengers} / ${booking.luggage}</p>`,
-    `<p><strong>Voertuig:</strong> ${booking.vehicleType}</p>`,
-    `<p><strong>Prijs:</strong> ${formatPrice(booking.price)} (${booking.priceSource})</p>`,
-    booking.flightNumber ? `<p><strong>Vlucht:</strong> ${booking.flightNumber}</p>` : "",
-    booking.notes ? `<p><strong>Opmerkingen:</strong> ${booking.notes}</p>` : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
+function internalNotificationBody(booking: Booking, locale: "nl" | "en"): string {
+  // The owner's own notification stays in Dutch (that's who reads it),
+  // but now names the customer's language explicitly — useful context
+  // for calling/texting the customer back in the right language.
+  const customerLanguage = locale === "nl" ? "Nederlands" : "Engels";
+  const rows = [
+    detailRow("Klant", `${booking.customerName} (${customerLanguage})`),
+    detailRow("Telefoon", booking.customerPhone),
+    detailRow("E-mail", booking.customerEmail),
+    detailRow("Van", booking.pickupAddress),
+    detailRow("Naar", booking.destination),
+    detailRow("Wanneer", `${booking.date} ${booking.time}`),
+    detailRow("Passagiers / bagage", `${booking.passengers} / ${booking.luggage}`),
+    detailRow("Voertuig", booking.vehicleType === "BUS" ? "Bus / 7-persoons" : "Personenauto"),
+    detailRow("Prijs", `${formatPrice(booking.price)} (${booking.priceSource})`),
+  ];
+  if (booking.flightNumber) rows.push(detailRow("Vluchtnummer", booking.flightNumber));
+
+  const body = `
+    <h1 style="margin:0 0 16px;font-size:18px;color:${TEXT};">Nieuwe boeking — ${booking.rideType === "AIRPORT_TRANSFER" ? "Schiphol" : "Privérit"}</h1>
+    <p style="margin:0 0 16px;color:${MUTED};font-size:12px;">Boekingsnummer: <span style="font-family:monospace;color:${TEXT};">${escapeHtml(booking.id)}</span></p>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
+      ${rows.join("\n")}
+    </table>
+
+    ${
+      booking.notes
+        ? `<p style="margin:0;padding:12px 16px;background-color:${MUTED_BG};border-radius:8px;color:${TEXT};font-size:13px;"><strong>Opmerkingen:</strong> ${escapeHtml(booking.notes)}</p>`
+        : ""
+    }
+  `;
+
+  return emailLayout(body, "Interne boekingsnotificatie van amsairportride.nl.");
 }
 
 /**
@@ -109,6 +229,10 @@ export async function sendBookingEmails(booking: Booking, locale: "nl" | "en") {
   const companyEmail = process.env.COMPANY_NOTIFICATION_EMAIL;
 
   try {
+    // The customer confirmation is always sent in the language they
+    // booked in — `locale` comes from the same x-locale header the site
+    // itself used for the booking, never guessed or defaulted per
+    // recipient address.
     await resend.emails.send({
       from,
       to: booking.customerEmail,
@@ -124,7 +248,7 @@ export async function sendBookingEmails(booking: Booking, locale: "nl" | "en") {
         from,
         to: companyEmail,
         subject: `Nieuwe boeking: ${booking.pickupAddress} → ${booking.destination}`,
-        html: internalNotificationBody(booking),
+        html: internalNotificationBody(booking, locale),
       });
     }
   } catch (error) {

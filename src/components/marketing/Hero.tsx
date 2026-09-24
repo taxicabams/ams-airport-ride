@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { BookingWidget } from "@/components/booking/BookingWidget";
 import { PriceTagIcon, PaymentIcon, ReceiptIcon } from "@/components/ui/icons";
+import { AmsterdamSkyline } from "./AmsterdamSkyline";
 
 export async function Hero() {
   const t = await getTranslations("Hero");
@@ -14,8 +15,12 @@ export async function Hero() {
   ];
 
   return (
-    <section className="bg-gradient-to-b from-brand/5 to-background">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-20">
+    <section className="relative overflow-hidden bg-gradient-to-b from-brand/5 to-background">
+      {/* Subtle brand motif, not content — aria-hidden and behind
+          everything (z-0 vs. the grid's default stacking), never dark
+          enough to affect text contrast. */}
+      <AmsterdamSkyline className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-16 w-full text-brand/5 sm:h-24" />
+      <div className="relative z-10 mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-20">
         {/* Text stack comes first in DOM order on every screen size — on
             mobile this puts the eyebrow/title/price/subtitle above the
             calculator, so "vaste prijs vanaf €35" is visible without
