@@ -1,23 +1,45 @@
 {
   "Metadata": {
     "title": "AMS Airport Ride — Taxi Schiphol met vaste prijs",
-    "description": "Boek uw taxi van en naar Schiphol met een vaste prijs vooraf. Ook voor privéritten tussen Nederlandse steden. Betaal eenvoudig na de rit."
+    "description": "Boek uw taxi van en naar Schiphol met een vaste prijs vanaf €35. Ook voor gewone taxiritten binnen Amsterdam en tussen Nederlandse steden. Betaal eenvoudig na de rit."
   },
   "Nav": {
     "home": "Home",
     "routes": "Routes",
     "about": "Over ons",
+    "taxiSchiphol": "Taxi Schiphol",
+    "taxiAmsterdam": "Taxi Amsterdam",
+    "prices": "Prijzen",
     "contact": "Contact",
     "faq": "Veelgestelde vragen",
     "bookNow": "Nu boeken"
   },
   "Hero": {
-    "title": "Taxi van en naar Schiphol — vaste prijs vooraf",
-    "subtitle": "Vul uw adres in, zie direct de vaste prijs en boek in twee minuten. Ook voor ritten tussen andere Nederlandse steden.",
-    "trustLine": "Vaste prijs vooraf. Betaal eenvoudig na de rit met PIN of contant."
+    "eyebrow": "Schiphol taxi & Amsterdam",
+    "title": "Taxi van en naar Schiphol",
+    "priceMessage": "Vaste prijs vanaf €35",
+    "subtitle": "Van deur tot deur. Geen taxameter en geen verrassingen.",
+    "trustLine": "Vaste prijs vooraf. Betaal eenvoudig na de rit met PIN of contant.",
+    "trustPoint1": "Vaste prijs vooraf",
+    "trustPoint2": "PIN of contant",
+    "trustPoint3": "Bon beschikbaar in de taxi",
+    "priceCardTitle": "Schiphol vanaf €35",
+    "priceCardRouteA": "Amsterdam → Schiphol",
+    "priceCardRouteB": "Schiphol → Amsterdam"
+  },
+  "AmsterdamTaxi": {
+    "title": "Ook een taxi in Amsterdam?",
+    "body": "Niet naar Schiphol? Geen probleem. Boek ook een gewone taxirit binnen Amsterdam, bijvoorbeeld van huis naar werk, station, hotel, restaurant of een ander adres.",
+    "cta": "Bereken je ritprijs"
+  },
+  "PaymentTrust": {
+    "title": "Betaal na je rit",
+    "body": "Betaal eenvoudig bij de chauffeur met PIN of contant.",
+    "receipt": "Een bon is beschikbaar in de taxi."
   },
   "Booking": {
-    "heading": "Bereken uw vaste prijs",
+    "heading": "Bereken mijn vaste prijs",
+    "backToHome": "← Terug naar home",
     "step": "Stap {current} van {total}",
     "pickupLabel": "Vertrekadres",
     "pickupPlaceholder": "Vul vertrekadres in",
@@ -69,7 +91,7 @@
     "returnTripSummaryLabel": "Retourrit",
     "totalLabel": "Totaal",
     "childSeatLabel": "Kinderzitje nodig",
-    "submitButton": "Bevestig boeking",
+    "submitButton": "Boeking bevestigen",
     "submitting": "Bezig met boeken…",
     "submitError": "Er ging iets mis bij het boeken. Probeer het opnieuw of neem telefonisch contact op.",
     "requiredField": "Dit veld is verplicht",
@@ -99,7 +121,7 @@
     "paymentBody": "Vaste prijs vooraf. Betaal eenvoudig na de rit met PIN of contant.",
     "schipholTitle": "Waar vindt u uw chauffeur?",
     "contactTitle": "Vragen over uw boeking?",
-    "backHome": "Terug naar home"
+    "backHome": "← Terug naar home"
   },
   "Schiphol": {
     "title": "Waar vindt u uw chauffeur op Schiphol?",

@@ -1,12 +1,16 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { getSchipholMeetingPointText } from "@/lib/schipholMeetingPoint";
 import type { BookingResult } from "./types";
 
 export function ConfirmationCard({ result }: { result: BookingResult }) {
   const t = useTranslations("Confirmation");
   const tb = useTranslations("Booking");
+  // Reuses the homepage's payment/receipt copy (PaymentTrust) instead of
+  // a duplicate key — one message to keep in sync, not two.
+  const tp = useTranslations("PaymentTrust");
   const locale = useLocale() as "nl" | "en";
   const { form, quote, returnQuote, totalPrice, bookingId } = result;
   const isAirport = quote.rideType === "AIRPORT_TRANSFER";
@@ -73,7 +77,9 @@ export function ConfirmationCard({ result }: { result: BookingResult }) {
 
       <div className="rounded-xl bg-muted-background p-4">
         <p className="text-sm font-semibold text-foreground">{t("paymentTitle")}</p>
-        <p className="mt-1 text-sm text-muted">{t("paymentBody")}</p>
+        <p className="mt-1 text-sm text-muted">
+          {t("paymentBody")} {tp("receipt")}
+        </p>
       </div>
 
       {isAirport && (
@@ -84,6 +90,13 @@ export function ConfirmationCard({ result }: { result: BookingResult }) {
           </p>
         </div>
       )}
+
+      <Link
+        href="/"
+        className="text-center text-sm font-medium text-brand hover:underline"
+      >
+        {t("backHome")}
+      </Link>
     </div>
   );
 }

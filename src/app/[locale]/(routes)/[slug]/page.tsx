@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { getPathname } from "@/i18n/navigation";
+import { Link, getPathname } from "@/i18n/navigation";
 import { ROUTE_PAGES, getRoutePage, routePageCopy } from "@/lib/routes-data";
 import { BookingWidget } from "@/components/booking/BookingWidget";
 
@@ -119,6 +119,12 @@ export default async function RoutePage({
 
       <section className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:items-start">
         <div>
+          <Link
+            href="/"
+            className="mb-4 inline-block text-sm font-medium text-brand hover:underline"
+          >
+            {t("backToHome")}
+          </Link>
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             {title}
           </h1>

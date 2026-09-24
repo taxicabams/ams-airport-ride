@@ -8,7 +8,7 @@ export async function RouteGrid() {
   const fromSchiphol = ROUTE_PAGES.filter((r) => r.direction === "from-schiphol");
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <section id="prijzen" className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
       <div className="flex items-end justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-foreground">{t("title")}</h2>

@@ -12,12 +12,19 @@ export async function Header() {
           <span className="text-lg">AMS Airport Ride</span>
         </Link>
 
+        {/* Taxi Schiphol / Taxi Amsterdam / Prijzen all point into the
+            homepage's own sections (no separate pages to keep in sync —
+            the calculator, price examples and route grid already live
+            there) rather than duplicating that content on new routes. */}
         <nav className="hidden items-center gap-6 text-sm font-medium text-foreground/80 md:flex">
           <Link href="/" className="hover:text-brand">
-            {t("home")}
+            {t("taxiSchiphol")}
           </Link>
-          <Link href="/over-ons" className="hover:text-brand">
-            {t("about")}
+          <Link href="/#amsterdam-taxi" className="hover:text-brand">
+            {t("taxiAmsterdam")}
+          </Link>
+          <Link href="/#prijzen" className="hover:text-brand">
+            {t("prices")}
           </Link>
           <Link href="/veelgestelde-vragen" className="hover:text-brand">
             {t("faq")}

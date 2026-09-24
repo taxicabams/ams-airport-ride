@@ -1,23 +1,45 @@
 {
   "Metadata": {
     "title": "AMS Airport Ride — Schiphol Taxi with Fixed Price",
-    "description": "Book your Schiphol taxi with a fixed price upfront. Also for private rides between Dutch cities. Pay easily after your ride."
+    "description": "Book your Schiphol taxi with a fixed price from €35. Also for regular taxi rides within Amsterdam and between Dutch cities. Pay easily after your ride."
   },
   "Nav": {
     "home": "Home",
     "routes": "Routes",
     "about": "About us",
+    "taxiSchiphol": "Schiphol Taxi",
+    "taxiAmsterdam": "Amsterdam Taxi",
+    "prices": "Prices",
     "contact": "Contact",
     "faq": "FAQ",
     "bookNow": "Book now"
   },
   "Hero": {
-    "title": "Schiphol taxi — fixed price upfront",
-    "subtitle": "Enter your address, see the fixed price instantly, and book in two minutes. Also for rides between other Dutch cities.",
-    "trustLine": "Fixed price upfront. Pay easily after your ride with card or cash."
+    "eyebrow": "Schiphol taxi & Amsterdam",
+    "title": "Taxi to and from Schiphol",
+    "priceMessage": "Fixed price from €35",
+    "subtitle": "Door-to-door service. No meter and no surprises.",
+    "trustLine": "Fixed price upfront. Pay easily after your ride with card or cash.",
+    "trustPoint1": "Fixed price upfront",
+    "trustPoint2": "Card or cash",
+    "trustPoint3": "Receipt available in the taxi",
+    "priceCardTitle": "Schiphol from €35",
+    "priceCardRouteA": "Amsterdam → Schiphol",
+    "priceCardRouteB": "Schiphol → Amsterdam"
+  },
+  "AmsterdamTaxi": {
+    "title": "Need a taxi in Amsterdam?",
+    "body": "Not going to Schiphol? No problem. We also provide regular taxi rides within Amsterdam — from home to work, the station, hotel, restaurant or any other address.",
+    "cta": "Calculate your fare"
+  },
+  "PaymentTrust": {
+    "title": "Pay after your ride",
+    "body": "Pay directly to the driver by card or cash.",
+    "receipt": "A receipt is available in the taxi."
   },
   "Booking": {
-    "heading": "Calculate your fixed price",
+    "heading": "Calculate my fixed price",
+    "backToHome": "← Back to home",
     "step": "Step {current} of {total}",
     "pickupLabel": "Pickup address",
     "pickupPlaceholder": "Enter pickup address",
@@ -99,7 +121,7 @@
     "paymentBody": "Fixed price upfront. Pay easily after your ride with card or cash.",
     "schipholTitle": "Where will you find your driver?",
     "contactTitle": "Questions about your booking?",
-    "backHome": "Back to home"
+    "backHome": "← Back to home"
   },
   "Schiphol": {
     "title": "Where will you find your driver at Schiphol?",
