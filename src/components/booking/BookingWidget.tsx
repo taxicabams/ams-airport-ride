@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import type { Quote } from "@/lib/pricing";
 import { companyInfo } from "@/lib/companyInfo";
 import { track } from "@/lib/analytics";
@@ -25,6 +25,7 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
   initialDestination?: string;
 }) {
   const t = useTranslations("Booking");
+  const locale = useLocale();
   const [step, setStep] = useState<WizardStep>("route");
   const [form, setForm] = useState<BookingFormState>({
     ...initialBookingForm,
@@ -112,9 +113,14 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
     setSubmitting(true);
     setSubmitError(null);
     try {
+      // The server picks the confirmation email's language from this
+      // header (see /api/bookings) — without it, every booking fell
+      // back to the site's default locale (Dutch) regardless of which
+      // language the customer actually booked in. Found via a real
+      // production booking made on /en that still arrived in Dutch.
       const res = await fetch("/api/bookings", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-locale": locale },
         body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error("Booking failed");
