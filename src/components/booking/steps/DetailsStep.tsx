@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Field, inputClassName } from "@/components/ui/Field";
 import { PickerField } from "@/components/ui/PickerField";
@@ -12,8 +12,8 @@ import {
   BUS_SURCHARGE_EUR,
   BUS_MAX_PASSENGERS,
   BUS_MAX_LUGGAGE,
-  calculateQuote,
   recommendedVehicle,
+  type Quote,
 } from "@/lib/pricing";
 import { track } from "@/lib/analytics";
 import { formatDateLong } from "@/lib/formatDate";
@@ -25,11 +25,27 @@ export function DetailsStep({
   onChange,
   onBack,
   onNext,
+  carQuote,
+  carQuoteLoading,
+  carQuoteError,
+  onRetryCarQuote,
 }: {
   form: BookingFormState;
   onChange: (patch: Partial<BookingFormState>) => void;
   onBack: () => void;
   onNext: () => void;
+  /**
+   * The real, Google-Routes-based Personenauto quote for this route,
+   * fetched once by BookingWidget right when this step is reached (see
+   * loadCarQuotePreview) — never computed locally here anymore. Sharing
+   * this exact object with the final QuoteStep is what guarantees the
+   * price shown while picking a vehicle can never disagree with the
+   * price actually confirmed a step later.
+   */
+  carQuote: Quote | null;
+  carQuoteLoading: boolean;
+  carQuoteError: boolean;
+  onRetryCarQuote: () => void;
 }) {
   const t = useTranslations("Booking");
   const locale = useLocale();
@@ -60,19 +76,16 @@ export function DetailsStep({
     }
   }, [form.vehicleManuallyChosen, form.vehicleType, recommended, onChange]);
 
-  // calculateQuote is a pure, client-safe function (no server/DB
-  // imports — see lib/pricing/index.ts), so we can preview the real
-  // per-vehicle price right here instead of waiting for the "Bereken
-  // vaste prijs" step. Base price doesn't depend on passengers/date/
-  // etc., only on pickup/destination, so this only recomputes when
-  // those actually change. The customer only ever sees the two final
-  // amounts (e.g. "€50" / "€65") — never the underlying "+€15" math or
-  // any technical seat-count text.
-  const carPrice = useMemo(
-    () => calculateQuote({ pickup: form.pickup, destination: form.destination, vehicleType: "PERSONENAUTO" }).basePrice,
-    [form.pickup, form.destination]
-  );
-  const busPrice = carPrice + BUS_SURCHARGE_EUR;
+  // carQuote (fetched once by BookingWidget when this step is reached —
+  // see loadCarQuotePreview) is the real, Google-Routes-based price, not
+  // a local coordinate-free estimate. Base price doesn't depend on
+  // vehicle type, so the Bus price is just the same base plus the fixed
+  // surcharge — no separate fetch. The customer only ever sees the two
+  // final amounts (e.g. "€50" / "€65") — never the underlying "+€15"
+  // math or any technical seat-count text.
+  const carPrice = carQuote?.basePrice ?? null;
+  const busPrice = carPrice != null ? carPrice + BUS_SURCHARGE_EUR : null;
+  const priceReady = carPrice != null && !carQuoteLoading;
 
   // See lib/formatDate.ts for the crash-safety note (invalid mid-edit
   // date values must never throw here).
@@ -90,11 +103,16 @@ export function DetailsStep({
   // Require an actually-valid date (not just a non-empty string) so an
   // in-progress/garbled native input value can never be used to
   // continue to the price step. A return trip additionally needs its
-  // own valid date/time, strictly after the outbound leg.
+  // own valid date/time, strictly after the outbound leg. Also require
+  // a successfully loaded price — proceeding on a failed/pending fetch
+  // would leave QuoteStep to fall back to a second, separate calculation
+  // (see goToQuote), reopening the exact mismatch this screen exists to
+  // prevent.
   const canContinue =
     dateDisplay.length > 0 &&
     form.time.length > 0 &&
-    (!form.returnTrip || (returnDateDisplay.length > 0 && form.returnTime.length > 0 && returnDateTimeValid));
+    (!form.returnTrip || (returnDateDisplay.length > 0 && form.returnTime.length > 0 && returnDateTimeValid)) &&
+    priceReady;
 
   function selectVehicle(vehicle: "PERSONENAUTO" | "BUS") {
     track("vehicle_selected", { vehicleType: vehicle });
@@ -219,7 +237,7 @@ export function DetailsStep({
           <VehicleOption
             id="vehicle-personenauto"
             selected={vehicleType === "PERSONENAUTO"}
-            disabled={recommended === "BUS"}
+            disabled={recommended === "BUS" || !priceReady}
             title={t("vehiclePersonenauto")}
             price={carPrice}
             onSelect={() => selectVehicle("PERSONENAUTO")}
@@ -227,11 +245,20 @@ export function DetailsStep({
           <VehicleOption
             id="vehicle-bus"
             selected={vehicleType === "BUS"}
+            disabled={!priceReady}
             title={t("vehicleBus")}
             price={busPrice}
             onSelect={() => selectVehicle("BUS")}
           />
         </div>
+        {carQuoteError && (
+          <p role="alert" className="flex items-center justify-between gap-3 text-xs font-medium text-red-600">
+            {t("quoteError")}
+            <button type="button" onClick={onRetryCarQuote} className="underline hover:no-underline">
+              {t("retryButton")}
+            </button>
+          </p>
+        )}
         {showAutoSwitchNote && (
           <p className="text-xs text-muted">{t("vehicleAutoSwitchNote")}</p>
         )}
@@ -286,7 +313,8 @@ function VehicleOption({
   selected: boolean;
   disabled?: boolean;
   title: string;
-  price: number;
+  /** null while the real price is still loading (or failed) — see carQuoteLoading/carQuoteError above. */
+  price: number | null;
   onSelect: () => void;
 }) {
   return (
@@ -305,7 +333,11 @@ function VehicleOption({
       ].join(" ")}
     >
       <span className="text-sm font-semibold text-foreground">{title}</span>
-      <span className="text-sm font-bold text-brand">€{price}</span>
+      <span className="text-sm font-bold text-brand">
+        {price != null ? `€${price}` : (
+          <span className="inline-block h-3.5 w-8 animate-pulse rounded bg-brand/20" aria-hidden="true" />
+        )}
+      </span>
     </button>
   );
 }

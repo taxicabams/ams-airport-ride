@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import type { Quote } from "@/lib/pricing";
+import type { Quote, VehicleType } from "@/lib/pricing";
+import { BUS_SURCHARGE_EUR } from "@/lib/pricing";
 import { companyInfo } from "@/lib/companyInfo";
 import { track } from "@/lib/analytics";
 import { RouteStep } from "./steps/RouteStep";
@@ -36,6 +37,20 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
   const [returnQuote, setReturnQuote] = useState<Quote | null>(null);
   const [quoteLoading, setQuoteLoading] = useState(false);
   const [quoteError, setQuoteError] = useState<string | null>(null);
+  // The Personenauto quote for the outbound route, fetched once when the
+  // customer leaves RouteStep — this is the SAME real Google-Routes-based
+  // number shown twice: once as DetailsStep's vehicle-picker preview,
+  // and again as QuoteStep's confirmed price (goToQuote reuses it below
+  // instead of fetching a second time). Base price doesn't depend on
+  // vehicle type, so one fetch covers both Personenauto and Bus. Sharing
+  // one object like this is what guarantees the two screens can never
+  // show different numbers for the same route — see the bug this fixed:
+  // the preview used to run a local, coordinate-free estimate while the
+  // final quote used the real route, and for a plain per-km private-ride
+  // price the two could visibly disagree (e.g. €110 vs €119).
+  const [carQuote, setCarQuote] = useState<Quote | null>(null);
+  const [carQuoteLoading, setCarQuoteLoading] = useState(false);
+  const [carQuoteError, setCarQuoteError] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [result, setResult] = useState<BookingResult | null>(null);
@@ -51,11 +66,12 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
     pickupLng?: number;
     destinationLat?: number;
     destinationLng?: number;
+    vehicleType: VehicleType;
   }): Promise<Quote> {
     const res = await fetch("/api/quote", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...params, vehicleType: form.vehicleType }),
+      body: JSON.stringify(params),
     });
     // A non-2xx response (e.g. the API's 503 fallback, or a network-level
     // failure) must never be parsed as a quote — without this check,
@@ -68,19 +84,64 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
     return data.quote as Quote;
   }
 
-  async function goToQuote() {
-    setStep("quote");
-    setQuoteLoading(true);
-    setQuoteError(null);
+  // Fired once, right when the customer leaves RouteStep with a resolved
+  // pickup/destination — always priced as Personenauto (base price is
+  // vehicle-independent; see vehicle.ts), so DetailsStep derives the Bus
+  // price locally by adding BUS_SURCHARGE_EUR rather than fetching again.
+  async function loadCarQuotePreview() {
+    setCarQuoteLoading(true);
+    setCarQuoteError(false);
     try {
-      const outbound = await fetchQuote({
+      const preview = await fetchQuote({
         pickup: form.pickup,
         destination: form.destination,
         pickupLat: form.pickupLat,
         pickupLng: form.pickupLng,
         destinationLat: form.destinationLat,
         destinationLng: form.destinationLng,
+        vehicleType: "PERSONENAUTO",
       });
+      setCarQuote(preview);
+    } catch {
+      setCarQuote(null);
+      setCarQuoteError(true);
+    } finally {
+      setCarQuoteLoading(false);
+    }
+  }
+
+  async function goToQuote() {
+    setStep("quote");
+    setQuoteLoading(true);
+    setQuoteError(null);
+    try {
+      // Reuse the exact same real, Google-Routes-based quote already
+      // fetched for DetailsStep's vehicle-picker preview (loadCarQuotePreview)
+      // instead of computing it a second time — this is what guarantees
+      // the price the customer picked a vehicle against is IDENTICAL to
+      // the one confirmed here, never a second, separately-rounded
+      // calculation. Only a missing preview (a failed fetch, or this
+      // function somehow running before it resolved) falls back to
+      // fetching fresh here, same as before this sharing existed.
+      const carBase =
+        carQuote ??
+        (await fetchQuote({
+          pickup: form.pickup,
+          destination: form.destination,
+          pickupLat: form.pickupLat,
+          pickupLng: form.pickupLng,
+          destinationLat: form.destinationLat,
+          destinationLng: form.destinationLng,
+          vehicleType: "PERSONENAUTO",
+        }));
+      const outbound: Quote =
+        form.vehicleType === "BUS"
+          ? {
+              ...carBase,
+              vehicleSurcharge: BUS_SURCHARGE_EUR,
+              totalPrice: carBase.basePrice + BUS_SURCHARGE_EUR,
+            }
+          : carBase;
       setQuote(outbound);
       track("quote_calculated", { rideType: outbound.rideType, totalPrice: outbound.totalPrice });
 
@@ -95,6 +156,7 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
           pickupLng: form.destinationLng,
           destinationLat: form.pickupLat,
           destinationLng: form.pickupLng,
+          vehicleType: form.vehicleType,
         });
         setReturnQuote(back);
       } else {
@@ -170,6 +232,7 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
           onNext={() => {
             track("calculator_started");
             setStep("details");
+            loadCarQuotePreview();
           }}
         />
       )}
@@ -180,6 +243,10 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
           onChange={patch}
           onBack={() => setStep("route")}
           onNext={goToQuote}
+          carQuote={carQuote}
+          carQuoteLoading={carQuoteLoading}
+          carQuoteError={carQuoteError}
+          onRetryCarQuote={loadCarQuotePreview}
         />
       )}
 
