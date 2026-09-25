@@ -37,8 +37,8 @@
     "disclaimer": "De exacte prijs wordt berekend op basis van je ophaaladres en bestemming."
   },
   "AmsterdamTaxi": {
-    "title": "Ook een taxi in Amsterdam?",
-    "body": "Niet naar Schiphol? Geen probleem. Je kunt AMS Airport Ride ook gebruiken voor gewone taxiritten binnen Amsterdam.",
+    "title": "Ook een taxi nodig binnen Amsterdam?",
+    "body": "Schiphol is niet verplicht: u kunt AMS Airport Ride net zo goed boeken voor een gewone taxirit binnen Amsterdam zelf.",
     "fromLabel": "Van:",
     "example1": "huis → werk",
     "example2": "station → huis",
@@ -100,7 +100,7 @@
     "vehicleAutoSwitchNote": "Voor dit aantal passagiers en koffers is een bus nodig — we hebben deze alvast voor u geselecteerd.",
     "flightNumberLabel": "Vluchtnummer (optioneel)",
     "flightNumberPlaceholder": "Bijv. KL1234",
-    "flightNumberHint": "Wij houden uw vlucht in de gaten zodat uw chauffeur op tijd klaarstaat, ook bij vertraging.",
+    "flightNumberHint": "Vul uw vluchtnummer in, dan houden we hier rekening mee bij eventuele vertraging.",
     "backButton": "Vorige",
     "nextButton": "Volgende",
     "calculateButton": "Bereken vaste prijs",
@@ -158,7 +158,7 @@
   },
   "Schiphol": {
     "title": "Waar vindt u uw chauffeur op Schiphol?",
-    "note": "Reist u met een aansluitende vlucht of vertraging? Vul uw vluchtnummer in bij het boeken — wij houden uw vlucht automatisch in de gaten."
+    "note": "Reist u met een aansluitende vlucht of kans op vertraging? Vul uw vluchtnummer in bij het boeken, dan houden we hier rekening mee."
   },
   "Trust": {
     "fixedPriceTitle": "Vaste prijs vooraf",

@@ -24,7 +24,7 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     },
     {
       q: "Wat als mijn vlucht vertraging heeft?",
-      a: "Vul uw vluchtnummer in bij het boeken — wij houden uw vlucht automatisch in de gaten, zodat uw chauffeur ook bij vertraging op tijd klaarstaat.",
+      a: "Vul uw vluchtnummer in bij het boeken, dan houden wij hier rekening mee, zodat uw chauffeur ook bij vertraging voor u klaarstaat.",
     },
     {
       q: "Wat kost een taxi van Amsterdam naar Schiphol?",
@@ -66,7 +66,7 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     },
     {
       q: "What if my flight is delayed?",
-      a: "Add your flight number when booking — we monitor your flight automatically, so your driver is ready on time even if it's delayed.",
+      a: "Add your flight number when booking, so we can take it into account and your driver is ready for you even if it's delayed.",
     },
     {
       q: "How much is a taxi from Amsterdam to Schiphol?",

@@ -38,7 +38,7 @@
   },
   "AmsterdamTaxi": {
     "title": "Need a taxi in Amsterdam?",
-    "body": "Not going to Schiphol? No problem. AMS Airport Ride also provides regular taxi rides within Amsterdam.",
+    "body": "Schiphol isn't required: you can book AMS Airport Ride just as easily for a regular taxi ride within Amsterdam itself.",
     "fromLabel": "From:",
     "example1": "home → work",
     "example2": "station → home",
@@ -100,7 +100,7 @@
     "vehicleAutoSwitchNote": "For this number of passengers and bags you need a van — we've already selected it for you.",
     "flightNumberLabel": "Flight number (optional)",
     "flightNumberPlaceholder": "E.g. KL1234",
-    "flightNumberHint": "We monitor your flight so your driver is ready on time, even if it's delayed.",
+    "flightNumberHint": "Add your flight number and we'll take any delay into account.",
     "backButton": "Back",
     "nextButton": "Next",
     "calculateButton": "Calculate fixed price",
@@ -158,7 +158,7 @@
   },
   "Schiphol": {
     "title": "Where will you find your driver at Schiphol?",
-    "note": "Connecting flight or a delay? Add your flight number when booking — we monitor it automatically."
+    "note": "Connecting flight or a chance of delay? Add your flight number when booking and we'll take it into account."
   },
   "Trust": {
     "fixedPriceTitle": "Fixed price upfront",

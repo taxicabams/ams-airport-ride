@@ -34,7 +34,9 @@ export async function Hero() {
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
             {t("title")}
           </h1>
-          <p className="mt-3 text-xl font-bold text-brand sm:text-2xl">{t("priceMessage")}</p>
+          <p className="mt-3 inline-block rounded-lg bg-brand/10 px-3 py-1.5 text-2xl font-extrabold text-brand sm:text-3xl">
+            {t("priceMessage")}
+          </p>
           <p className="mt-4 max-w-xl text-lg text-muted">{t("subtitle")}</p>
         </div>
 
