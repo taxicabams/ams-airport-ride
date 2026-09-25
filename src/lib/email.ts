@@ -39,34 +39,57 @@ function escapeHtml(value: string): string {
 // properties (or even <style> in some webmail contexts), so every
 // transactional email inlines the site's *light*-theme palette
 // directly. Keep these in sync with src/app/globals.css's :root block
-// if that palette ever changes.
-const BRAND_NAVY = "#0b3d59";
-const ACCENT_AMBER = "#d97706";
-const TEXT = "#0f172a";
+// (brand system v3) if that palette ever changes.
+const BRAND_NAVY = "#0b1728"; // --ink
+const BRAND_BLUE = "#1769a8"; // --brand
+const TEXT = "#111827";
 const MUTED = "#64748b";
 const BORDER = "#e2e8f0";
-const MUTED_BG = "#f8fafc";
+const MUTED_BG = "#f5f7fa";
+
+// Hosted on the live domain, not a relative path — email <img> tags need
+// a real, publicly reachable URL regardless of which host renders the
+// message. Exported once from the same LogoMark markup used on the site
+// (src/components/ui/Logo.tsx) via a browser screenshot — see the plan
+// note in that file's history for why email can't just inline the SVG
+// (Outlook's Word rendering engine doesn't support it reliably).
+const LOGO_URL = "https://amsairportride.nl/images/logo-mark.png";
+const SITE_URL = "https://amsairportride.nl";
 
 /**
  * Shared wrapper every outgoing email renders through — one place that
- * defines "what an AMS Airport Ride email looks like" (header wordmark,
- * white content card, footer) instead of each email hand-rolling its
- * own HTML. Table-based layout + inline styles throughout: the safest,
- * most widely-compatible approach across email clients (Gmail, Outlook,
- * Apple Mail), none of which reliably render a <style> block or
- * flexbox/grid the way a browser does.
+ * defines "what an AMS Airport Ride email looks like" (logo header,
+ * flight-path divider, white content card, footer) instead of each email
+ * hand-rolling its own HTML. Table-based layout + inline styles
+ * throughout: the safest, most widely-compatible approach across email
+ * clients (Gmail, Outlook, Apple Mail), none of which reliably render a
+ * <style> block or flexbox/grid the way a browser does.
+ *
+ * The flight-path divider ("AMS ─── ✈ ─── SCHIPHOL") is plain text, not
+ * the site's SVG component (src/components/marketing/FlightPathDivider.tsx)
+ * — email clients can't render arbitrary inline SVG reliably, and a
+ * second hosted image just for this is unnecessary when the same motif
+ * works fine as text.
  */
 function emailLayout(bodyHtml: string, footerNote: string): string {
   return `<!doctype html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
   <body style="margin:0;padding:0;background-color:${MUTED_BG};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${MUTED_BG};padding:24px 0;">
       <tr>
         <td align="center">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background-color:#ffffff;border-radius:12px;overflow:hidden;border:1px solid ${BORDER};">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background-color:#ffffff;border-radius:14px;overflow:hidden;border:1px solid ${BORDER};">
             <tr>
-              <td style="background-color:${BRAND_NAVY};padding:20px 28px;">
-                <span style="color:#ffffff;font-size:18px;font-weight:700;letter-spacing:-0.01em;">AMS Airport Ride</span>
+              <td style="background-color:${BRAND_NAVY};padding:24px 28px 18px;" align="center">
+                <img src="${LOGO_URL}" width="40" height="40" alt="AMS Airport Ride" style="display:block;margin:0 auto 10px;border-radius:10px;" />
+                <div style="color:#ffffff;font-size:16px;font-weight:700;letter-spacing:-0.01em;">AMS Airport Ride</div>
+                <div style="margin-top:10px;color:#9db8cc;font-size:11px;letter-spacing:0.06em;">
+                  AMS&nbsp;&nbsp;──────&nbsp;✈&nbsp;──────&nbsp;&nbsp;SCHIPHOL
+                </div>
               </td>
             </tr>
             <tr>
@@ -77,6 +100,10 @@ function emailLayout(bodyHtml: string, footerNote: string): string {
             <tr>
               <td style="padding:16px 28px;border-top:1px solid ${BORDER};color:${MUTED};font-size:12px;line-height:1.5;">
                 ${footerNote}
+                <div style="margin-top:8px;">
+                  AMS Airport Ride — Schiphol &amp; Amsterdam Airport Transfers ·
+                  <a href="${SITE_URL}" style="color:${BRAND_BLUE};text-decoration:none;">amsairportride.nl</a>
+                </div>
               </td>
             </tr>
           </table>
@@ -129,35 +156,60 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
           footer: "This is an automated booking confirmation from AMS Airport Ride.",
         };
 
-  const rows = [
-    detailRow(t.pickup, booking.pickupAddress),
-    detailRow(t.destination, booking.destination),
-    detailRow(t.when, `${booking.date} ${booking.time}`),
-  ];
+  // The extra detail rows (date/time, flight number) below the
+  // pickup/destination block, same two-column layout as before.
+  const extraRows = [detailRow(t.when, `${booking.date} ${booking.time}`)];
   if (isAirport && booking.flightNumber) {
-    rows.push(detailRow(t.flight, booking.flightNumber));
+    extraRows.push(detailRow(t.flight, booking.flightNumber));
   }
 
+  // Stacked PICKUP -> DESTINATION block per the brand brief, instead of
+  // two plain rows in the same table as date/time/flight — every field
+  // is still the same real booking.* value, nothing renamed.
+  const tripCard = `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${MUTED_BG};border-radius:10px;margin-bottom:16px;">
+      <tr>
+        <td style="padding:16px 18px 12px;">
+          <div style="color:${MUTED};font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">${t.pickup}</div>
+          <div style="color:${TEXT};font-size:14px;font-weight:600;margin-top:2px;">${escapeHtml(booking.pickupAddress)}</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0 18px;">
+          <div style="color:${BRAND_BLUE};font-size:13px;">↓</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0 18px 16px;">
+          <div style="color:${MUTED};font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">${t.destination}</div>
+          <div style="color:${TEXT};font-size:14px;font-weight:600;margin-top:2px;">${escapeHtml(booking.destination)}</div>
+        </td>
+      </tr>
+    </table>
+  `;
+
   const body = `
-    <h1 style="margin:0 0 4px;font-size:20px;color:${TEXT};">${t.title}</h1>
+    <h1 style="margin:0 0 4px;font-size:20px;color:${BRAND_NAVY};">${t.title}</h1>
     <p style="margin:0 0 20px;color:${MUTED};font-size:14px;">${t.intro}</p>
 
     <p style="margin:0 0 16px;color:${MUTED};font-size:12px;">${t.ref}: <span style="font-family:monospace;color:${TEXT};">${escapeHtml(booking.id)}</span></p>
 
+    ${tripCard}
+
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
-      ${rows.join("\n")}
+      ${extraRows.join("\n")}
     </table>
 
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${MUTED_BG};border-radius:8px;margin-bottom:20px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${MUTED_BG};border-radius:10px;margin-bottom:20px;">
       <tr>
         <td style="padding:16px 20px;text-align:center;">
           <div style="color:${MUTED};font-size:12px;text-transform:uppercase;letter-spacing:0.03em;">${t.priceLabel}</div>
-          <div style="color:${ACCENT_AMBER};font-size:28px;font-weight:700;margin-top:4px;">${formatPrice(booking.price)}</div>
+          <div style="color:${BRAND_BLUE};font-size:28px;font-weight:700;margin-top:4px;">${formatPrice(booking.price)}</div>
         </td>
       </tr>
     </table>
 
-    <p style="margin:0 0 4px;font-weight:600;color:${TEXT};font-size:14px;">${t.paymentTitle}</p>
+    <p style="margin:0 0 4px;font-weight:600;color:${BRAND_NAVY};font-size:14px;">${t.paymentTitle}</p>
     <p style="margin:0 0 20px;color:${MUTED};font-size:13px;">${t.payment}</p>
 
     ${
@@ -192,7 +244,7 @@ function internalNotificationBody(booking: Booking, locale: "nl" | "en"): string
   if (booking.flightNumber) rows.push(detailRow("Vluchtnummer", booking.flightNumber));
 
   const body = `
-    <h1 style="margin:0 0 16px;font-size:18px;color:${TEXT};">Nieuwe boeking — ${booking.rideType === "AIRPORT_TRANSFER" ? "Schiphol" : "Privérit"}</h1>
+    <h1 style="margin:0 0 16px;font-size:18px;color:${BRAND_NAVY};">Nieuwe boeking — ${booking.rideType === "AIRPORT_TRANSFER" ? "Schiphol" : "Privérit"}</h1>
     <p style="margin:0 0 16px;color:${MUTED};font-size:12px;">Boekingsnummer: <span style="font-family:monospace;color:${TEXT};">${escapeHtml(booking.id)}</span></p>
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">

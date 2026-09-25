@@ -1,6 +1,7 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ROUTE_PAGES, routePageCopy } from "@/lib/routes-data";
+import { FlightPathDivider } from "./FlightPathDivider";
 
 export async function RouteGrid() {
   const t = await getTranslations("Routes");
@@ -25,7 +26,8 @@ export async function RouteGrid() {
               <p className="font-semibold text-foreground group-hover:text-brand">
                 Schiphol ↔ {city}
               </p>
-              <p className="mt-1 text-sm text-muted">
+              <FlightPathDivider from="SCHIPHOL" to={city.toUpperCase()} className="mt-2" />
+              <p className="mt-3 text-sm text-muted">
                 {route.durationMin} min · {route.distanceKm} km
               </p>
               <p className="mt-3 text-lg font-bold text-brand">

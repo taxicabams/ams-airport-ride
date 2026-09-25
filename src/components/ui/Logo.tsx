@@ -12,6 +12,9 @@
 export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
   return (
     <svg viewBox="0 0 40 40" fill="none" className={className} aria-hidden="true">
+      {/* Airport blue, not the deep navy --ink — the badge needs to read
+          clearly on both the white header and the dark --ink footer, and
+          navy-on-navy there would nearly disappear. */}
       <rect width="40" height="40" rx="10" className="fill-brand" />
       <path
         d="M9 30 Q16 13, 30 9"

@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { CheckIcon } from "@/components/ui/icons";
 import { AmsterdamSkyline } from "./AmsterdamSkyline";
 import { HeroRouteMotif } from "./HeroRouteMotif";
+import { FlightPathDivider } from "./FlightPathDivider";
 
 /**
  * Design-system brief v2: two-column hero (text+CTA left, a visual right)
@@ -28,6 +29,11 @@ export async function Hero() {
           <p className="text-sm font-semibold uppercase tracking-wide text-brand">
             {t("eyebrow")}
           </p>
+          {/* The brand's small recurring "flight path" motif — used
+              sparingly (here, on route cards, and as email-safe text in
+              email.ts) so it reads as a signature rather than decoration
+              repeated everywhere. */}
+          <FlightPathDivider from="AMS" to="SCHIPHOL" className="mt-3 max-w-xs" />
           <h1 className="mt-3 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             {t("title")}
           </h1>

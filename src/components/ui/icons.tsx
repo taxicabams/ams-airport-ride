@@ -72,6 +72,17 @@ export const LuggageIcon = ({ className = "shrink-0" }: { className?: string }) 
   </svg>
 );
 
+/**
+ * Small paper-plane silhouette — the "flight" mark used in
+ * FlightPathDivider.tsx, distinct from the checkmark/route icons above.
+ * Deliberately tiny and plain, never a large literal airplane graphic.
+ */
+export const PlaneIcon = ({ className = "shrink-0" }: { className?: string }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    <path d="M22 2 11 13M22 2 15 22 11 13 2 9 22 2Z" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 /** Simple checkmark — used for short trust-point lists (Hero, etc.). */
 export const CheckIcon = ({ className = "shrink-0" }: { className?: string }) => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={className}>
