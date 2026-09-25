@@ -1,5 +1,6 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { getSchipholMeetingPointText } from "@/lib/schipholMeetingPoint";
+import { ClockIcon } from "@/components/ui/icons";
 
 /**
  * The client's requirement: Schiphol pickup instructions must be
@@ -37,7 +38,21 @@ export async function SchipholInfoCard() {
         <p className="mt-6 max-w-3xl border-t border-brand/10 pt-5 text-sm text-foreground/80">
           {getSchipholMeetingPointText(locale)}
         </p>
-        <p className="mt-3 max-w-3xl text-sm text-muted">{t("note")}</p>
+
+        {/* A small, distinct card for the flight-delay reassurance (the
+            brief's own "Flight delayed? No problem." callout) rather than
+            a plain trailing paragraph — copy stays the honest, already-
+            corrected wording ("we'll take it into account", not "we
+            monitor automatically"). */}
+        <div className="mt-5 flex max-w-3xl items-start gap-3 rounded-xl border border-border bg-background p-4 shadow-card">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
+            <ClockIcon className="h-5 w-5" />
+          </span>
+          <div>
+            <p className="font-semibold text-foreground">{t("delayTitle")}</p>
+            <p className="mt-0.5 text-sm text-muted">{t("note")}</p>
+          </div>
+        </div>
       </div>
     </section>
   );

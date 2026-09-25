@@ -14,7 +14,7 @@ export async function PaymentTrust() {
 
   return (
     <section className="mx-auto max-w-6xl px-4 sm:px-6">
-      <div className="flex flex-col items-center gap-4 rounded-2xl border border-border p-6 text-center sm:flex-row sm:text-left">
+      <div className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-background p-6 text-center shadow-card sm:flex-row sm:text-left">
         <div className="flex shrink-0 gap-2 text-brand">
           <PaymentIcon className="h-8 w-8" />
           <ReceiptIcon className="h-8 w-8" />

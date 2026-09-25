@@ -207,16 +207,26 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
   const stepIndex = STEP_ORDER.indexOf(step);
 
   return (
-    <div id="boeken" className="mx-auto w-full max-w-md rounded-2xl border border-border bg-background p-5 shadow-lg sm:p-6">
+    <div
+      id="boeken"
+      className="mx-auto w-full max-w-md rounded-2xl border border-brand/10 bg-background p-5 shadow-elevated sm:p-6"
+    >
       {step !== "confirmed" && (
         <>
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-1 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-foreground">{t("heading")}</h2>
             <span className="text-xs text-muted">
               {t("step", { current: stepIndex + 1, total: STEP_ORDER.length })}
             </span>
           </div>
-          <div className="mb-5 h-1 w-full overflow-hidden rounded-full bg-muted-background">
+          {/* Reassurance shown once, on the first step — the brief's
+              "no online payment" / "see your price before booking"
+              micro-copy, kept to a single line so it never competes with
+              the address fields for attention. */}
+          {step === "route" && (
+            <p className="mb-3 text-xs text-muted">{t("headingSubtitle")}</p>
+          )}
+          <div className="mb-5 mt-3 h-1 w-full overflow-hidden rounded-full bg-muted-background">
             <div
               className="h-full rounded-full bg-brand transition-all"
               style={{ width: `${((stepIndex + 1) / STEP_ORDER.length) * 100}%` }}

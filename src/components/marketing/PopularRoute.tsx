@@ -14,7 +14,7 @@ export async function PopularRoute() {
 
   return (
     <section className="mx-auto max-w-6xl px-4 pt-4 sm:px-6">
-      <div className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-muted-background p-6 text-center sm:flex-row sm:justify-between sm:p-8 sm:text-left">
+      <div className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-muted-background p-6 text-center shadow-card sm:flex-row sm:justify-between sm:p-8 sm:text-left">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-muted">
             {t("title")}

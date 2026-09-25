@@ -12,7 +12,9 @@
     "prices": "Prices",
     "contact": "Contact",
     "faq": "FAQ",
-    "bookNow": "Book now"
+    "bookNow": "Book now",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "Hero": {
     "eyebrow": "Schiphol taxi",
@@ -72,6 +74,7 @@
   },
   "Booking": {
     "heading": "Calculate my fixed price →",
+    "headingSubtitle": "No payment required online — see your exact price before you book.",
     "backToHome": "← Back to home",
     "step": "Step {current} of {total}",
     "pickupLabel": "Pickup address",
@@ -158,6 +161,7 @@
   },
   "Schiphol": {
     "title": "Where will you find your driver at Schiphol?",
+    "delayTitle": "Flight delayed? No problem.",
     "note": "Connecting flight or a chance of delay? Add your flight number when booking and we'll take it into account."
   },
   "Trust": {
@@ -208,5 +212,15 @@
     "paymentCard": "Card / PIN",
     "paymentCash": "Cash",
     "paymentReceipt": "Receipt available"
+  },
+  "StickyCta": {
+    "label": "Your Schiphol taxi",
+    "cta": "Book your ride"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "body": "This page doesn't exist (anymore). Go back to the homepage, or calculate your fixed price right away.",
+    "homeLink": "← Back to home",
+    "bookLink": "Calculate my fare →"
   }
 }

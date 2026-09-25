@@ -21,7 +21,7 @@ export async function AmsterdamTaxi() {
 
   return (
     <section id="amsterdam-taxi" className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-      <div className="rounded-2xl border border-border bg-muted-background p-6 sm:p-8">
+      <div className="rounded-2xl border border-border bg-muted-background p-6 shadow-card sm:p-8">
         <h2 className="text-2xl font-bold text-foreground">{t("title")}</h2>
         <p className="mt-3 max-w-2xl text-foreground/90">{t("body")}</p>
 

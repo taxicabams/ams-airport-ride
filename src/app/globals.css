@@ -61,3 +61,30 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+/*
+ * One consistent card/shadow language, used everywhere instead of ad hoc
+ * shadow-sm/shadow-lg per component — this is what makes cards across
+ * different sections (trust badges, routes, FAQ, the booking widget)
+ * read as one coherent design system rather than a patchwork. Subtle by
+ * design: a soft ambient shadow, never a hard drop-shadow.
+ */
+:root {
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-card-hover: 0 4px 10px rgba(15, 23, 42, 0.06), 0 2px 4px rgba(15, 23, 42, 0.05);
+  --shadow-elevated: 0 10px 30px rgba(15, 23, 42, 0.08), 0 4px 8px rgba(15, 23, 42, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.25);
+    --shadow-card-hover: 0 4px 10px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+    --shadow-elevated: 0 10px 30px rgba(0, 0, 0, 0.35), 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@theme inline {
+  --shadow-card: var(--shadow-card);
+  --shadow-card-hover: var(--shadow-card-hover);
+  --shadow-elevated: var(--shadow-elevated);
+}

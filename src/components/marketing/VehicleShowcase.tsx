@@ -24,7 +24,7 @@ export async function VehicleShowcase() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
       <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
-        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-brand/10 to-muted-background">
+        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-brand/10 to-muted-background shadow-card">
           {vehiclePhoto.url ? (
             <Image
               src={vehiclePhoto.url}
@@ -43,7 +43,7 @@ export async function VehicleShowcase() {
         <div>
           <h2 className="text-2xl font-bold text-foreground">{t("title")}</h2>
           <div className="mt-5 grid grid-cols-2 gap-4">
-            <div className="rounded-xl border border-border p-4">
+            <div className="rounded-xl border border-border p-4 shadow-card">
               <CarIcon className="h-8 w-8 text-brand" />
               <p className="mt-3 font-semibold text-foreground">{t("sedanTitle")}</p>
               {/* {max} is interpolated from the pricing engine's own
@@ -53,7 +53,7 @@ export async function VehicleShowcase() {
                 {t("sedanCapacity", { max: PERSONENAUTO_MAX_PASSENGERS })}
               </p>
             </div>
-            <div className="rounded-xl border border-border p-4">
+            <div className="rounded-xl border border-border p-4 shadow-card">
               <CarIcon className="h-8 w-8 text-brand" />
               <p className="mt-3 font-semibold text-foreground">{t("busTitle")}</p>
               <p className="mt-1 text-sm text-muted">

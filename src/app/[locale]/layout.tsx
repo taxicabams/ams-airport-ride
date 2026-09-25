@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Header } from "@/components/marketing/Header";
 import { Footer } from "@/components/marketing/Footer";
+import { StickyMobileCta } from "@/components/marketing/StickyMobileCta";
+import { WhatsAppButton } from "@/components/marketing/WhatsAppButton";
 import "../globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
@@ -53,8 +55,13 @@ export default async function LocaleLayout({
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <NextIntlClientProvider messages={messages}>
           <Header />
-          <main className="flex-1">{children}</main>
+          {/* pb-16 clears the fixed StickyMobileCta bar on small screens
+              (md:pb-0 once that bar hides itself) so it never overlaps
+              the footer or a page's last content. */}
+          <main className="flex-1 pb-16 md:pb-0">{children}</main>
           <Footer />
+          <StickyMobileCta />
+          <WhatsAppButton />
         </NextIntlClientProvider>
       </body>
     </html>

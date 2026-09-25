@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Hero } from "@/components/marketing/Hero";
 import { PopularRoute } from "@/components/marketing/PopularRoute";
 import { AmsterdamTaxi } from "@/components/marketing/AmsterdamTaxi";
@@ -32,6 +32,25 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("Metadata");
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.amsairportride.nl";
+
+  // Deliberately minimal: only fields that are actually true today.
+  // companyInfo.ts's phone/address/reviews are all still null (no real
+  // data confirmed yet) — a LocalBusiness/TaxiService schema must never
+  // invent a telephone, street address, or aggregateRating just because
+  // the type usually has one. priceRange is left out for the same reason
+  // (it would need to track the pricing engine to stay accurate, and a
+  // stale number is worse than none). See companyInfo.ts's own
+  // null-until-real convention.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TaxiService",
+    name: "AMS Airport Ride",
+    url: siteUrl,
+    description: t("description"),
+    areaServed: ["Amsterdam", "Schiphol", "Nederland"],
+  };
 
   // Order follows the client's commercial priority list: the booking
   // widget (inside Hero) plus the "from €35" price message first, then
@@ -43,6 +62,10 @@ export default async function HomePage({
   // and finally the FAQ.
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Hero />
       <PopularRoute />
       <AmsterdamTaxi />

@@ -23,7 +23,7 @@ export async function RouteGrid() {
             <Link
               key={route.slug}
               href={`/${route.slug}`}
-              className="group rounded-xl border border-border p-5 transition hover:border-brand hover:shadow-sm"
+              className="group rounded-xl border border-border bg-background p-5 shadow-card transition hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-card-hover focus-visible:-translate-y-0.5 focus-visible:border-brand/40 focus-visible:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
             >
               <p className="font-semibold text-foreground group-hover:text-brand">
                 Schiphol ↔ {city}

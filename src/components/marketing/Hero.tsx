@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { BookingWidget } from "@/components/booking/BookingWidget";
 import { PriceTagIcon, PaymentIcon, ReceiptIcon, DoorIcon } from "@/components/ui/icons";
 import { AmsterdamSkyline } from "./AmsterdamSkyline";
+import { HeroRouteMotif } from "./HeroRouteMotif";
 
 export async function Hero() {
   const t = await getTranslations("Hero");
@@ -21,6 +22,7 @@ export async function Hero() {
           everything (z-0 vs. the grid's default stacking), never dark
           enough to affect text contrast. */}
       <AmsterdamSkyline className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-16 w-full text-brand/5 sm:h-24" />
+      <HeroRouteMotif className="pointer-events-none absolute inset-0 z-0 h-full w-full text-brand/[0.06]" />
       <div className="relative z-10 mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-20">
         {/* Text stack comes first in DOM order on every screen size — on
             mobile this puts the eyebrow/title/price/subtitle above the
@@ -46,7 +48,7 @@ export async function Hero() {
               text column), with the two most-booked routes as concrete
               examples. Never a flat €35 for every Amsterdam address —
               the calculator below still determines the real price. */}
-          <div className="mb-4 rounded-xl border border-brand/20 bg-brand/5 p-4">
+          <div className="mb-4 rounded-xl border border-brand/20 bg-brand/5 p-4 shadow-card">
             <p className="text-base font-bold text-brand">{t("priceCardTitle")}</p>
             <p className="mt-1 text-sm text-foreground/80">{t("priceCardRouteA")}</p>
             <p className="text-sm text-foreground/80">{t("priceCardRouteB")}</p>

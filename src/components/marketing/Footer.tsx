@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { companyInfo } from "@/lib/companyInfo";
 import { AmsterdamSkyline } from "./AmsterdamSkyline";
+import { Logo } from "@/components/ui/Logo";
 
 export async function Footer() {
   const t = await getTranslations("Footer");
@@ -15,8 +16,8 @@ export async function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <p className="font-semibold text-brand">AMS Airport Ride</p>
-            <p className="mt-2 max-w-xs text-sm text-muted">{t("tagline")}</p>
+            <Logo />
+            <p className="mt-3 max-w-xs text-sm text-muted">{t("tagline")}</p>
           </div>
 
           {/* Services: descriptive, not links — "Airport transfers" and

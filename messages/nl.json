@@ -12,7 +12,9 @@
     "prices": "Prijzen",
     "contact": "Contact",
     "faq": "Veelgestelde vragen",
-    "bookNow": "Nu boeken"
+    "bookNow": "Nu boeken",
+    "openMenu": "Menu openen",
+    "closeMenu": "Menu sluiten"
   },
   "Hero": {
     "eyebrow": "Schiphol taxi",
@@ -72,6 +74,7 @@
   },
   "Booking": {
     "heading": "Bereken mijn vaste prijs →",
+    "headingSubtitle": "Geen online betaling nodig — zie uw exacte prijs voordat u boekt.",
     "backToHome": "← Terug naar home",
     "step": "Stap {current} van {total}",
     "pickupLabel": "Vertrekadres",
@@ -158,6 +161,7 @@
   },
   "Schiphol": {
     "title": "Waar vindt u uw chauffeur op Schiphol?",
+    "delayTitle": "Vlucht vertraagd? Geen probleem.",
     "note": "Reist u met een aansluitende vlucht of kans op vertraging? Vul uw vluchtnummer in bij het boeken, dan houden we hier rekening mee."
   },
   "Trust": {
@@ -208,5 +212,15 @@
     "paymentCard": "PIN / kaart",
     "paymentCash": "Contant",
     "paymentReceipt": "Bon beschikbaar"
+  },
+  "StickyCta": {
+    "label": "Uw Schiphol taxi",
+    "cta": "Boek uw rit"
+  },
+  "NotFound": {
+    "title": "Pagina niet gevonden",
+    "body": "Deze pagina bestaat niet (meer). Ga terug naar de homepage of bereken direct uw vaste prijs.",
+    "homeLink": "← Terug naar home",
+    "bookLink": "Bereken mijn ritprijs →"
   }
 }

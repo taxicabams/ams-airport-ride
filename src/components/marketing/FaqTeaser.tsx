@@ -15,16 +15,16 @@ export async function FaqTeaser() {
     <section className="bg-muted-background py-12">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <h2 className="text-2xl font-bold text-foreground">{t("title")}</h2>
-        <div className="mt-6 divide-y divide-border rounded-xl border border-border bg-background">
+        <div className="mt-6 divide-y divide-border overflow-hidden rounded-xl border border-border bg-background shadow-card">
           {items.map((item) => (
-            <details key={item.q} className="group p-4">
+            <details key={item.q} className="group p-4 open:bg-muted-background/60">
               {/* py-2: see the note in veelgestelde-vragen/page.tsx —
                   the parent's padding isn't part of <summary>'s own
                   tap target. */}
-              <summary className="cursor-pointer list-none py-2 font-medium text-foreground marker:content-none">
+              <summary className="cursor-pointer list-none rounded-lg py-2 font-medium text-foreground marker:content-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">
                 <span className="flex items-center justify-between gap-4">
                   {item.q}
-                  <span className="text-muted transition group-open:rotate-45">+</span>
+                  <span className="shrink-0 text-lg leading-none text-brand transition group-open:rotate-45">+</span>
                 </span>
               </summary>
               <p className="mt-2 text-sm text-muted">{item.a}</p>
