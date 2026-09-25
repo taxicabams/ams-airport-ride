@@ -2,18 +2,30 @@ import type { Location } from "../locations";
 import type { RideType } from "../rideType";
 
 /**
- * Transparent fallback formula for any pickup/destination pair that
- * isn't one of the curated Schiphol routes (staticRoutes.ts) — most
- * plain NL city-to-city rides land here. Inspired by Taxi Falcon's
- * "one simple rule, no hidden surcharges" pricing (see the plan's
- * competitor research), tuned to a mid-market rate and with an explicit
- * airport surcharge component, since researched competitors bake
- * Schiphol parking/access fees into their airport prices.
+ * Fallback formula for the airport-transfer case specifically: a
+ * pickup/destination pair that involves Schiphol but isn't one of the
+ * curated fixed routes (staticRoutes.ts). Inspired by Taxi Falcon's "one
+ * simple rule, no hidden surcharges" pricing (see the plan's competitor
+ * research), tuned to a mid-market rate and with an explicit airport
+ * surcharge component, since researched competitors bake Schiphol
+ * parking/access fees into their airport prices. Every other ride (not
+ * touching Schiphol at all) uses PRIVATE_RIDE_RATE_PER_KM_EUR instead —
+ * see estimateFallback below.
  */
 export const BASE_FEE_EUR = 8;
 export const RATE_PER_KM_EUR = 1.6;
 export const AIRPORT_SURCHARGE_EUR = 6;
 export const MINIMUM_PRICE_EUR = 25;
+
+/**
+ * Client's explicit rate for any ride that doesn't touch Schiphol at
+ * all: a plain per-km price for the Personenauto, no base fee — the Bus
+ * surcharge (vehicle.ts's BUS_SURCHARGE_EUR) still applies on top, same
+ * as everywhere else. Schiphol rides never use this — they keep the
+ * curated fixed prices (staticRoutes.ts) or, if genuinely unmatched, the
+ * existing airport fallback formula above, both unchanged.
+ */
+export const PRIVATE_RIDE_RATE_PER_KM_EUR = 2.5;
 
 /** Straight-line distance, inflated a bit to approximate real road routes. */
 const ROAD_DISTANCE_FACTOR = 1.3;
@@ -64,9 +76,21 @@ export function estimateDistanceDuration(
  * @param distanceKm Pass the already-computed value from
  * `estimateDistanceDuration` (calculateQuote does this for every route,
  * static-priced or not) rather than recomputing it here.
+ *
+ * Two entirely separate formulas, picked by ride type: a private ride
+ * (not touching Schiphol) is a flat €/km rate per the client's own
+ * instruction, with the same minimum floor as before so a very short
+ * hop doesn't undercut a realistic minimum fare. An airport transfer
+ * only ever reaches this function when it *isn't* one of the curated
+ * fixed routes (staticRoutes.ts) — that fallback formula is untouched,
+ * exactly as it was before this ride-type split existed.
  */
 export function estimateFallback(distanceKm: number, rideType: RideType): number {
-  const airportSurcharge = rideType === "AIRPORT_TRANSFER" ? AIRPORT_SURCHARGE_EUR : 0;
-  const raw = BASE_FEE_EUR + distanceKm * RATE_PER_KM_EUR + airportSurcharge;
+  if (rideType === "PRIVATE_RIDE") {
+    const raw = distanceKm * PRIVATE_RIDE_RATE_PER_KM_EUR;
+    return Math.max(MINIMUM_PRICE_EUR, Math.round(raw));
+  }
+
+  const raw = BASE_FEE_EUR + distanceKm * RATE_PER_KM_EUR + AIRPORT_SURCHARGE_EUR;
   return Math.max(MINIMUM_PRICE_EUR, Math.round(raw));
 }

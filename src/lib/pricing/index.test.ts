@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { calculateQuote } from "./index";
 import { BUS_SURCHARGE_EUR } from "./vehicle";
 import { PRICES_APPROVED_BY_CLIENT } from "./staticRoutes";
+import { MINIMUM_PRICE_EUR, PRIVATE_RIDE_RATE_PER_KM_EUR } from "./fallback";
 
 // These fixed prices are the client's own starting price list — see the
 // big comment in staticRoutes.ts. Asserting exact numbers here means a
@@ -128,6 +129,40 @@ describe("calculateQuote — private rides (not touching Schiphol)", () => {
     expect(quote.rideType).toBe("PRIVATE_RIDE");
     expect(quote.source).toBe("estimate");
     expect(quote.basePrice).toBeGreaterThan(0);
+  });
+
+  it("prices a Personenauto private ride at exactly distanceKm x €2.50, per the client's rate", () => {
+    const quote = calculateQuote({
+      pickup: "Utrecht",
+      destination: "Rotterdam",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 40, durationMin: 35 },
+    });
+    expect(quote.rideType).toBe("PRIVATE_RIDE");
+    expect(quote.basePrice).toBe(40 * PRIVATE_RIDE_RATE_PER_KM_EUR); // 100
+    expect(quote.totalPrice).toBe(100);
+  });
+
+  it("adds the Bus surcharge on top of the private-ride per-km price, same as everywhere else", () => {
+    const quote = calculateQuote({
+      pickup: "Utrecht",
+      destination: "Rotterdam",
+      vehicleType: "BUS",
+      routeOverride: { distanceKm: 40, durationMin: 35 },
+    });
+    expect(quote.basePrice).toBe(100);
+    expect(quote.vehicleSurcharge).toBe(BUS_SURCHARGE_EUR);
+    expect(quote.totalPrice).toBe(100 + BUS_SURCHARGE_EUR); // 115
+  });
+
+  it("floors a very short private ride at the minimum price, not a tiny per-km amount", () => {
+    const quote = calculateQuote({
+      pickup: "Utrecht",
+      destination: "Rotterdam",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 2, durationMin: 8 }, // 2 x €2.50 = €5, below the floor
+    });
+    expect(quote.basePrice).toBe(MINIMUM_PRICE_EUR);
   });
 });
 
