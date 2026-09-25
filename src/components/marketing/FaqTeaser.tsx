@@ -14,8 +14,9 @@ export async function FaqTeaser() {
   return (
     <section className="bg-muted-background py-12">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        <h2 className="text-2xl font-bold text-foreground">{t("title")}</h2>
-        <div className="mt-6 divide-y divide-border overflow-hidden rounded-xl border border-border bg-background shadow-card">
+        <p className="text-sm font-semibold uppercase tracking-wide text-brand">{t("eyebrow")}</p>
+        <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground">{t("title")}</h2>
+        <div className="mt-6 divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface shadow-card">
           {items.map((item) => (
             <details key={item.q} className="group p-4 open:bg-muted-background/60">
               {/* py-2: see the note in veelgestelde-vragen/page.tsx —

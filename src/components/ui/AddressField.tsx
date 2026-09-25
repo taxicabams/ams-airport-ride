@@ -185,7 +185,7 @@ export function AddressField({
           <ul
             id={listboxId}
             role="listbox"
-            className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-border bg-background shadow-lg"
+            className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-border bg-surface shadow-lg"
           >
             {state === "loading" && (
               <li className="px-3.5 py-2.5 text-sm text-muted">{loadingLabel}</li>

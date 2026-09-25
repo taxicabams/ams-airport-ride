@@ -26,7 +26,7 @@ export function SegmentedControl<T extends string>({
             // already elsewhere on the same screen.
             "flex min-h-9 items-center justify-center rounded-full px-4 py-1.5 text-sm font-medium transition",
             option.value === value
-              ? "bg-background text-brand shadow-sm"
+              ? "bg-surface text-brand shadow-sm"
               : "text-muted hover:text-foreground",
           ].join(" ")}
         >

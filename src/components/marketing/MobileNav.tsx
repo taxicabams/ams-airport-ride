@@ -40,7 +40,7 @@ export function MobileNav({
       </button>
 
       {open && (
-        <div className="absolute inset-x-0 top-full border-b border-border bg-background shadow-elevated">
+        <div className="absolute inset-x-0 top-full border-b border-border bg-surface shadow-elevated">
           <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3 sm:px-6">
             {items.map((item) => (
               <Link

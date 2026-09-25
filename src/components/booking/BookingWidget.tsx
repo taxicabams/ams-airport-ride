@@ -209,7 +209,7 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
   return (
     <div
       id="boeken"
-      className="mx-auto w-full max-w-md rounded-2xl border border-brand/10 bg-background p-5 shadow-elevated sm:p-6"
+      className="mx-auto w-full max-w-md rounded-2xl border border-brand/10 bg-surface p-5 shadow-elevated sm:p-6"
     >
       {step !== "confirmed" && (
         <>

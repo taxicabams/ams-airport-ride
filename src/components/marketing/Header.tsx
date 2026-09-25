@@ -7,21 +7,21 @@ import { Logo } from "@/components/ui/Logo";
 export async function Header() {
   const t = await getTranslations("Nav");
 
-  // Taxi Schiphol / Taxi Amsterdam / Prijzen all point into the
-  // homepage's own sections (no separate pages to keep in sync — the
-  // calculator, price examples and route grid already live there)
+  // Design-system brief v2 trims the header to exactly these four items
+  // (Prices/Contact move to the footer only) — Schiphol Taxi / Amsterdam
+  // Taxi both point into the homepage's own sections (no separate pages
+  // to keep in sync — the calculator and route grid already live there)
   // rather than duplicating that content on new routes. Shared between
   // the desktop nav below and MobileNav so the two can never drift.
   const navItems = [
     { href: "/", label: t("taxiSchiphol") },
     { href: "/#amsterdam-taxi", label: t("taxiAmsterdam") },
-    { href: "/#prijzen", label: t("prices") },
+    { href: "/#how-it-works", label: t("howItWorks") },
     { href: "/veelgestelde-vragen", label: t("faq") },
-    { href: "/contact", label: t("contact") },
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link href="/" className="shrink-0">
           <Logo />

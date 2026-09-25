@@ -72,6 +72,13 @@ export const LuggageIcon = ({ className = "shrink-0" }: { className?: string }) 
   </svg>
 );
 
+/** Simple checkmark — used for short trust-point lists (Hero, etc.). */
+export const CheckIcon = ({ className = "shrink-0" }: { className?: string }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={className}>
+    <path d="m5 12 5 5 9-10" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 /** Mobile nav toggle icons — Header.tsx swaps between the two. */
 export const MenuIcon = ({ className = "shrink-0" }: { className?: string }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>

@@ -29,7 +29,7 @@ export function Stepper({
       <span className="text-sm font-medium text-foreground" id={`${id}-label`}>
         {label}
       </span>
-      <div className="flex items-center justify-between rounded-lg border border-border bg-background px-2 py-1.5">
+      <div className="flex items-center justify-between rounded-lg border border-border bg-surface px-2 py-1.5">
         <button
           type="button"
           aria-label={decreaseLabel}

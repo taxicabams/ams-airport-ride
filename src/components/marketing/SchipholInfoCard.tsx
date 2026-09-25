@@ -1,17 +1,17 @@
+import Image from "next/image";
 import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { getSchipholMeetingPointText } from "@/lib/schipholMeetingPoint";
-import { ClockIcon } from "@/components/ui/icons";
+import { schipholArrivalPhoto } from "@/lib/schipholArrivalPhoto";
 
 /**
- * The client's requirement: Schiphol pickup instructions must be
- * prominent on the homepage, not buried only in the FAQ (see the plan —
- * this is exactly the gap Taxi Falcon had). The numbered steps give a
- * quick, scannable overview; the fuller prose underneath (unchanged,
- * from the one shared config also used on the confirmation screen and
- * in the booking email) keeps the details a skim misses — the free wifi
- * network name, and what to do if the driver isn't immediately visible.
+ * Restructured into the brief's two-column layout (real, license-verified
+ * Schiphol photo left — see schipholArrivalPhoto.ts — copy + numbered
+ * steps right). The fuller meeting-point prose (unchanged, shared with
+ * the confirmation screen and booking email) stays beneath the steps.
  * Neither version invents a specific hall/door — see
- * lib/schipholMeetingPoint.ts's `verified: false` note on why.
+ * lib/schipholMeetingPoint.ts's `verified: false` note on why. The
+ * flight-delay reassurance now lives in its own FlightDelay section.
  */
 export async function SchipholInfoCard() {
   const t = await getTranslations("Schiphol");
@@ -20,38 +20,45 @@ export async function SchipholInfoCard() {
   const steps = [ts("step1"), ts("step2"), ts("step3"), ts("step4"), ts("step5")];
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-      <div className="rounded-2xl border border-brand/20 bg-brand/5 p-6 sm:p-8">
-        <h2 className="text-xl font-bold text-brand">{t("title")}</h2>
+    <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+      <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border shadow-elevated">
+          <Image
+            src={schipholArrivalPhoto.url}
+            alt={schipholArrivalPhoto.alt[locale]}
+            fill
+            loading="lazy"
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="object-cover"
+          />
+        </div>
 
-        <ol className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {steps.map((step, i) => (
-            <li key={step} className="flex items-start gap-3 sm:flex-col sm:items-start sm:gap-2">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-bold text-brand-foreground">
-                {i + 1}
-              </span>
-              <p className="pt-0.5 text-sm font-medium text-foreground sm:pt-0">{step}</p>
-            </li>
-          ))}
-        </ol>
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wide text-brand">{t("eyebrow")}</p>
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground">{t("title")}</h2>
+          <p className="mt-3 text-muted">{t("intro")}</p>
 
-        <p className="mt-6 max-w-3xl border-t border-brand/10 pt-5 text-sm text-foreground/80">
-          {getSchipholMeetingPointText(locale)}
-        </p>
+          <ol className="mt-6 grid gap-4 sm:grid-cols-2">
+            {steps.map((step, i) => (
+              <li key={step} className="flex items-start gap-3">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-bold text-brand-foreground">
+                  {i + 1}
+                </span>
+                <p className="pt-0.5 text-sm font-medium text-foreground">{step}</p>
+              </li>
+            ))}
+          </ol>
 
-        {/* A small, distinct card for the flight-delay reassurance (the
-            brief's own "Flight delayed? No problem." callout) rather than
-            a plain trailing paragraph — copy stays the honest, already-
-            corrected wording ("we'll take it into account", not "we
-            monitor automatically"). */}
-        <div className="mt-5 flex max-w-3xl items-start gap-3 rounded-xl border border-border bg-background p-4 shadow-card">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
-            <ClockIcon className="h-5 w-5" />
-          </span>
-          <div>
-            <p className="font-semibold text-foreground">{t("delayTitle")}</p>
-            <p className="mt-0.5 text-sm text-muted">{t("note")}</p>
-          </div>
+          <Link
+            href="/veelgestelde-vragen"
+            className="mt-5 inline-block text-sm font-semibold text-brand hover:underline"
+          >
+            {t("moreLink")}
+          </Link>
+
+          <p className="mt-5 max-w-xl border-t border-border pt-5 text-sm text-foreground/80">
+            {getSchipholMeetingPointText(locale)}
+          </p>
         </div>
       </div>
     </section>

@@ -69,7 +69,7 @@ export function PickerField({
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           className={[
-            "w-full appearance-none rounded-lg border border-border bg-background px-3.5 py-2.5 text-base shadow-sm outline-none transition",
+            "w-full appearance-none rounded-lg border border-border bg-surface px-3.5 py-2.5 text-base shadow-sm outline-none transition",
             "[color-scheme:light] dark:[color-scheme:dark]",
             "[&::-webkit-calendar-picker-indicator]:opacity-0",
             "focus:border-brand focus:ring-2 focus:ring-brand/20",

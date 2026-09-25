@@ -28,17 +28,31 @@ export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
 
 /**
  * Full lockup — mark + a two-line wordmark ("AMS" bold, "Airport Ride"
- * small caps beneath, per the brief's own suggested structure). Used in
- * the header and footer; both already theme-aware via the brand/muted
- * CSS custom properties, so no separate dark-mode variant is needed.
+ * small caps beneath, per the brief's own suggested structure). The mark
+ * itself is background-agnostic (its own navy badge), but the wordmark
+ * text uses `--brand`/`--muted`, which are tuned for light backgrounds —
+ * `variant="dark"` (the footer, on --ink) swaps those for white/70%-white
+ * so the type stays legible there.
  */
-export function Logo({ className = "" }: { className?: string }) {
+export function Logo({
+  className = "",
+  variant = "light",
+}: {
+  className?: string;
+  variant?: "light" | "dark";
+}) {
   return (
     <span className={`flex items-center gap-2.5 ${className}`}>
       <LogoMark className="h-9 w-9 shrink-0" />
       <span className="flex flex-col leading-none">
-        <span className="text-lg font-bold tracking-tight text-brand">AMS</span>
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted">
+        <span
+          className={`text-lg font-bold tracking-tight ${variant === "dark" ? "text-white" : "text-brand"}`}
+        >
+          AMS
+        </span>
+        <span
+          className={`text-[11px] font-semibold uppercase tracking-wider ${variant === "dark" ? "text-white/60" : "text-muted"}`}
+        >
           Airport Ride
         </span>
       </span>

@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { PriceTagIcon, ClockIcon, ShieldCheckIcon, PaymentIcon } from "@/components/ui/icons";
+import { PriceTagIcon, ClockIcon, DoorIcon, PaymentIcon } from "@/components/ui/icons";
 
 /**
  * Real information only (see companyInfo.ts / the plan): every claim
@@ -18,7 +18,7 @@ export async function TrustBadges() {
   const items = [
     { title: t("fixedPriceTitle"), body: t("fixedPriceBody"), icon: <PriceTagIcon className="h-5 w-5" /> },
     { title: t("availableTitle"), body: t("availableBody"), icon: <ClockIcon className="h-5 w-5" /> },
-    { title: t("experiencedTitle"), body: t("experiencedBody"), icon: <ShieldCheckIcon className="h-5 w-5" /> },
+    { title: t("doorToDoorTitle"), body: t("doorToDoorBody"), icon: <DoorIcon className="h-5 w-5" /> },
     { title: t("paymentTitle"), body: t("paymentBody"), icon: <PaymentIcon className="h-5 w-5" /> },
   ];
 
@@ -28,7 +28,7 @@ export async function TrustBadges() {
         {items.map((item) => (
           <div
             key={item.title}
-            className="rounded-xl border border-border bg-background p-5 shadow-card transition hover:shadow-card-hover"
+            className="rounded-xl border border-border bg-surface p-5 shadow-card transition hover:shadow-card-hover"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand/10 text-brand">
               {item.icon}

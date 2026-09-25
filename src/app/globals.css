@@ -1,49 +1,40 @@
 @import "tailwindcss";
 
 /*
- * Design tokens — one small, semantic palette instead of one-off colors
- * scattered through components. Navy is the brand color (trust,
- * professionalism); amber is the one accent, used sparingly for the
- * primary CTA and the price so it stays meaningful instead of
- * decorative. Dark mode redefines the same token names rather than
- * being handled ad hoc per component.
+ * Design tokens — the client's exact, prescribed palette (design-system
+ * brief v2), a fixed light brand identity rather than a light/dark theme
+ * pair: "primary dark" (--ink) is a deliberate design choice for a
+ * handful of full-bleed sections (footer, flight-delay, final CTA), not
+ * a system-dark-mode swap, so this file intentionally has no
+ * prefers-color-scheme block anymore. --brand and --accent share the
+ * same blue (the brief specifies one primary color for links/CTAs/
+ * selected-states, no separate accent hue).
  */
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --foreground: #111827;
   --muted: #64748b;
-  --muted-background: #f8fafc;
+  --muted-background: #eaf4fb;
   --border: #e2e8f0;
 
-  --brand: #0b3d59;
+  --brand: #1261a0;
   --brand-foreground: #ffffff;
-  --brand-dark: #072a3f;
+  --brand-dark: #0d4a7a;
+  --brand-light: #eaf4fb;
 
-  --accent: #d97706;
+  --accent: #1261a0;
   --accent-foreground: #ffffff;
+
+  --ink: #0b1220;
+  --ink-foreground: #ffffff;
 
   --success: #15803d;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0b1220;
-    --foreground: #f1f5f9;
-    --muted: #94a3b8;
-    --muted-background: #131c2e;
-    --border: #1e293b;
-
-    --brand: #2f81a3;
-    --brand-foreground: #ffffff;
-    --brand-dark: #1c5470;
-
-    --accent: #f0a941;
-    --accent-foreground: #1a1206;
-  }
-}
-
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-muted-background: var(--muted-background);
@@ -51,8 +42,11 @@
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-dark: var(--brand-dark);
+  --color-brand-light: var(--brand-light);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
   --color-success: var(--success);
   --font-sans: var(--font-inter);
 }
@@ -73,14 +67,6 @@ body {
   --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
   --shadow-card-hover: 0 4px 10px rgba(15, 23, 42, 0.06), 0 2px 4px rgba(15, 23, 42, 0.05);
   --shadow-elevated: 0 10px 30px rgba(15, 23, 42, 0.08), 0 4px 8px rgba(15, 23, 42, 0.05);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.25);
-    --shadow-card-hover: 0 4px 10px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
-    --shadow-elevated: 0 10px 30px rgba(0, 0, 0, 0.35), 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
 }
 
 @theme inline {

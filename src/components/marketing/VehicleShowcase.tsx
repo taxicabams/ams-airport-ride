@@ -1,67 +1,64 @@
-import Image from "next/image";
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { CarIcon } from "@/components/ui/icons";
 import { AmsterdamSkyline } from "./AmsterdamSkyline";
-import { vehiclePhoto } from "@/lib/vehiclePhoto";
 import { PERSONENAUTO_MAX_PASSENGERS, BUS_MAX_PASSENGERS } from "@/lib/pricing/vehicle";
 
 /**
- * Combines the requested "real vehicle visual" with the vehicle-types
- * summary in one section. The visual slot renders `vehiclePhoto.url`
- * the moment the client supplies a real photo — until then, an
- * original graphic (car icon + the same Amsterdam skyline motif used
- * elsewhere, never a stock photo or an AI-generated image) fills the
- * space so it reads as a deliberate design choice, not a broken image.
- *
- * Capacity numbers are imported from the pricing engine's own vehicle
- * config, never hand-typed here — they can only ever match what the
- * booking flow actually allows.
+ * Two large, equal cards per the brief (Sedan / Taxi Van) instead of one
+ * shared photo + a small capacity grid. No real vehicle photo exists yet
+ * (see the project's standing null-until-real convention) so each card's
+ * visual stays the original car-icon + skyline graphic — never a stock
+ * photo or an AI-generated image. Capacity numbers are imported from the
+ * pricing engine's own vehicle config, never hand-typed, so this text can
+ * never claim a capacity the booking flow doesn't actually allow.
  */
 export async function VehicleShowcase() {
   const t = await getTranslations("Vehicles");
-  const locale = (await getLocale()) as "nl" | "en";
+
+  const vehicles = [
+    {
+      title: t("sedanTitle"),
+      capacity: t("sedanCapacity", { max: PERSONENAUTO_MAX_PASSENGERS }),
+      body: t("sedanBody"),
+      cta: t("sedanCta"),
+    },
+    {
+      title: t("busTitle"),
+      capacity: t("busCapacity", { max: BUS_MAX_PASSENGERS }),
+      body: t("busBody"),
+      cta: t("busCta"),
+    },
+  ];
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-      <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
-        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-brand/10 to-muted-background shadow-card">
-          {vehiclePhoto.url ? (
-            <Image
-              src={vehiclePhoto.url}
-              alt={vehiclePhoto.alt[locale]}
-              fill
-              className="object-cover"
-            />
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-3">
+    <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+      <p className="text-sm font-semibold uppercase tracking-wide text-brand">{t("eyebrow")}</p>
+      <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground">{t("title")}</h2>
+
+      <div className="mt-8 grid gap-6 sm:grid-cols-2">
+        {vehicles.map((vehicle) => (
+          <div
+            key={vehicle.title}
+            className="overflow-hidden rounded-2xl border border-border bg-surface shadow-card"
+          >
+            <div className="relative flex aspect-[16/10] items-center justify-center overflow-hidden bg-gradient-to-b from-brand-light to-surface">
               <CarIcon className="h-16 w-16 text-brand" />
               <AmsterdamSkyline className="pointer-events-none absolute inset-x-0 bottom-0 h-10 w-full text-brand/10" />
             </div>
-          )}
-        </div>
-
-        <div>
-          <h2 className="text-2xl font-bold text-foreground">{t("title")}</h2>
-          <div className="mt-5 grid grid-cols-2 gap-4">
-            <div className="rounded-xl border border-border p-4 shadow-card">
-              <CarIcon className="h-8 w-8 text-brand" />
-              <p className="mt-3 font-semibold text-foreground">{t("sedanTitle")}</p>
-              {/* {max} is interpolated from the pricing engine's own
-                  constant, not hand-typed — this text can never claim a
-                  capacity the booking flow doesn't actually allow. */}
-              <p className="mt-1 text-sm text-muted">
-                {t("sedanCapacity", { max: PERSONENAUTO_MAX_PASSENGERS })}
-              </p>
-            </div>
-            <div className="rounded-xl border border-border p-4 shadow-card">
-              <CarIcon className="h-8 w-8 text-brand" />
-              <p className="mt-3 font-semibold text-foreground">{t("busTitle")}</p>
-              <p className="mt-1 text-sm text-muted">
-                {t("busCapacity", { max: BUS_MAX_PASSENGERS })}
-              </p>
+            <div className="p-6">
+              <p className="text-lg font-bold text-foreground">{vehicle.title}</p>
+              <p className="text-sm font-semibold text-brand">{vehicle.capacity}</p>
+              <p className="mt-2 text-sm text-muted">{vehicle.body}</p>
+              <Link
+                href="/#boeken"
+                className="mt-4 inline-block text-sm font-semibold text-brand hover:underline"
+              >
+                {vehicle.cta}
+              </Link>
             </div>
           </div>
-        </div>
+        ))}
       </div>
     </section>
   );
