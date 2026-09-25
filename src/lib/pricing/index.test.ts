@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { calculateQuote } from "./index";
 import { BUS_SURCHARGE_EUR } from "./vehicle";
 import { PRICES_APPROVED_BY_CLIENT } from "./staticRoutes";
-import { MINIMUM_PRICE_EUR, PRIVATE_RIDE_RATE_PER_KM_EUR } from "./fallback";
+import { MINIMUM_PRICE_EUR, PRIVATE_RIDE_MID_TRIP_SURCHARGE_EUR, PRIVATE_RIDE_RATE_PER_KM_EUR } from "./fallback";
 
 // These fixed prices are the client's own starting price list — see the
 // big comment in staticRoutes.ts. Asserting exact numbers here means a
@@ -131,7 +131,7 @@ describe("calculateQuote — private rides (not touching Schiphol)", () => {
     expect(quote.basePrice).toBeGreaterThan(0);
   });
 
-  it("prices a Personenauto private ride at exactly distanceKm x €2.50, per the client's rate", () => {
+  it("long trip (>25km): prices a Personenauto private ride at exactly distanceKm x €2.50, no extras", () => {
     const quote = calculateQuote({
       pickup: "Utrecht",
       destination: "Rotterdam",
@@ -143,7 +143,7 @@ describe("calculateQuote — private rides (not touching Schiphol)", () => {
     expect(quote.totalPrice).toBe(100);
   });
 
-  it("adds the Bus surcharge on top of the private-ride per-km price, same as everywhere else", () => {
+  it("adds the Bus surcharge on top of the long-trip per-km price, same as everywhere else", () => {
     const quote = calculateQuote({
       pickup: "Utrecht",
       destination: "Rotterdam",
@@ -155,14 +155,48 @@ describe("calculateQuote — private rides (not touching Schiphol)", () => {
     expect(quote.totalPrice).toBe(100 + BUS_SURCHARGE_EUR); // 115
   });
 
-  it("floors a very short private ride at the minimum price, not a tiny per-km amount", () => {
+  it("short trip (<5km): flat €25, not a tiny per-km amount", () => {
     const quote = calculateQuote({
       pickup: "Utrecht",
       destination: "Rotterdam",
       vehicleType: "PERSONENAUTO",
-      routeOverride: { distanceKm: 2, durationMin: 8 }, // 2 x €2.50 = €5, below the floor
+      routeOverride: { distanceKm: 2, durationMin: 8 }, // 2 x €2.50 = €5, well under the flat rate
     });
     expect(quote.basePrice).toBe(MINIMUM_PRICE_EUR);
+  });
+
+  it("mid trip (5-25km): distanceKm x €2.50 plus the flat €15 extra", () => {
+    const quote = calculateQuote({
+      pickup: "Utrecht",
+      destination: "Rotterdam",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 15, durationMin: 20 },
+    });
+    // 15 x €2.50 = €37.50 + €15 = €52.50 -> rounds to €53
+    expect(quote.basePrice).toBe(
+      Math.round(15 * PRIVATE_RIDE_RATE_PER_KM_EUR + PRIVATE_RIDE_MID_TRIP_SURCHARGE_EUR)
+    );
+    expect(quote.basePrice).toBe(53);
+  });
+
+  it("tier boundaries: exactly 5km is mid-tier (not flat), exactly 25km is still mid-tier (not long)", () => {
+    const at5km = calculateQuote({
+      pickup: "Utrecht",
+      destination: "Rotterdam",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 5, durationMin: 10 },
+    });
+    // 5 x €2.50 + €15 = €27.50 -> €28, not the flat €25
+    expect(at5km.basePrice).toBe(28);
+
+    const at25km = calculateQuote({
+      pickup: "Utrecht",
+      destination: "Rotterdam",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 25, durationMin: 30 },
+    });
+    // 25 x €2.50 + €15 = €77.50 -> €78, still mid-tier (the +€15 applies through 25km inclusive)
+    expect(at25km.basePrice).toBe(78);
   });
 });
 

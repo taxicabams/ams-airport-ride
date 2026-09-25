@@ -18,14 +18,25 @@ export const AIRPORT_SURCHARGE_EUR = 6;
 export const MINIMUM_PRICE_EUR = 25;
 
 /**
- * Client's explicit rate for any ride that doesn't touch Schiphol at
- * all: a plain per-km price for the Personenauto, no base fee — the Bus
- * surcharge (vehicle.ts's BUS_SURCHARGE_EUR) still applies on top, same
- * as everywhere else. Schiphol rides never use this — they keep the
- * curated fixed prices (staticRoutes.ts) or, if genuinely unmatched, the
- * existing airport fallback formula above, both unchanged.
+ * Client's explicit three-tier rate for any ride that doesn't touch
+ * Schiphol at all — the focus stays on Schiphol's fixed prices and on
+ * making long private rides simple, so short/medium trips carry a bit
+ * of overhead (parking, local traffic, less efficient than a highway
+ * run) that long trips don't need:
+ *   - under 5 km: a flat €25, no per-km calculation at all.
+ *   - 5-25 km: distance × €2.50, plus a flat €15 on top.
+ *   - over 25 km: distance × €2.50, nothing extra — the client's own
+ *     "long rides" rate, deliberately the cheapest per-km tier.
+ * The Bus surcharge (vehicle.ts's BUS_SURCHARGE_EUR) still applies on
+ * top of whichever tier applies, same as everywhere else. Schiphol
+ * rides never use any of this — they keep the curated fixed prices
+ * (staticRoutes.ts) or, if genuinely unmatched, the existing airport
+ * fallback formula above, both unchanged.
  */
 export const PRIVATE_RIDE_RATE_PER_KM_EUR = 2.5;
+export const PRIVATE_RIDE_SHORT_TRIP_MAX_KM = 5;
+export const PRIVATE_RIDE_MID_TRIP_MAX_KM = 25;
+export const PRIVATE_RIDE_MID_TRIP_SURCHARGE_EUR = 15;
 
 /** Straight-line distance, inflated a bit to approximate real road routes. */
 const ROAD_DISTANCE_FACTOR = 1.3;
@@ -78,17 +89,21 @@ export function estimateDistanceDuration(
  * static-priced or not) rather than recomputing it here.
  *
  * Two entirely separate formulas, picked by ride type: a private ride
- * (not touching Schiphol) is a flat €/km rate per the client's own
- * instruction, with the same minimum floor as before so a very short
- * hop doesn't undercut a realistic minimum fare. An airport transfer
- * only ever reaches this function when it *isn't* one of the curated
- * fixed routes (staticRoutes.ts) — that fallback formula is untouched,
- * exactly as it was before this ride-type split existed.
+ * (not touching Schiphol) uses the three-tier €/km rate above. An
+ * airport transfer only ever reaches this function when it *isn't* one
+ * of the curated fixed routes (staticRoutes.ts) — that fallback formula
+ * is untouched, exactly as it was before this ride-type split existed.
  */
 export function estimateFallback(distanceKm: number, rideType: RideType): number {
   if (rideType === "PRIVATE_RIDE") {
-    const raw = distanceKm * PRIVATE_RIDE_RATE_PER_KM_EUR;
-    return Math.max(MINIMUM_PRICE_EUR, Math.round(raw));
+    if (distanceKm < PRIVATE_RIDE_SHORT_TRIP_MAX_KM) {
+      return MINIMUM_PRICE_EUR;
+    }
+    const perKm = distanceKm * PRIVATE_RIDE_RATE_PER_KM_EUR;
+    if (distanceKm <= PRIVATE_RIDE_MID_TRIP_MAX_KM) {
+      return Math.round(perKm + PRIVATE_RIDE_MID_TRIP_SURCHARGE_EUR);
+    }
+    return Math.round(perKm);
   }
 
   const raw = BASE_FEE_EUR + distanceKm * RATE_PER_KM_EUR + AIRPORT_SURCHARGE_EUR;
