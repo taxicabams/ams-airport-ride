@@ -1,13 +1,15 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { Quote } from "@/lib/pricing";
+import type { Quote, VehicleType } from "@/lib/pricing";
+import { PERSONENAUTO_MAX_PASSENGERS, BUS_MAX_PASSENGERS } from "@/lib/pricing";
 
 export function QuoteStep({
   quote,
   returnQuote,
   pickup,
   destination,
+  vehicleType,
   loading,
   error,
   onRetry,
@@ -18,6 +20,7 @@ export function QuoteStep({
   returnQuote: Quote | null;
   pickup: string;
   destination: string;
+  vehicleType: VehicleType;
   loading: boolean;
   error?: string | null;
   onRetry: () => void;
@@ -64,35 +67,52 @@ export function QuoteStep({
 
   const grandTotal = quote.totalPrice + (returnQuote?.totalPrice ?? 0);
 
+  // Never claim a calculated private ride is a flat Schiphol-style fare:
+  // the basis line tells the truth per `quote.source` — "fixed" only for
+  // a curated Schiphol route (staticRoutes.ts), "estimate" for the
+  // distance+time formula every other ride uses (fallback.ts). A return
+  // trip reuses the same pickup/destination pair in reverse, so it always
+  // shares the outbound leg's source — one honest line still covers both.
+  const priceBasis = quote.source === "fixed" ? t("priceBasisFixed") : t("priceBasisEstimate");
+  const vehicleSummary =
+    vehicleType === "BUS"
+      ? t("vehicleSummaryBus", { max: BUS_MAX_PASSENGERS })
+      : t("vehicleSummarySedan", { max: PERSONENAUTO_MAX_PASSENGERS });
+
   return (
     <div className="flex flex-col gap-4">
-      {/* One confident total, never a "vanaf"/range, and never broken
-          down into base price + vehicle surcharge — the customer sees
-          only the final number(s), at every step of the flow (see the
-          matching choice in DetailsStep's vehicle picker). */}
-      {returnQuote ? (
-        <div className="rounded-xl border border-brand/20 bg-brand/5 p-5">
-          <TripPriceRow label={t("outboundTripLabel")} route={`${pickup} → ${destination}`} price={quote.totalPrice} />
-          <div className="my-3 border-t border-brand/10" />
-          <TripPriceRow
-            label={t("returnTripSummaryLabel")}
-            route={`${destination} → ${pickup}`}
-            price={returnQuote.totalPrice}
-          />
-          <div className="my-3 border-t border-brand/20" />
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-foreground">{t("totalLabel")}</p>
-            <p className="text-3xl font-bold tracking-tight text-brand">€{grandTotal}</p>
+      {/* The price-reveal screen: this is deliberately the single largest,
+          most dominant element in the whole booking flow — one confident
+          number, never a "vanaf"/range, and never broken down into base
+          price + vehicle surcharge (see the matching choice in
+          DetailsStep's smaller per-card preview). */}
+      <div className="rounded-2xl border border-brand/20 bg-brand/5 p-6 text-center sm:p-8">
+        <p className="text-sm font-semibold uppercase tracking-wide text-muted">
+          {t("priceHeading")}
+        </p>
+        <p className="mt-2 text-6xl font-bold tracking-tight text-brand sm:text-7xl">
+          €{grandTotal}
+        </p>
+        <p className="mt-3 truncate text-base font-medium text-foreground/90">
+          {pickup} → {destination}
+        </p>
+        <p className="mt-1 text-sm text-muted">{vehicleSummary}</p>
+        <p className="mt-3 text-sm font-semibold text-brand">{priceBasis}</p>
+
+        {returnQuote && (
+          <div className="mt-5 border-t border-brand/10 pt-4 text-left">
+            <TripPriceRow label={t("outboundTripLabel")} route={`${pickup} → ${destination}`} price={quote.totalPrice} />
+            <div className="my-3 border-t border-brand/10" />
+            <TripPriceRow
+              label={t("returnTripSummaryLabel")}
+              route={`${destination} → ${pickup}`}
+              price={returnQuote.totalPrice}
+            />
           </div>
-          <p className="mt-2 text-center text-xs font-medium text-muted">{t("noHiddenCosts")}</p>
-        </div>
-      ) : (
-        <div className="rounded-xl border border-brand/20 bg-brand/5 p-5 text-center">
-          <p className="text-sm font-medium text-muted">{t("priceLabel")}</p>
-          <p className="mt-1 text-4xl font-bold tracking-tight text-brand">€{quote.totalPrice}</p>
-          <p className="mt-2 text-xs font-medium text-muted">{t("noHiddenCosts")}</p>
-        </div>
-      )}
+        )}
+
+        <p className="mt-4 text-xs font-medium text-muted">{t("noHiddenCosts")}</p>
+      </div>
 
       <p className="text-center text-sm text-muted">{t("paymentNote")}</p>
 

@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 import { calculateQuote } from "./index";
 import { BUS_SURCHARGE_EUR } from "./vehicle";
 import { PRICES_APPROVED_BY_CLIENT } from "./staticRoutes";
-import { MINIMUM_PRICE_EUR, PRIVATE_RIDE_MID_TRIP_SURCHARGE_EUR, PRIVATE_RIDE_RATE_PER_KM_EUR } from "./fallback";
+import {
+  PRIVATE_RIDE_START_FEE_EUR,
+  PRIVATE_RIDE_RATE_PER_KM_EUR,
+  PRIVATE_RIDE_RATE_PER_MIN_EUR,
+} from "./fallback";
 
 // These fixed prices are the client's own starting price list — see the
 // big comment in staticRoutes.ts. Asserting exact numbers here means a
@@ -131,72 +135,56 @@ describe("calculateQuote — private rides (not touching Schiphol)", () => {
     expect(quote.basePrice).toBeGreaterThan(0);
   });
 
-  it("long trip (>25km): prices a Personenauto private ride at exactly distanceKm x €2.50, no extras", () => {
+  it("prices a Personenauto private ride at start fee + distanceKm x €2.50 + durationMin x €0.50, rounded to a whole euro", () => {
     const quote = calculateQuote({
       pickup: "Utrecht",
       destination: "Rotterdam",
       vehicleType: "PERSONENAUTO",
       routeOverride: { distanceKm: 40, durationMin: 35 },
     });
+    // 4.31 + 40x2.50 + 35x0.50 = 4.31 + 100 + 17.5 = 121.81 -> rounds to €122
     expect(quote.rideType).toBe("PRIVATE_RIDE");
-    expect(quote.basePrice).toBe(40 * PRIVATE_RIDE_RATE_PER_KM_EUR); // 100
-    expect(quote.totalPrice).toBe(100);
+    expect(quote.basePrice).toBe(
+      Math.round(
+        PRIVATE_RIDE_START_FEE_EUR + 40 * PRIVATE_RIDE_RATE_PER_KM_EUR + 35 * PRIVATE_RIDE_RATE_PER_MIN_EUR
+      )
+    );
+    expect(quote.basePrice).toBe(122);
+    expect(quote.totalPrice).toBe(122);
   });
 
-  it("adds the Bus surcharge on top of the long-trip per-km price, same as everywhere else", () => {
+  it("adds the Bus surcharge on top of the private-ride formula price, same as everywhere else", () => {
     const quote = calculateQuote({
       pickup: "Utrecht",
       destination: "Rotterdam",
       vehicleType: "BUS",
       routeOverride: { distanceKm: 40, durationMin: 35 },
     });
-    expect(quote.basePrice).toBe(100);
+    expect(quote.basePrice).toBe(122);
     expect(quote.vehicleSurcharge).toBe(BUS_SURCHARGE_EUR);
-    expect(quote.totalPrice).toBe(100 + BUS_SURCHARGE_EUR); // 115
+    expect(quote.totalPrice).toBe(122 + BUS_SURCHARGE_EUR); // 137
   });
 
-  it("short trip (<5km): flat €25, not a tiny per-km amount", () => {
+  it("a short private ride still goes through the formula (no separate flat minimum for private rides)", () => {
     const quote = calculateQuote({
       pickup: "Utrecht",
       destination: "Rotterdam",
       vehicleType: "PERSONENAUTO",
-      routeOverride: { distanceKm: 2, durationMin: 8 }, // 2 x €2.50 = €5, well under the flat rate
+      routeOverride: { distanceKm: 2, durationMin: 8 },
     });
-    expect(quote.basePrice).toBe(MINIMUM_PRICE_EUR);
+    // 4.31 + 2x2.50 + 8x0.50 = 4.31 + 5 + 4 = 13.31 -> rounds to €13
+    expect(quote.basePrice).toBe(13);
   });
 
-  it("mid trip (5-25km): distanceKm x €2.50 plus the flat €15 extra", () => {
+  it("a mid-length private ride, worked example: 15km / 20min", () => {
     const quote = calculateQuote({
       pickup: "Utrecht",
       destination: "Rotterdam",
       vehicleType: "PERSONENAUTO",
       routeOverride: { distanceKm: 15, durationMin: 20 },
     });
-    // 15 x €2.50 = €37.50 + €15 = €52.50 -> rounds to €53
-    expect(quote.basePrice).toBe(
-      Math.round(15 * PRIVATE_RIDE_RATE_PER_KM_EUR + PRIVATE_RIDE_MID_TRIP_SURCHARGE_EUR)
-    );
-    expect(quote.basePrice).toBe(53);
-  });
-
-  it("tier boundaries: exactly 5km is mid-tier (not flat), exactly 25km is still mid-tier (not long)", () => {
-    const at5km = calculateQuote({
-      pickup: "Utrecht",
-      destination: "Rotterdam",
-      vehicleType: "PERSONENAUTO",
-      routeOverride: { distanceKm: 5, durationMin: 10 },
-    });
-    // 5 x €2.50 + €15 = €27.50 -> €28, not the flat €25
-    expect(at5km.basePrice).toBe(28);
-
-    const at25km = calculateQuote({
-      pickup: "Utrecht",
-      destination: "Rotterdam",
-      vehicleType: "PERSONENAUTO",
-      routeOverride: { distanceKm: 25, durationMin: 30 },
-    });
-    // 25 x €2.50 + €15 = €77.50 -> €78, still mid-tier (the +€15 applies through 25km inclusive)
-    expect(at25km.basePrice).toBe(78);
+    // 4.31 + 15x2.50 + 20x0.50 = 4.31 + 37.5 + 10 = 51.81 -> rounds to €52
+    expect(quote.basePrice).toBe(52);
   });
 });
 

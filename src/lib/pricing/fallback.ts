@@ -18,25 +18,32 @@ export const AIRPORT_SURCHARGE_EUR = 6;
 export const MINIMUM_PRICE_EUR = 25;
 
 /**
- * Client's explicit three-tier rate for any ride that doesn't touch
- * Schiphol at all — the focus stays on Schiphol's fixed prices and on
- * making long private rides simple, so short/medium trips carry a bit
- * of overhead (parking, local traffic, less efficient than a highway
- * run) that long trips don't need:
- *   - under 5 km: a flat €25, no per-km calculation at all.
- *   - 5-25 km: distance × €2.50, plus a flat €15 on top.
- *   - over 25 km: distance × €2.50, nothing extra — the client's own
- *     "long rides" rate, deliberately the cheapest per-km tier.
- * The Bus surcharge (vehicle.ts's BUS_SURCHARGE_EUR) still applies on
- * top of whichever tier applies, same as everywhere else. Schiphol
- * rides never use any of this — they keep the curated fixed prices
- * (staticRoutes.ts) or, if genuinely unmatched, the existing airport
- * fallback formula above, both unchanged.
+ * Client's current commercial rate for any ride that doesn't touch
+ * Schiphol at all (superseding the previous three-tier distance-only
+ * formula): a start fee plus a per-kilometre rate plus a per-minute
+ * rate, using the same real Google-Routes distance/duration every other
+ * part of the app already relies on. Deliberately called "commercial"
+ * pricing in comments/copy, never "wettelijk"/"legal" or "meter" tariffs
+ * — these are AMS Airport Ride's own chosen rates, not a regulated taxi
+ * meter rate.
+ *
+ * Raw result is rounded to the nearest whole euro (not real cents) —
+ * confirmed with the client: every other price in the system (Schiphol's
+ * curated fixed prices, the €15 Bus surcharge) is already a whole euro,
+ * and the Prisma Booking model's price columns are `Int` by design;
+ * storing real cents would need a live-database schema migration, which
+ * the client explicitly chose to avoid rather than risk on a booking
+ * system already taking real customers.
+ *
+ * The Bus surcharge (vehicle.ts's BUS_SURCHARGE_EUR, €15) still applies
+ * on top, same as everywhere else. Schiphol rides never use any of this
+ * — they keep the curated fixed prices (staticRoutes.ts) or, if
+ * genuinely unmatched, the existing airport fallback formula above, both
+ * unchanged.
  */
+export const PRIVATE_RIDE_START_FEE_EUR = 4.31;
 export const PRIVATE_RIDE_RATE_PER_KM_EUR = 2.5;
-export const PRIVATE_RIDE_SHORT_TRIP_MAX_KM = 5;
-export const PRIVATE_RIDE_MID_TRIP_MAX_KM = 25;
-export const PRIVATE_RIDE_MID_TRIP_SURCHARGE_EUR = 15;
+export const PRIVATE_RIDE_RATE_PER_MIN_EUR = 0.5;
 
 /** Straight-line distance, inflated a bit to approximate real road routes. */
 const ROAD_DISTANCE_FACTOR = 1.3;
@@ -87,23 +94,27 @@ export function estimateDistanceDuration(
  * @param distanceKm Pass the already-computed value from
  * `estimateDistanceDuration` (calculateQuote does this for every route,
  * static-priced or not) rather than recomputing it here.
+ * @param durationMin Same — the already-computed travel time, needed
+ * only by the private-ride formula below.
  *
  * Two entirely separate formulas, picked by ride type: a private ride
- * (not touching Schiphol) uses the three-tier €/km rate above. An
- * airport transfer only ever reaches this function when it *isn't* one
- * of the curated fixed routes (staticRoutes.ts) — that fallback formula
- * is untouched, exactly as it was before this ride-type split existed.
+ * (not touching Schiphol) uses the start-fee + per-km + per-minute rate
+ * above. An airport transfer only ever reaches this function when it
+ * *isn't* one of the curated fixed routes (staticRoutes.ts) — that
+ * fallback formula is untouched, exactly as it was before this ride-type
+ * split existed.
  */
-export function estimateFallback(distanceKm: number, rideType: RideType): number {
+export function estimateFallback(
+  distanceKm: number,
+  rideType: RideType,
+  durationMin: number
+): number {
   if (rideType === "PRIVATE_RIDE") {
-    if (distanceKm < PRIVATE_RIDE_SHORT_TRIP_MAX_KM) {
-      return MINIMUM_PRICE_EUR;
-    }
-    const perKm = distanceKm * PRIVATE_RIDE_RATE_PER_KM_EUR;
-    if (distanceKm <= PRIVATE_RIDE_MID_TRIP_MAX_KM) {
-      return Math.round(perKm + PRIVATE_RIDE_MID_TRIP_SURCHARGE_EUR);
-    }
-    return Math.round(perKm);
+    const raw =
+      PRIVATE_RIDE_START_FEE_EUR +
+      distanceKm * PRIVATE_RIDE_RATE_PER_KM_EUR +
+      durationMin * PRIVATE_RIDE_RATE_PER_MIN_EUR;
+    return Math.round(raw);
   }
 
   const raw = BASE_FEE_EUR + distanceKm * RATE_PER_KM_EUR + AIRPORT_SURCHARGE_EUR;

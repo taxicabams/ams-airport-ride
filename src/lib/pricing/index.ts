@@ -62,7 +62,7 @@ export function calculateQuote(input: QuoteInput): Quote {
     input.routeOverride ?? estimateDistanceDuration(origin, destination);
   const basePrice = staticRoute
     ? staticRoute.basePrice
-    : estimateFallback(distanceKm, rideType);
+    : estimateFallback(distanceKm, rideType, durationMin);
 
   // v1 has no time-of-day/day-of-week surcharges (deliberately, per the
   // client's spec) — the array exists so one can be added later without

@@ -2,15 +2,14 @@ import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Hero } from "@/components/marketing/Hero";
 import { BookingSection } from "@/components/marketing/BookingSection";
+import { PopularRoute } from "@/components/marketing/PopularRoute";
 import { TrustBadges } from "@/components/marketing/TrustBadges";
-import { WhySection } from "@/components/marketing/WhySection";
 import { RouteGrid } from "@/components/marketing/RouteGrid";
 import { SchipholInfoCard } from "@/components/marketing/SchipholInfoCard";
 import { FlightDelay } from "@/components/marketing/FlightDelay";
 import { HowItWorks } from "@/components/marketing/HowItWorks";
 import { VehicleShowcase } from "@/components/marketing/VehicleShowcase";
 import { AmsterdamTaxi } from "@/components/marketing/AmsterdamTaxi";
-import { PaymentTrust } from "@/components/marketing/PaymentTrust";
 import { FaqTeaser } from "@/components/marketing/FaqTeaser";
 import { FinalCta } from "@/components/marketing/FinalCta";
 import { buildAlternates } from "@/lib/seo";
@@ -55,14 +54,23 @@ export default async function HomePage({
     areaServed: ["Amsterdam", "Schiphol", "Nederland"],
   };
 
-  // Order follows the design-system brief v2's exact visual hierarchy:
-  // airport -> book -> trust -> why us -> routes -> arrival -> flight
-  // delay -> how it works -> vehicles -> Amsterdam (secondary) -> payment
-  // -> FAQ -> final CTA. The standalone "PopularRoute" single-route
-  // callout from the previous pass is retired — its one real price now
-  // lives in Hero's own floating card, and the full RouteGrid a few
-  // sections down covers the rest, so keeping both would just repeat the
-  // same Amsterdam<->Schiphol number a third time.
+  // v4 information-architecture pass — one flow, each fact stated once.
+  // Hero -> booking calculator (the interactive heart of the page) ->
+  // the single most-booked route as a concrete price example -> one
+  // compact trust strip -> Amsterdam-local rides (secondary use case) ->
+  // how it works -> vehicles -> Schiphol arrival info + flight delay ->
+  // the full route grid -> FAQ -> one final CTA.
+  //
+  // Two sections from the previous pass are deliberately retired here,
+  // not just reordered: `WhySection` and `PaymentTrust` restated claims
+  // ("fixed price, no surprises", "pay after your ride by card or cash",
+  // "a receipt is available") that already live in Hero's subtitle/trust
+  // points, in `TrustBadges`' compact strip, and — in more detail — as
+  // real FAQ answers ("Wanneer betaal ik?", "Krijg ik een bon?", "Hoe
+  // werkt de vaste prijs?"). Keeping them as whole extra sections was
+  // exactly the repeated-messaging problem the client asked to fix; no
+  // information is lost, since every real fact they contained is still
+  // said once, in the place it's most useful.
   return (
     <>
       <script
@@ -71,15 +79,14 @@ export default async function HomePage({
       />
       <Hero />
       <BookingSection />
+      <PopularRoute />
       <TrustBadges />
-      <WhySection />
-      <RouteGrid />
-      <SchipholInfoCard />
-      <FlightDelay />
+      <AmsterdamTaxi />
       <HowItWorks />
       <VehicleShowcase />
-      <AmsterdamTaxi />
-      <PaymentTrust />
+      <SchipholInfoCard />
+      <FlightDelay />
+      <RouteGrid />
       <FaqTeaser />
       <FinalCta />
     </>

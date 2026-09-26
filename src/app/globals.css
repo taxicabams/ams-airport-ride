@@ -1,14 +1,24 @@
 @import "tailwindcss";
 
 /*
- * Design tokens — brand system v3: a small palette refinement over v2
- * (same token names, new exact hex values from the client's latest
- * brief), still a fixed light brand identity rather than a light/dark
- * theme pair. --ink ("deep airport navy") is used for headings inside
- * the light theme AND as the background for a handful of deliberately
- * dark full-bleed sections (footer, flight-delay, final CTA) — not a
- * system-dark-mode swap, so no prefers-color-scheme block. --brand
- * ("airport blue") and --accent share one hue, per the brief.
+ * Design tokens — brand system v4: the light palette below is unchanged
+ * from v3, but this pass reintroduces a real, deliberately-designed dark
+ * theme (v3 had removed it in favour of "one fixed brand identity" — the
+ * current brief explicitly reverses that). --ink ("deep airport navy")
+ * is used for headings inside the light theme AND as the background for
+ * a handful of deliberately dark full-bleed sections (footer,
+ * flight-delay, final CTA) even in light mode; in dark mode it becomes
+ * an even deeper near-black navy so those sections still read as a
+ * distinct, deliberate accent rather than blending into the now-dark
+ * page background. --brand ("airport blue") and --accent share one hue,
+ * in both themes, per the brief.
+ *
+ * Every Tailwind utility used across the app (bg-surface, text-muted,
+ * border-border, bg-brand, ...) is generated from these variables via
+ * the @theme inline block below, so the dark block that follows re-
+ * themes the entire site without touching a single component's
+ * className — system-preference only (`prefers-color-scheme`), since no
+ * theme-switcher UI was requested.
  */
 :root {
   --background: #f5f7fa;
@@ -30,6 +40,57 @@
   --ink-foreground: #ffffff;
 
   --success: #15803d;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Deep desaturated navy, not pure black — the same hue family as
+       the light theme's --ink, so the two themes still feel like one
+       brand rather than an inverted palette. */
+    --background: #0b1220;
+    /* One deliberate step lighter than the page background, for cards/
+       the booking widget/vehicle options — never identical to
+       --background, or every card would silently disappear. */
+    --surface: #131c2e;
+    /* Off-white, not pure #fff — easier on the eyes on a dark screen
+       and consistent with never using pure black for --background. */
+    --foreground: #e7ecf3;
+    --muted: #8b9bb4;
+    /* A subtle bluish tint one step up from --surface, for hover/open
+       states (e.g. the FAQ accordion) that need to read as "raised"
+       rather than identical to a plain card. */
+    --muted-background: #1a2740;
+    --border: #26334a;
+
+    /* Brightened from the light theme's #1769a8 — the same brand hue,
+       tuned lighter/more saturated so it still pops against a dark
+       navy background instead of reading as muted or "disabled". */
+    --brand: #4da3d9;
+    --brand-foreground: #0b1220;
+    --brand-dark: #6cb6e2;
+    --brand-light: #1a2740;
+
+    --accent: #4da3d9;
+    --accent-foreground: #0b1220;
+
+    /* Even deeper than --background, so the footer/flight-delay/final-
+       CTA sections that use --ink as a deliberate dark accent in light
+       mode keep reading as a distinct, richer band in dark mode too,
+       rather than blending into the page. */
+    --ink: #060a13;
+    --ink-foreground: #e7ecf3;
+
+    --success: #34d399;
+  }
+
+  /* text-red-600 (validation/error text — Field, AddressField,
+     BookingWidget, DetailsStep, QuoteStep) isn't one of the CSS-variable
+     tokens above, but its fixed light-mode red falls below AA contrast
+     on the new dark background — brighten it here rather than touching
+     five component files for one utility class. */
+  .text-red-600 {
+    color: #f87171;
+  }
 }
 
 @theme inline {

@@ -266,6 +266,7 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
           returnQuote={returnQuote}
           pickup={form.pickup}
           destination={form.destination}
+          vehicleType={form.vehicleType}
           loading={quoteLoading}
           error={quoteError}
           onRetry={goToQuote}
