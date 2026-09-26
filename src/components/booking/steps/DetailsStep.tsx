@@ -239,6 +239,12 @@ export function DetailsStep({
             selected={vehicleType === "PERSONENAUTO"}
             disabled={recommended === "BUS" || !priceReady}
             title={t("vehiclePersonenauto")}
+            // Only reveal a price once the customer has actively chosen
+            // this vehicle themselves — never both at once, and never
+            // before a deliberate click (form.vehicleManuallyChosen is
+            // false on first render even though `vehicleType` already
+            // defaults to the auto-recommended one).
+            revealPrice={form.vehicleManuallyChosen && vehicleType === "PERSONENAUTO"}
             price={carPrice}
             onSelect={() => selectVehicle("PERSONENAUTO")}
           />
@@ -247,6 +253,7 @@ export function DetailsStep({
             selected={vehicleType === "BUS"}
             disabled={!priceReady}
             title={t("vehicleBus")}
+            revealPrice={form.vehicleManuallyChosen && vehicleType === "BUS"}
             price={busPrice}
             onSelect={() => selectVehicle("BUS")}
           />
@@ -307,6 +314,7 @@ function VehicleOption({
   disabled,
   title,
   price,
+  revealPrice,
   onSelect,
 }: {
   id: string;
@@ -315,6 +323,13 @@ function VehicleOption({
   title: string;
   /** null while the real price is still loading (or failed) — see carQuoteLoading/carQuoteError above. */
   price: number | null;
+  /**
+   * Only show a price at all once the customer has actively chosen
+   * THIS vehicle — never two prices side by side, and never before a
+   * deliberate click. When false, the button shows just its title, no
+   * price and no loading skeleton (there's nothing to reveal yet).
+   */
+  revealPrice: boolean;
   onSelect: () => void;
 }) {
   return (
@@ -333,11 +348,13 @@ function VehicleOption({
       ].join(" ")}
     >
       <span className="text-sm font-semibold text-foreground">{title}</span>
-      <span className="text-sm font-bold text-brand">
-        {price != null ? `€${price}` : (
-          <span className="inline-block h-3.5 w-8 animate-pulse rounded bg-brand/20" aria-hidden="true" />
-        )}
-      </span>
+      {revealPrice && (
+        <span className="text-sm font-bold text-brand">
+          {price != null ? `€${price}` : (
+            <span className="inline-block h-3.5 w-8 animate-pulse rounded bg-brand/20" aria-hidden="true" />
+          )}
+        </span>
+      )}
     </button>
   );
 }
