@@ -52,9 +52,9 @@ export default async function HomePage({
 
   // v11 — audit pass: reordered per the client's own suggested structure
   // (popular routes before "how it works", not after) — trust row →
-  // price list → how-it-works → Amsterdam/Schiphol banner → vehicles →
-  // FAQ → final CTA. No reviews section — AMS Airport Ride has no real
-  // reviews yet.
+  // how-it-works → price list → Amsterdam/Schiphol banner → vehicles →
+  // FAQ → final CTA, per the client's latest explicit structure. No
+  // reviews section — AMS Airport Ride has no real reviews yet.
   return (
     <>
       <script
@@ -63,8 +63,8 @@ export default async function HomePage({
       />
       <HeroBooking />
       <TrustBar />
-      <RouteList />
       <HowItWorksSimple />
+      <RouteList />
       <TwoColumnBanner />
       <VehiclesSimple />
       <FaqAccordion />

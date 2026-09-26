@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { computeQuoteWithRoute } from "@/lib/computeQuote";
 import { bookingInputSchema } from "@/lib/validation";
 import { sendBookingEmails, isEmailConfigured } from "@/lib/email";
+import { bookingReference } from "@/lib/bookingReference";
 import { routing } from "@/i18n/routing";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 
@@ -119,7 +120,10 @@ export async function POST(request: Request) {
     void sendBookingEmails(booking, locale);
 
     return NextResponse.json({
-      bookingId: booking.id,
+      // The friendly "AMS-DDMMYY-XXXX" reference, not the raw database
+      // id — this is what the customer sees, says over the phone, and
+      // gets emailed. See lib/bookingReference.ts.
+      bookingId: bookingReference(booking),
       quote,
       returnQuote,
       totalPrice,

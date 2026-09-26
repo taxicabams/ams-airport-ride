@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import type { Booking } from "@/generated/prisma/client";
 import { getSchipholMeetingPointText } from "./schipholMeetingPoint";
+import { bookingReference } from "./bookingReference";
 
 // Resend client is created lazily (not at module load) so the app can
 // still boot — and every other page can still render — even before
@@ -192,7 +193,7 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
     <h1 style="margin:0 0 4px;font-size:20px;color:${BRAND_NAVY};">${t.title}</h1>
     <p style="margin:0 0 20px;color:${MUTED};font-size:14px;">${t.intro}</p>
 
-    <p style="margin:0 0 16px;color:${MUTED};font-size:12px;">${t.ref}: <span style="font-family:monospace;color:${TEXT};">${escapeHtml(booking.id)}</span></p>
+    <p style="margin:0 0 16px;color:${MUTED};font-size:14px;">${t.ref}: <span style="font-family:monospace;font-weight:700;color:${BRAND_NAVY};">${escapeHtml(bookingReference(booking))}</span></p>
 
     ${tripCard}
 
@@ -245,7 +246,7 @@ function internalNotificationBody(booking: Booking, locale: "nl" | "en"): string
 
   const body = `
     <h1 style="margin:0 0 16px;font-size:18px;color:${BRAND_NAVY};">Nieuwe boeking — ${booking.rideType === "AIRPORT_TRANSFER" ? "Schiphol" : "Privérit"}</h1>
-    <p style="margin:0 0 16px;color:${MUTED};font-size:12px;">Boekingsnummer: <span style="font-family:monospace;color:${TEXT};">${escapeHtml(booking.id)}</span></p>
+    <p style="margin:0 0 16px;color:${MUTED};font-size:12px;">Boekingsnummer: <span style="font-family:monospace;color:${TEXT};">${escapeHtml(bookingReference(booking))}</span></p>
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
       ${rows.join("\n")}
@@ -290,8 +291,8 @@ export async function sendBookingEmails(booking: Booking, locale: "nl" | "en") {
       to: booking.customerEmail,
       subject:
         locale === "nl"
-          ? `Boekingsbevestiging ${booking.id}`
-          : `Booking confirmation ${booking.id}`,
+          ? `Boekingsbevestiging ${bookingReference(booking)}`
+          : `Booking confirmation ${bookingReference(booking)}`,
       html: customerEmailBody(booking, locale),
     });
 
