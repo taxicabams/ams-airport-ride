@@ -16,7 +16,7 @@ export async function HowItWorksSimple() {
   ];
 
   return (
-    <section id="hoe-het-werkt" className="mx-auto max-w-4xl px-4 py-14 sm:px-6">
+    <section id="hoe-het-werkt" className="scroll-mt-24 mx-auto max-w-4xl px-4 py-14 sm:px-6">
       <h2 className="text-center text-2xl font-bold tracking-tight text-foreground">
         {t("eyebrow")}
       </h2>

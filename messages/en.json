@@ -107,6 +107,7 @@
     "pickupPlaceholder": "Enter pickup address",
     "destinationLabel": "Destination",
     "destinationPlaceholder": "Enter destination address",
+    "tabFromSchiphol": "From Schiphol",
     "tabToSchiphol": "To Schiphol",
     "tabOtherRide": "Other ride",
     "schipholDestinationLabel": "Schiphol Airport",
@@ -244,9 +245,9 @@
     "step4Body": "Fill in your details and get your confirmation."
   },
   "Routes": {
-    "eyebrow": "Popular routes",
-    "title": "Schiphol to your destination",
-    "subtitle": "Book a direct transfer from Schiphol Airport to your home, hotel or destination.",
+    "eyebrow": "Popular Schiphol routes",
+    "title": "Fixed price, both directions",
+    "subtitle": "The same fixed price applies to and from Schiphol.",
     "viewAll": "View all routes",
     "fixedPrice": "From {price}",
     "bookRoute": "Book route →"

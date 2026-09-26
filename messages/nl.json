@@ -107,6 +107,7 @@
     "pickupPlaceholder": "Vul vertrekadres in",
     "destinationLabel": "Bestemming",
     "destinationPlaceholder": "Vul bestemmingsadres in",
+    "tabFromSchiphol": "Vanaf Schiphol",
     "tabToSchiphol": "Naar Schiphol",
     "tabOtherRide": "Andere rit",
     "schipholDestinationLabel": "Schiphol Airport",
@@ -244,9 +245,9 @@
     "step4Body": "Vul uw gegevens in en ontvang uw bevestiging."
   },
   "Routes": {
-    "eyebrow": "Populaire routes",
-    "title": "Van Schiphol naar uw bestemming",
-    "subtitle": "Boek een directe rit van Schiphol naar uw huis, hotel of bestemming.",
+    "eyebrow": "Populaire Schiphol routes",
+    "title": "Vaste prijs, beide richtingen",
+    "subtitle": "Dezelfde vaste prijs geldt zowel van als naar Schiphol.",
     "viewAll": "Bekijk alle routes",
     "fixedPrice": "Vanaf {price}",
     "bookRoute": "Boek deze route →"

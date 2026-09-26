@@ -50,13 +50,11 @@ export default async function HomePage({
     areaServed: ["Amsterdam", "Schiphol", "Nederland"],
   };
 
-  // v10 — full visual rebuild per the client's photo-hero mockup: a
-  // real background-photo hero with the booking card overlapping its
-  // bottom edge, then trust row → how-it-works (kept: the header/footer
-  // nav still link to #hoe-het-werkt) → price list → one combined
-  // Amsterdam/Schiphol photo-banner section (replaces two separate
-  // plain-text sections) → vehicles → FAQ → final CTA. No reviews
-  // section — AMS Airport Ride has no real reviews yet.
+  // v11 — audit pass: reordered per the client's own suggested structure
+  // (popular routes before "how it works", not after) — trust row →
+  // price list → how-it-works → Amsterdam/Schiphol banner → vehicles →
+  // FAQ → final CTA. No reviews section — AMS Airport Ride has no real
+  // reviews yet.
   return (
     <>
       <script
@@ -65,8 +63,8 @@ export default async function HomePage({
       />
       <HeroBooking />
       <TrustBar />
-      <HowItWorksSimple />
       <RouteList />
+      <HowItWorksSimple />
       <TwoColumnBanner />
       <VehiclesSimple />
       <FaqAccordion />

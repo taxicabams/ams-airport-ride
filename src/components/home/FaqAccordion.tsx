@@ -13,7 +13,7 @@ export async function FaqAccordion() {
   const items = GENERAL_FAQ[locale];
 
   return (
-    <section id="faq" className="bg-muted-background/50 py-14">
+    <section id="faq" className="scroll-mt-24 bg-muted-background/50 py-14">
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
         <div className="text-center">
           <p className="text-sm font-semibold uppercase tracking-wide text-brand-text">{t("eyebrow")}</p>

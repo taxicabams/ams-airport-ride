@@ -16,7 +16,7 @@ export async function RouteList() {
   const fromSchiphol = ROUTE_PAGES.filter((r) => r.direction === "from-schiphol");
 
   return (
-    <section id="populaire-routes" className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+    <section id="populaire-routes" className="scroll-mt-24 mx-auto max-w-3xl px-4 py-14 sm:px-6">
       <div className="text-center">
         <p className="text-sm font-semibold uppercase tracking-wide text-brand-text">{t("eyebrow")}</p>
         <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground">{t("title")}</h2>
