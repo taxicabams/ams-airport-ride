@@ -153,6 +153,7 @@ export function RouteStep({
           onClick={() => selectRideMode("schiphol")}
           className={[
             "flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-3 text-sm font-semibold transition",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40",
             rideMode === "schiphol"
               ? "bg-ink text-white shadow-sm"
               : "text-muted hover:text-foreground",
@@ -168,6 +169,7 @@ export function RouteStep({
           onClick={() => selectRideMode("other")}
           className={[
             "flex min-h-11 items-center justify-center rounded-lg px-3 text-sm font-semibold transition",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40",
             rideMode === "other"
               ? "bg-ink text-white shadow-sm"
               : "text-muted hover:text-foreground",
