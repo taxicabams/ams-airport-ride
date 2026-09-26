@@ -240,6 +240,12 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
           form={form}
           onChange={patch}
           onNext={() => {
+            // Two distinct events, same moment: `route_searched` is the
+            // funnel-stage name the conversion blueprint tracks end-to-end
+            // (Ads click -> route -> quote -> vehicle -> booking);
+            // `calculator_started` is kept for backward compatibility with
+            // anything already keyed on that name.
+            track("route_searched", { pickup: form.pickup, destination: form.destination });
             track("calculator_started");
             setStep("details");
             loadCarQuotePreview();

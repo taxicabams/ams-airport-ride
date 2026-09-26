@@ -1,21 +1,26 @@
 import Image from "next/image";
 import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { ClockIcon } from "@/components/ui/icons";
 import { getSchipholMeetingPointText } from "@/lib/schipholMeetingPoint";
 import { schipholArrivalPhoto } from "@/lib/schipholArrivalPhoto";
 
 /**
- * Restructured into the brief's two-column layout (real, license-verified
- * Schiphol photo left — see schipholArrivalPhoto.ts — copy + numbered
- * steps right). The fuller meeting-point prose (unchanged, shared with
- * the confirmation screen and booking email) stays beneath the steps.
- * Neither version invents a specific hall/door — see
- * lib/schipholMeetingPoint.ts's `verified: false` note on why. The
- * flight-delay reassurance now lives in its own FlightDelay section.
+ * Two-column layout (real, license-verified Schiphol photo left — see
+ * schipholArrivalPhoto.ts — copy + numbered steps right). The fuller
+ * meeting-point prose (unchanged, shared with the confirmation screen
+ * and booking email) stays beneath the steps, and the flight-delay
+ * reassurance — previously its own full-width section — now folds in
+ * as one compact line here: same honest copy ("we take it into
+ * account," never an automated-tracking claim that isn't true), one
+ * less full-width section stacked on the homepage. Neither version
+ * invents a specific hall/door — see lib/schipholMeetingPoint.ts's
+ * `verified: false` note on why.
  */
 export async function SchipholInfoCard() {
   const t = await getTranslations("Schiphol");
   const ts = await getTranslations("SchipholSteps");
+  const tf = await getTranslations("FlightDelay");
   const locale = (await getLocale()) as "nl" | "en";
   const steps = [ts("step1"), ts("step2"), ts("step3"), ts("step4"), ts("step5")];
 
@@ -58,6 +63,14 @@ export async function SchipholInfoCard() {
 
           <p className="mt-5 max-w-xl border-t border-border pt-5 text-sm text-foreground/80">
             {getSchipholMeetingPointText(locale)}
+          </p>
+
+          <p className="mt-4 flex items-start gap-2 text-sm text-muted">
+            <ClockIcon className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+            <span>
+              <span className="font-semibold text-foreground">{tf("title")} {tf("highlight")}</span>{" "}
+              {tf("note")}
+            </span>
           </p>
         </div>
       </div>
