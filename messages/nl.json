@@ -116,8 +116,10 @@
     "decreaseLuggage": "Aantal koffers verlagen",
     "increaseLuggage": "Aantal koffers verhogen",
     "vehicleLabel": "Voertuig",
-    "vehiclePersonenauto": "Personenauto",
-    "vehicleBus": "Bus / 7-persoons",
+    "vehiclePersonenauto": "Sedan",
+    "vehicleBus": "Taxi Van",
+    "vehiclePersonenautoCapacity": "1–{max} passagiers",
+    "vehicleBusCapacity": "5–{max} passagiers",
     "vehicleAutoSwitchNote": "Voor dit aantal passagiers en koffers is een bus nodig — we hebben deze alvast voor u geselecteerd.",
     "flightNumberLabel": "Vluchtnummer (optioneel)",
     "flightNumberPlaceholder": "Bijv. KL1234",
@@ -194,10 +196,10 @@
     "cta": "Bereken uw luchthavenvervoer →"
   },
   "Trust": {
-    "fixedPriceTitle": "Vaste prijs vooraf",
-    "fixedPriceBody": "Geen verrassingen achteraf. De prijs die u ziet, is de prijs die u betaalt.",
-    "availableTitle": "24/7 bereikbaar",
-    "availableBody": "Vroege vlucht of late aankomst — we zijn er altijd voor u.",
+    "fixedPriceTitle": "Duidelijke prijs",
+    "fixedPriceBody": "Bij Schiphol weet u vooraf wat u betaalt. Bij andere ritten ziet u de prijs op basis van afstand en reistijd, nog voor u boekt.",
+    "easyBookingTitle": "Eenvoudig boeken",
+    "easyBookingBody": "Route invullen, uw prijs bekijken en direct boeken.",
     "doorToDoorTitle": "Deur-tot-deur",
     "doorToDoorBody": "Opgehaald en afgezet op het adres van uw keuze.",
     "paymentTitle": "Betalen na de rit",
@@ -206,14 +208,14 @@
   "HowItWorks": {
     "eyebrow": "Hoe het werkt",
     "title": "Uw rit in vier eenvoudige stappen",
-    "step1Title": "Adres invullen",
+    "step1Title": "Route invullen",
     "step1Body": "Vul uw ophaaladres en bestemming in.",
-    "step2Title": "Vaste prijs zien",
-    "step2Body": "Direct een duidelijke totaalprijs, geen verrassingen.",
-    "step3Title": "Boeken",
-    "step3Body": "Vul uw gegevens in en bevestig uw rit.",
-    "step4Title": "Instappen",
-    "step4Body": "Uw chauffeur staat klaar. Betaal pas na de rit."
+    "step2Title": "Prijs bekijken",
+    "step2Body": "Schiphol: vaste prijs vooraf. Andere ritten: prijs op basis van afstand en reistijd.",
+    "step3Title": "Voertuig kiezen",
+    "step3Body": "Sedan of Taxi Van, wat bij uw rit past.",
+    "step4Title": "Boeken",
+    "step4Body": "Vul uw gegevens in en ontvang uw bevestiging."
   },
   "Routes": {
     "eyebrow": "Populaire routes",
@@ -248,7 +250,7 @@
     "title": "Uw Schiphol-rit is maar een paar klikken verwijderd.",
     "body": "Zie uw vaste prijs voordat u boekt.",
     "cta": "Bereken uw ritprijs →",
-    "note": "Geen online betaling vereist."
+    "note": "Vaste Schiphol-prijs vooraf · PIN of contant · Bon beschikbaar"
   },
   "StickyCta": {
     "label": "Uw Schiphol taxi",

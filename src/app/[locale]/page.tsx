@@ -54,20 +54,23 @@ export default async function HomePage({
     areaServed: ["Amsterdam", "Schiphol", "Nederland"],
   };
 
-  // v4 information-architecture pass — one flow, each fact stated once.
-  // Hero -> booking calculator (the interactive heart of the page) ->
-  // the single most-booked route as a concrete price example -> one
-  // compact trust strip -> Amsterdam-local rides (secondary use case) ->
-  // how it works -> vehicles -> Schiphol arrival info + flight delay ->
-  // the full route grid -> FAQ -> one final CTA.
+  // v7 — commercial flow benchmarked against schipholride.nl's proven
+  // structure (analysed live, never copied): Hero -> booking (the
+  // product) -> a concrete popular-route price example -> one compact
+  // trust strip -> vehicles -> how it works -> Schiphol arrival +
+  // Amsterdam-local rides (secondary use case) -> FAQ -> the full route
+  // grid -> one final CTA. No reviews section — AMS Airport Ride has no
+  // real reviews yet, and a benchmarked competitor's trust section
+  // (star rating, license badge, free-cancellation policy) doesn't
+  // carry over since none of it is true here.
   //
-  // Two sections from the previous pass are deliberately retired here,
-  // not just reordered: `WhySection` and `PaymentTrust` restated claims
+  // Two sections from an earlier pass are deliberately retired, not
+  // just reordered: `WhySection` and `PaymentTrust` restated claims
   // ("fixed price, no surprises", "pay after your ride by card or cash",
   // "a receipt is available") that already live in Hero's subtitle/trust
   // points, in `TrustBadges`' compact strip, and — in more detail — as
   // real FAQ answers ("Wanneer betaal ik?", "Krijg ik een bon?", "Hoe
-  // werkt de vaste prijs?"). Keeping them as whole extra sections was
+  // wordt mijn prijs bepaald?"). Keeping them as whole extra sections was
   // exactly the repeated-messaging problem the client asked to fix; no
   // information is lost, since every real fact they contained is still
   // said once, in the place it's most useful.
@@ -81,13 +84,13 @@ export default async function HomePage({
       <BookingSection />
       <PopularRoute />
       <TrustBadges />
-      <AmsterdamTaxi />
-      <HowItWorks />
       <VehicleShowcase />
+      <HowItWorks />
       <SchipholInfoCard />
+      <AmsterdamTaxi />
       <FlightDelay />
-      <RouteGrid />
       <FaqTeaser />
+      <RouteGrid />
       <FinalCta />
     </>
   );

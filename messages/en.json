@@ -117,7 +117,9 @@
     "increaseLuggage": "Increase number of bags",
     "vehicleLabel": "Vehicle",
     "vehiclePersonenauto": "Sedan",
-    "vehicleBus": "Van / 7-seater",
+    "vehicleBus": "Taxi Van",
+    "vehiclePersonenautoCapacity": "1–{max} passengers",
+    "vehicleBusCapacity": "5–{max} passengers",
     "vehicleAutoSwitchNote": "For this number of passengers and bags you need a van — we've already selected it for you.",
     "flightNumberLabel": "Flight number (optional)",
     "flightNumberPlaceholder": "E.g. KL1234",
@@ -194,10 +196,10 @@
     "cta": "Calculate your airport transfer →"
   },
   "Trust": {
-    "fixedPriceTitle": "Fixed price upfront",
-    "fixedPriceBody": "No surprises afterwards. The price you see is the price you pay.",
-    "availableTitle": "Available 24/7",
-    "availableBody": "Early flight or a late arrival — we're always there for you.",
+    "fixedPriceTitle": "Clear price",
+    "fixedPriceBody": "For Schiphol rides you know the price upfront. For other rides you see the price based on distance and travel time, before you book.",
+    "easyBookingTitle": "Easy booking",
+    "easyBookingBody": "Enter your route, see your price and book right away.",
     "doorToDoorTitle": "Door-to-door",
     "doorToDoorBody": "Pickup and drop-off at your chosen address.",
     "paymentTitle": "Pay after your ride",
@@ -206,14 +208,14 @@
   "HowItWorks": {
     "eyebrow": "How it works",
     "title": "Your ride in four simple steps",
-    "step1Title": "Enter your address",
+    "step1Title": "Enter your route",
     "step1Body": "Fill in your pickup address and destination.",
-    "step2Title": "See the fixed price",
-    "step2Body": "A clear total price right away, no surprises.",
-    "step3Title": "Book",
-    "step3Body": "Fill in your details and confirm your ride.",
-    "step4Title": "Hop in",
-    "step4Body": "Your driver is ready. Pay only after your ride."
+    "step2Title": "See your price",
+    "step2Body": "Schiphol: fixed price upfront. Other rides: price based on distance and travel time.",
+    "step3Title": "Choose your vehicle",
+    "step3Body": "Sedan or Taxi Van, whichever fits your ride.",
+    "step4Title": "Book",
+    "step4Body": "Fill in your details and get your confirmation."
   },
   "Routes": {
     "eyebrow": "Popular routes",
@@ -248,7 +250,7 @@
     "title": "Your Schiphol ride is just a few clicks away.",
     "body": "See your fixed price before you book.",
     "cta": "Calculate your fare →",
-    "note": "No online payment required."
+    "note": "Fixed Schiphol price upfront · Card or cash · Receipt available"
   },
   "StickyCta": {
     "label": "Your Schiphol taxi",

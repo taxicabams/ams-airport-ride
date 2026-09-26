@@ -9,9 +9,9 @@ import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { CalendarIcon, ClockIcon } from "@/components/ui/icons";
 import { detectRideType } from "@/lib/rideType";
 import {
-  BUS_SURCHARGE_EUR,
   BUS_MAX_PASSENGERS,
   BUS_MAX_LUGGAGE,
+  PERSONENAUTO_MAX_PASSENGERS,
   recommendedVehicle,
   type Quote,
 } from "@/lib/pricing";
@@ -83,8 +83,11 @@ export function DetailsStep({
   // surcharge — no separate fetch. The customer only ever sees the two
   // final amounts (e.g. "€50" / "€65") — never the underlying "+€15"
   // math or any technical seat-count text.
+  // The real per-vehicle prices aren't shown on this step anymore (the
+  // client's explicit ask: no price at all until QuoteStep reveals the
+  // one final number) — `carPrice` still gates `priceReady`/`canContinue`
+  // so the flow can't proceed on a failed/pending quote fetch.
   const carPrice = carQuote?.basePrice ?? null;
-  const busPrice = carPrice != null ? carPrice + BUS_SURCHARGE_EUR : null;
   const priceReady = carPrice != null && !carQuoteLoading;
 
   // See lib/formatDate.ts for the crash-safety note (invalid mid-edit
@@ -239,13 +242,7 @@ export function DetailsStep({
             selected={vehicleType === "PERSONENAUTO"}
             disabled={recommended === "BUS" || !priceReady}
             title={t("vehiclePersonenauto")}
-            // Only reveal a price once the customer has actively chosen
-            // this vehicle themselves — never both at once, and never
-            // before a deliberate click (form.vehicleManuallyChosen is
-            // false on first render even though `vehicleType` already
-            // defaults to the auto-recommended one).
-            revealPrice={form.vehicleManuallyChosen && vehicleType === "PERSONENAUTO"}
-            price={carPrice}
+            capacity={t("vehiclePersonenautoCapacity", { max: PERSONENAUTO_MAX_PASSENGERS })}
             onSelect={() => selectVehicle("PERSONENAUTO")}
           />
           <VehicleOption
@@ -253,8 +250,7 @@ export function DetailsStep({
             selected={vehicleType === "BUS"}
             disabled={!priceReady}
             title={t("vehicleBus")}
-            revealPrice={form.vehicleManuallyChosen && vehicleType === "BUS"}
-            price={busPrice}
+            capacity={t("vehicleBusCapacity", { max: BUS_MAX_PASSENGERS })}
             onSelect={() => selectVehicle("BUS")}
           />
         </div>
@@ -313,25 +309,21 @@ function VehicleOption({
   selected,
   disabled,
   title,
-  price,
-  revealPrice,
+  capacity,
   onSelect,
 }: {
   id: string;
   selected: boolean;
   disabled?: boolean;
   title: string;
-  /** null while the real price is still loading (or failed) — see carQuoteLoading/carQuoteError above. */
-  price: number | null;
-  /**
-   * Only show a price at all once the customer has actively chosen
-   * THIS vehicle — never two prices side by side, and never before a
-   * deliberate click. When false, the button shows just its title, no
-   * price and no loading skeleton (there's nothing to reveal yet).
-   */
-  revealPrice: boolean;
+  capacity: string;
   onSelect: () => void;
 }) {
+  // No price here, ever — deliberately, per the client's exact spec:
+  // the customer picks a vehicle by name/capacity only, and sees the
+  // one real price a moment later on QuoteStep's big price-reveal
+  // screen. Never two prices side by side, and never a price at all at
+  // this step.
   return (
     <button
       type="button"
@@ -340,7 +332,7 @@ function VehicleOption({
       aria-pressed={selected}
       onClick={onSelect}
       className={[
-        "flex items-center justify-between gap-2 rounded-lg border px-3.5 py-3 text-left transition",
+        "flex flex-col gap-0.5 rounded-lg border px-3.5 py-3 text-left transition",
         selected
           ? "border-brand bg-brand/5 ring-1 ring-brand"
           : "border-border hover:border-brand/50",
@@ -348,13 +340,7 @@ function VehicleOption({
       ].join(" ")}
     >
       <span className="text-sm font-semibold text-foreground">{title}</span>
-      {revealPrice && (
-        <span className="text-sm font-bold text-brand">
-          {price != null ? `€${price}` : (
-            <span className="inline-block h-3.5 w-8 animate-pulse rounded bg-brand/20" aria-hidden="true" />
-          )}
-        </span>
-      )}
+      <span className="text-xs text-muted">{capacity}</span>
     </button>
   );
 }

@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { PriceTagIcon, ClockIcon, DoorIcon, PaymentIcon } from "@/components/ui/icons";
+import { PriceTagIcon, CalendarIcon, DoorIcon, PaymentIcon } from "@/components/ui/icons";
 
 /**
  * Real information only (see companyInfo.ts / the plan): every claim
@@ -17,7 +17,7 @@ export async function TrustBadges() {
 
   const items = [
     { title: t("fixedPriceTitle"), body: t("fixedPriceBody"), icon: <PriceTagIcon className="h-5 w-5" /> },
-    { title: t("availableTitle"), body: t("availableBody"), icon: <ClockIcon className="h-5 w-5" /> },
+    { title: t("easyBookingTitle"), body: t("easyBookingBody"), icon: <CalendarIcon className="h-5 w-5" /> },
     { title: t("doorToDoorTitle"), body: t("doorToDoorBody"), icon: <DoorIcon className="h-5 w-5" /> },
     { title: t("paymentTitle"), body: t("paymentBody"), icon: <PaymentIcon className="h-5 w-5" /> },
   ];
