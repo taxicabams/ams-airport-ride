@@ -115,6 +115,14 @@ const SCHIPHOL_PRICE_BY_LOCATION: Map<string, number> = new Map(
   SCHIPHOL_PRICES.map((entry) => [entry.locationId, entry.price])
 );
 
+/**
+ * The cheapest real fixed Schiphol price in the curated table above —
+ * used for the homepage hero's "Fixed price from €X" line so that
+ * number can never drift out of sync with the actual price list (no
+ * hand-typed duplicate of a number that already lives here).
+ */
+export const CHEAPEST_SCHIPHOL_PRICE = Math.min(...SCHIPHOL_PRICES.map((entry) => entry.price));
+
 export function findSchipholPrice(locationId: string): number | undefined {
   return SCHIPHOL_PRICE_BY_LOCATION.get(locationId);
 }

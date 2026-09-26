@@ -18,16 +18,13 @@
     "closeMenu": "Close menu"
   },
   "Hero": {
-    "eyebrow": "Schiphol airport transfers",
+    "eyebrow": "Schiphol taxi",
     "title": "Taxi to and from Schiphol",
-    "subtitle": "Fixed price. Door-to-door. No surprises.",
-    "supportingText": "Book your airport transfer in just a few steps and see your price before you travel.",
-    "ctaPrimary": "Calculate your fare →",
-    "noOnlinePayment": "No online payment required",
-    "trustPoint1": "Fixed price",
-    "trustPoint2": "24/7 availability",
-    "trustPoint3": "Door-to-door",
-    "trustPoint4": "Pay after the ride",
+    "heroPrice": "Fixed price from €{price}",
+    "subtitle": "Door-to-door. Clear on what you pay, before you travel.",
+    "supportingText": "Enter your route and see your price right away — before you book.",
+    "ctaPrimary": "Calculate my price →",
+    "compactTrustLine": "Fixed price · Card or cash · Receipt available",
     "floatingCardRoute": "Schiphol → Amsterdam"
   },
   "BookingSection": {
@@ -64,7 +61,7 @@
     "example4": "Amsterdam North → Amsterdam South",
     "example5": "Osdorp → Amsterdam Centre",
     "example6": "or any other address in Amsterdam",
-    "outro": "Enter your pickup and destination to see your fixed price.",
+    "outro": "Enter your pickup and destination to see your price right away — based on distance and travel time.",
     "cta": "Calculate my price →"
   },
   "PaymentTrust": {

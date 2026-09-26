@@ -7,8 +7,8 @@ import {
 export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
   nl: [
     {
-      q: "Hoe werkt de vaste prijs?",
-      a: "U vult uw ophaaladres, bestemming, datum, tijd, passagiers en bagage in. Voordat u iets hoeft te boeken, ziet u al een duidelijke totaalprijs. Die prijs verandert niet meer, ook niet bij drukte onderweg.",
+      q: "Hoe wordt mijn prijs bepaald?",
+      a: "U vult uw ophaaladres, bestemming, datum, tijd, passagiers en bagage in. Voordat u hoeft te boeken, ziet u al een duidelijke totaalprijs. Voor ritten van of naar Schiphol is dit een vaste prijs; voor andere ritten wordt de prijs berekend op basis van de afstand en reistijd. In beide gevallen staat het bedrag vast zodra u boekt en verandert het niet meer, ook niet bij drukte onderweg.",
     },
     {
       q: "Wanneer betaal ik?",
@@ -36,7 +36,7 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     },
     {
       q: "Kan ik een retourrit boeken?",
-      a: "Ja. Zet bij het boeken de optie 'Retour' aan en vul uw retourdatum en -tijd in — u ziet dan direct de vaste prijs voor de heenrit én de retourrit samen.",
+      a: "Ja. Zet bij het boeken de optie 'Retour' aan en vul uw retourdatum en -tijd in — u ziet dan direct de totaalprijs voor de heenrit én de retourrit samen.",
     },
     {
       q: "Kan ik voor iemand anders boeken?",
@@ -49,8 +49,8 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
   ],
   en: [
     {
-      q: "How does the fixed price work?",
-      a: "You enter your pickup address, destination, date, time, passengers and luggage. Before you book anything, you already see a clear total price. That price doesn't change afterwards, not even in heavy traffic.",
+      q: "How is my price determined?",
+      a: "You enter your pickup address, destination, date, time, passengers and luggage. Before you book anything, you already see a clear total price. For rides to or from Schiphol this is a fixed price; for other rides the price is calculated based on distance and travel time. Either way, the amount is locked in once you book and doesn't change afterwards, not even in heavy traffic.",
     },
     {
       q: "When do I pay?",
@@ -78,7 +78,7 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     },
     {
       q: "Can I book a return trip?",
-      a: "Yes. Turn on the 'Return' option when booking and enter your return date and time — you'll immediately see the fixed price for the outbound and return trip together.",
+      a: "Yes. Turn on the 'Return' option when booking and enter your return date and time — you'll immediately see the total price for the outbound and return trip together.",
     },
     {
       q: "Can I book for someone else?",

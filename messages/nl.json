@@ -18,16 +18,13 @@
     "closeMenu": "Menu sluiten"
   },
   "Hero": {
-    "eyebrow": "Schiphol airport transfer",
+    "eyebrow": "Schiphol taxi",
     "title": "Taxi van en naar Schiphol",
-    "subtitle": "Vaste prijs. Deur-tot-deur. Geen verrassingen.",
-    "supportingText": "Boek uw taxi in een paar stappen en zie uw prijs voordat u reist.",
-    "ctaPrimary": "Bereken uw ritprijs →",
-    "noOnlinePayment": "Geen online betaling vereist",
-    "trustPoint1": "Vaste prijs",
-    "trustPoint2": "24/7 beschikbaar",
-    "trustPoint3": "Deur-tot-deur",
-    "trustPoint4": "Betaal na de rit",
+    "heroPrice": "Vaste prijs vanaf €{price}",
+    "subtitle": "Van deur tot deur. Vooraf duidelijk wat je betaalt.",
+    "supportingText": "Vul je route in en zie direct je prijs — nog voor je boekt.",
+    "ctaPrimary": "Bereken mijn prijs →",
+    "compactTrustLine": "Vaste prijs · PIN of contant · Bon beschikbaar",
     "floatingCardRoute": "Schiphol → Amsterdam"
   },
   "BookingSection": {
@@ -64,7 +61,7 @@
     "example4": "Amsterdam Noord → Amsterdam Zuid",
     "example5": "Osdorp → Amsterdam Centrum",
     "example6": "of ieder ander adres in Amsterdam",
-    "outro": "Vul je vertrekadres en bestemming in en bekijk direct je vaste prijs.",
+    "outro": "Vul je vertrekadres en bestemming in en bekijk direct je ritprijs — berekend op basis van afstand en reistijd.",
     "cta": "Bereken mijn prijs →"
   },
   "PaymentTrust": {

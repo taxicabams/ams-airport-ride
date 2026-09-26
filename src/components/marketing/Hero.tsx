@@ -1,26 +1,36 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { CheckIcon } from "@/components/ui/icons";
+import { CHEAPEST_SCHIPHOL_PRICE } from "@/lib/pricing/staticRoutes";
 import { AmsterdamSkyline } from "./AmsterdamSkyline";
 import { HeroRouteMotif } from "./HeroRouteMotif";
 import { FlightPathDivider } from "./FlightPathDivider";
 
 /**
- * Design-system brief v2: two-column hero (text+CTA left, a visual right)
- * instead of the calculator sitting beside the text — the booking widget
- * now lives in its own BookingSection right below, pulled up to overlap
- * this section's bottom edge on desktop (see page.tsx). No real "premium
- * sedan at Schiphol" photo exists yet (see heroVisual.ts's comment on why
- * one wasn't faked), so the right column stays the original route-line/
- * skyline illustration, with a floating "Schiphol → Amsterdam / From €45"
- * card overlaid — the exact same real price PopularRoute shows elsewhere,
- * never a separately hardcoded number.
+ * v5 conversion pass: within a couple of seconds a visitor must see
+ * what (Schiphol taxi), the real "from" price, and one clear CTA — no
+ * competing trust list. The "from €X" price is the real minimum from
+ * the curated Schiphol price table (staticRoutes.ts), never a
+ * hand-typed number, and honestly framed as "from" since Amsterdam-area
+ * prices vary by neighborhood. The one compact trust line below the CTA
+ * replaces the previous 4-badge checkmark list plus a separate "no
+ * online payment" line — the same facts, said once, since TrustBadges
+ * further down the page already covers this in more detail; repeating
+ * it here as a second full list was exactly the duplicate-messaging
+ * problem this pass is meant to fix.
+ *
+ * Two-column layout (text+CTA left, a visual right) unchanged from v2 —
+ * the booking widget lives in its own BookingSection right below,
+ * pulled up to overlap this section's bottom edge on desktop (see
+ * page.tsx). No real "premium sedan at Schiphol" photo exists yet (see
+ * heroVisual.ts's comment on why one wasn't faked), so the right column
+ * stays the original route-line/skyline illustration, with a floating
+ * "Schiphol → Amsterdam / From €45" card overlaid — the exact same real
+ * price PopularRoute shows elsewhere, never a separately hardcoded
+ * number.
  */
 export async function Hero() {
   const t = await getTranslations("Hero");
   const tRoute = await getTranslations("PopularRoute");
-
-  const trustPoints = [t("trustPoint1"), t("trustPoint2"), t("trustPoint3"), t("trustPoint4")];
 
   return (
     <section className="relative overflow-hidden bg-background">
@@ -37,8 +47,15 @@ export async function Hero() {
           <h1 className="mt-3 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             {t("title")}
           </h1>
-          <p className="mt-4 text-xl font-semibold text-foreground/90">{t("subtitle")}</p>
-          <p className="mt-3 max-w-md text-base text-muted">{t("supportingText")}</p>
+          {/* The real, honest "from" price — the single largest text
+              element after the H1, deliberately placed before the
+              softer subtitle so a visitor sees a concrete number within
+              the first couple of seconds. */}
+          <p className="mt-3 text-3xl font-bold tracking-tight text-brand sm:text-4xl">
+            {t("heroPrice", { price: CHEAPEST_SCHIPHOL_PRICE })}
+          </p>
+          <p className="mt-3 text-lg font-medium text-foreground/90">{t("subtitle")}</p>
+          <p className="mt-2 max-w-md text-base text-muted">{t("supportingText")}</p>
 
           <Link
             href="/#boeken"
@@ -46,16 +63,7 @@ export async function Hero() {
           >
             {t("ctaPrimary")}
           </Link>
-          <p className="mt-2.5 text-sm text-muted">{t("noOnlinePayment")}</p>
-
-          <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-foreground/80">
-            {trustPoints.map((point) => (
-              <li key={point} className="flex items-center gap-1.5">
-                <CheckIcon className="h-4 w-4 shrink-0 text-brand" />
-                {point}
-              </li>
-            ))}
-          </ul>
+          <p className="mt-3 text-sm font-medium text-muted">{t("compactTrustLine")}</p>
         </div>
 
         <div className="relative">
