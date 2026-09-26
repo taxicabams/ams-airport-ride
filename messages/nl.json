@@ -121,6 +121,7 @@
     "dateLabel": "Datum",
     "timeLabel": "Tijd",
     "chooseDate": "Kies datum",
+    "dateInPastError": "Kies een datum vanaf vandaag.",
     "chooseTime": "Kies tijd",
     "passengersLabel": "Passagiers",
     "luggageLabel": "Koffers",

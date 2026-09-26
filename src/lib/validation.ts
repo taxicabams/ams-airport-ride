@@ -55,6 +55,29 @@ export function isReturnDateTimeValid(
 }
 
 /**
+ * True when `date` (YYYY-MM-DD) is today or in the future. Plain string
+ * comparison works correctly here — ISO date strings sort lexically the
+ * same as chronologically — and matches the exact "today" convention
+ * DetailsStep's own date picker already uses for its `min` attribute
+ * (`new Date().toISOString().slice(0, 10)`), so the two can never
+ * disagree about what "today" means.
+ *
+ * Found missing during a scenario-testing pass: a native date input's
+ * `min` attribute stops the browser's own calendar picker from
+ * offering a past date, but does NOT stop a typed/pasted/autofilled
+ * value from reaching React state — `formatDateLong` happily formats
+ * *any* parseable date, past or future, so nothing was actually
+ * checking the date was still valid by the time "Bereken vaste prijs"
+ * looked at it. Confirmed live: typing a 2020 date left the button
+ * enabled.
+ */
+export function isDateNotInPast(date: string): boolean {
+  if (!date) return false;
+  const today = new Date().toISOString().slice(0, 10);
+  return date >= today;
+}
+
+/**
  * Shared by POST /api/bookings. We validate the *whole* form here even
  * though the price itself is always recalculated server-side (see the
  * route handler) — never trust a price the client could have tampered
@@ -90,6 +113,10 @@ export const bookingInputSchema = z
     childSeat: z.boolean().default(false),
   })
   .merge(latLngSchema)
+  .refine((data) => isDateNotInPast(data.date), {
+    message: "Date must not be in the past",
+    path: ["date"],
+  })
   .refine(
     (data) =>
       !data.returnTrip ||

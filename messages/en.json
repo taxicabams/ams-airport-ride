@@ -121,6 +121,7 @@
     "dateLabel": "Date",
     "timeLabel": "Time",
     "chooseDate": "Choose date",
+    "dateInPastError": "Please choose a date from today onwards.",
     "chooseTime": "Choose time",
     "passengersLabel": "Passengers",
     "luggageLabel": "Bags",

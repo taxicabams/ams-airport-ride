@@ -17,7 +17,7 @@ import {
 } from "@/lib/pricing";
 import { track } from "@/lib/analytics";
 import { formatDateLong } from "@/lib/formatDate";
-import { isReturnDateTimeValid } from "@/lib/validation";
+import { isReturnDateTimeValid, isDateNotInPast } from "@/lib/validation";
 import type { BookingFormState } from "../types";
 
 export function DetailsStep({
@@ -103,6 +103,16 @@ export function DetailsStep({
   const showReturnError =
     form.returnTrip && form.returnDate.length > 0 && form.returnTime.length > 0 && !returnDateTimeValid;
 
+  // A native date input's `min` attribute only stops the browser's own
+  // calendar picker from *offering* a past date — it does NOT stop a
+  // typed/pasted/autofilled value from reaching form.date, and
+  // formatDateLong happily formats any parseable date, past or future.
+  // Found live: typing a 2020 date left "Bereken vaste prijs" enabled.
+  // isDateNotInPast is the actual guard; the server repeats the same
+  // check (see bookingInputSchema) since a client-side check alone is
+  // never enough.
+  const dateInPast = form.date.length > 0 && !isDateNotInPast(form.date);
+
   // Require an actually-valid date (not just a non-empty string) so an
   // in-progress/garbled native input value can never be used to
   // continue to the price step. A return trip additionally needs its
@@ -113,6 +123,7 @@ export function DetailsStep({
   // prevent.
   const canContinue =
     dateDisplay.length > 0 &&
+    !dateInPast &&
     form.time.length > 0 &&
     (!form.returnTrip || (returnDateDisplay.length > 0 && form.returnTime.length > 0 && returnDateTimeValid)) &&
     priceReady;
@@ -152,6 +163,11 @@ export function DetailsStep({
             icon={<ClockIcon />}
           />
         </div>
+        {dateInPast && (
+          <p role="alert" className="mt-2 text-xs font-medium text-danger">
+            {t("dateInPastError")}
+          </p>
+        )}
 
         <div className="mt-4">
           <SegmentedControl
