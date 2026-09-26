@@ -20,6 +20,17 @@ export type ResolvedPlace = {
   formattedAddress: string;
   lat: number;
   lng: number;
+  /**
+   * True only for a bare street/route with no house number resolved
+   * (Google Places type "route" and no "street_number" address
+   * component) — e.g. picking "Damrak" itself rather than "Damrak 1".
+   * Always false for named places that legitimately have no house
+   * number (airports, stations, hotels/establishments) — those resolve
+   * to their own place type, not "route", so they're never flagged.
+   * Consumers use this to require a house number only where the address
+   * actually needs one for routing, not to demand one everywhere.
+   */
+  missingHouseNumber: boolean;
 };
 
 export interface PlacesProvider {

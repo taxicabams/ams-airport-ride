@@ -44,7 +44,7 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     },
     {
       q: "Kan ik met meerdere personen en veel bagage reizen?",
-      a: `Zeker. Onze Personenauto biedt plaats aan tot ${PERSONENAUTO_MAX_PASSENGERS} passagiers. Heeft u meer passagiers of bagage nodig, dan selecteren wij automatisch de Bus / 7-persoons, met plaats voor tot ${BUS_MAX_PASSENGERS} passagiers en ${BUS_MAX_LUGGAGE} koffers.`,
+      a: `Zeker. Onze Comfort biedt plaats aan tot ${PERSONENAUTO_MAX_PASSENGERS} passagiers. Heeft u meer passagiers of bagage nodig, dan selecteren wij automatisch de Van, met plaats voor tot ${BUS_MAX_PASSENGERS} passagiers en ${BUS_MAX_LUGGAGE} koffers.`,
     },
   ],
   en: [
@@ -86,7 +86,7 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     },
     {
       q: "Can I travel with several passengers and luggage?",
-      a: `Absolutely. Our Sedan seats up to ${PERSONENAUTO_MAX_PASSENGERS} passengers. If you need more passengers or luggage space, we automatically select the Van / 7-seater, with room for up to ${BUS_MAX_PASSENGERS} passengers and ${BUS_MAX_LUGGAGE} bags.`,
+      a: `Absolutely. Our Comfort seats up to ${PERSONENAUTO_MAX_PASSENGERS} passengers. If you need more passengers or luggage space, we automatically select the Van, with room for up to ${BUS_MAX_PASSENGERS} passengers and ${BUS_MAX_LUGGAGE} bags.`,
     },
   ],
 };

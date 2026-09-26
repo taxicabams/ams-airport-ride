@@ -33,14 +33,21 @@ export function RouteStep({
 
   const pickupResolved = Boolean(form.pickupPlaceId);
   const destinationResolved = Boolean(form.destinationPlaceId);
-  const canContinue = pickupResolved && destinationResolved;
+  const pickupNeedsHouseNumber = pickupResolved && form.pickupMissingHouseNumber === true;
+  const destinationNeedsHouseNumber = destinationResolved && form.destinationMissingHouseNumber === true;
+  const canContinue =
+    pickupResolved && destinationResolved && !pickupNeedsHouseNumber && !destinationNeedsHouseNumber;
 
   function resolvePickup(place: ResolvedPlace | null) {
     onChange({
       pickupPlaceId: place?.placeId,
       pickupLat: place?.lat,
       pickupLng: place?.lng,
+      pickupMissingHouseNumber: place?.missingHouseNumber ?? false,
     });
+    // Surface the house-number message right away — don't make the
+    // customer blur the field first to discover why Next stays disabled.
+    if (place?.missingHouseNumber) setTouched((s) => ({ ...s, pickup: true }));
   }
 
   function resolveDestination(place: ResolvedPlace | null) {
@@ -48,16 +55,26 @@ export function RouteStep({
       destinationPlaceId: place?.placeId,
       destinationLat: place?.lat,
       destinationLng: place?.lng,
+      destinationMissingHouseNumber: place?.missingHouseNumber ?? false,
     });
+    if (place?.missingHouseNumber) setTouched((s) => ({ ...s, destination: true }));
   }
 
   const pickupError =
-    touched.pickup && form.pickup.trim().length > 0 && !pickupResolved
-      ? t("addressSelectRequired")
+    touched.pickup && form.pickup.trim().length > 0
+      ? pickupNeedsHouseNumber
+        ? t("addressHouseNumberRequired")
+        : !pickupResolved
+          ? t("addressSelectRequired")
+          : undefined
       : undefined;
   const destinationError =
-    touched.destination && form.destination.trim().length > 0 && !destinationResolved
-      ? t("addressSelectRequired")
+    touched.destination && form.destination.trim().length > 0
+      ? destinationNeedsHouseNumber
+        ? t("addressHouseNumberRequired")
+        : !destinationResolved
+          ? t("addressSelectRequired")
+          : undefined
       : undefined;
 
   return (

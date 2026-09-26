@@ -14,9 +14,16 @@ export type BookingFormState = {
   pickupPlaceId?: string;
   pickupLat?: number;
   pickupLng?: number;
+  // True when the resolved pickup is a bare street with no house
+  // number (e.g. picking "Damrak" itself, not "Damrak 1") — see
+  // ResolvedPlace.missingHouseNumber. RouteStep blocks Next while this
+  // is true and shows a specific "enter your house number" message,
+  // never a generic invalid-address one.
+  pickupMissingHouseNumber?: boolean;
   destinationPlaceId?: string;
   destinationLat?: number;
   destinationLng?: number;
+  destinationMissingHouseNumber?: boolean;
   date: string;
   time: string;
   passengers: number;

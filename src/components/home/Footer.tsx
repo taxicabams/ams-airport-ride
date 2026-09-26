@@ -31,6 +31,21 @@ export async function Footer() {
         </Link>
         <p className="mx-auto mt-3 max-w-xs text-sm text-white/60">{t("tagline")}</p>
 
+        {(companyInfo.phone || companyInfo.email) && (
+          <p className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-1 text-sm">
+            {companyInfo.phone && (
+              <a href={`tel:${companyInfo.phone}`} className="font-medium text-white hover:text-white/80">
+                {companyInfo.phone}
+              </a>
+            )}
+            {companyInfo.email && (
+              <a href={`mailto:${companyInfo.email}`} className="font-medium text-white hover:text-white/80">
+                {companyInfo.email}
+              </a>
+            )}
+          </p>
+        )}
+
         <nav className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
           {links.map((link) => (
             <Link key={link.label} href={link.href} className="text-white/70 hover:text-white">

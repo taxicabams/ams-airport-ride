@@ -77,11 +77,13 @@ describe("googlePlacesProvider", () => {
     await expect(googlePlacesProvider.autocomplete("Dam", "session-1", "nl")).rejects.toThrow();
   });
 
-  it("resolves place details with the session token and a minimal field mask", async () => {
+  it("resolves place details with the session token and field mask", async () => {
     const fetchMock = mockFetchOnce({
       id: "abc123",
-      formattedAddress: "Dam, 1012 Amsterdam, Nederland",
+      formattedAddress: "Dam 1, 1012 Amsterdam, Nederland",
       location: { latitude: 52.3731, longitude: 4.8926 },
+      types: ["street_address"],
+      addressComponents: [{ types: ["street_number"] }, { types: ["route"] }],
     });
     vi.stubGlobal("fetch", fetchMock);
 
@@ -89,15 +91,50 @@ describe("googlePlacesProvider", () => {
 
     expect(result).toEqual({
       placeId: "abc123",
-      formattedAddress: "Dam, 1012 Amsterdam, Nederland",
+      formattedAddress: "Dam 1, 1012 Amsterdam, Nederland",
       lat: 52.3731,
       lng: 4.8926,
+      missingHouseNumber: false,
     });
 
     const [url, options] = fetchMock.mock.calls[0];
     expect(url).toContain("places/abc123");
     expect(url).toContain("sessionToken=session-1");
-    expect(options.headers["X-Goog-FieldMask"]).toBe("id,formattedAddress,location");
+    expect(options.headers["X-Goog-FieldMask"]).toBe(
+      "id,formattedAddress,location,types,addressComponents"
+    );
+  });
+
+  it("flags missingHouseNumber for a bare street (Google type 'route') with no street_number component", async () => {
+    vi.stubGlobal(
+      "fetch",
+      mockFetchOnce({
+        id: "abc123",
+        formattedAddress: "Damrak, Amsterdam, Nederland",
+        location: { latitude: 52.3765, longitude: 4.8977 },
+        types: ["route"],
+        addressComponents: [{ types: ["route"] }],
+      })
+    );
+
+    const result = await googlePlacesProvider.getDetails("abc123", "session-1");
+    expect(result.missingHouseNumber).toBe(true);
+  });
+
+  it("does not flag a named place (e.g. an airport) even though it has no street_number", async () => {
+    vi.stubGlobal(
+      "fetch",
+      mockFetchOnce({
+        id: "schiphol",
+        formattedAddress: "Schiphol, 1118 Schiphol, Nederland",
+        location: { latitude: 52.3105, longitude: 4.7683 },
+        types: ["airport", "point_of_interest", "establishment"],
+        addressComponents: [],
+      })
+    );
+
+    const result = await googlePlacesProvider.getDetails("schiphol", "session-1");
+    expect(result.missingHouseNumber).toBe(false);
   });
 
   it("throws when the details response is missing coordinates", async () => {

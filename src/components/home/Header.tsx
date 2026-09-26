@@ -3,6 +3,8 @@ import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/marketing/LocaleSwitcher";
 import { MobileNav } from "@/components/marketing/MobileNav";
 import { Logo } from "@/components/ui/Logo";
+import { companyInfo } from "@/lib/companyInfo";
+import { PhoneIcon } from "@/components/ui/icons";
 
 /**
  * v9 rebuild — deliberately minimal: logo, four nav words, locale
@@ -11,6 +13,11 @@ import { Logo } from "@/components/ui/Logo";
  * FAQ) rather than the previous "Schiphol Taxi" / "Amsterdam Taxi" —
  * both still point into the homepage's own sections, no separate pages
  * to keep in sync.
+ *
+ * The phone link below renders only once companyInfo.phone is real
+ * (still `null` today) — wired now so a confirmed number appears,
+ * tap-to-call, on every page the instant it's added, with zero further
+ * code changes. Never a placeholder number.
  */
 export async function Header() {
   const t = await getTranslations("Nav");
@@ -38,6 +45,15 @@ export async function Header() {
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          {companyInfo.phone && (
+            <a
+              href={`tel:${companyInfo.phone}`}
+              className="hidden items-center gap-1.5 text-sm font-medium text-foreground/80 transition hover:text-brand lg:inline-flex"
+            >
+              <PhoneIcon className="h-4 w-4" />
+              {companyInfo.phone}
+            </a>
+          )}
           <LocaleSwitcher />
           <Link
             href="/#boeken"
