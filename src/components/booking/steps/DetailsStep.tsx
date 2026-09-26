@@ -201,7 +201,7 @@ export function DetailsStep({
               />
             </div>
             {showReturnError && (
-              <p role="alert" className="mt-2 text-xs font-medium text-red-600">
+              <p role="alert" className="mt-2 text-xs font-medium text-danger">
                 {t("returnDateTimeInvalid")}
               </p>
             )}
@@ -255,7 +255,7 @@ export function DetailsStep({
           />
         </div>
         {carQuoteError && (
-          <p role="alert" className="flex items-center justify-between gap-3 text-xs font-medium text-red-600">
+          <p role="alert" className="flex items-center justify-between gap-3 text-xs font-medium text-danger">
             {t("quoteError")}
             <button type="button" onClick={onRetryCarQuote} className="underline hover:no-underline">
               {t("retryButton")}

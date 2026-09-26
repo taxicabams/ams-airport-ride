@@ -223,7 +223,7 @@ export function AddressField({
         )}
       </div>
       {error && (
-        <p id={errorId} className="text-xs font-medium text-red-600">
+        <p id={errorId} className="text-xs font-medium text-danger">
           {error}
         </p>
       )}

@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { Hero } from "@/components/marketing/Hero";
-import { BookingSection } from "@/components/marketing/BookingSection";
-import { PopularRoute } from "@/components/marketing/PopularRoute";
-import { TrustBadges } from "@/components/marketing/TrustBadges";
-import { RouteGrid } from "@/components/marketing/RouteGrid";
-import { SchipholInfoCard } from "@/components/marketing/SchipholInfoCard";
-import { HowItWorks } from "@/components/marketing/HowItWorks";
-import { VehicleShowcase } from "@/components/marketing/VehicleShowcase";
-import { AmsterdamTaxi } from "@/components/marketing/AmsterdamTaxi";
-import { FaqTeaser } from "@/components/marketing/FaqTeaser";
-import { FinalCta } from "@/components/marketing/FinalCta";
+import { HeroBooking } from "@/components/home/HeroBooking";
+import { TrustBar } from "@/components/home/TrustBar";
+import { HowItWorksSimple } from "@/components/home/HowItWorksSimple";
+import { RouteList } from "@/components/home/RouteList";
+import { AmsterdamEntry } from "@/components/home/AmsterdamEntry";
+import { VehiclesSimple } from "@/components/home/VehiclesSimple";
+import { SchipholArrival } from "@/components/home/SchipholArrival";
+import { FaqAccordion } from "@/components/home/FaqAccordion";
+import { FinalCta } from "@/components/home/FinalCta";
 import { buildAlternates } from "@/lib/seo";
 import type { AppLocale } from "@/i18n/routing";
 
@@ -53,43 +51,29 @@ export default async function HomePage({
     areaServed: ["Amsterdam", "Schiphol", "Nederland"],
   };
 
-  // v8 — conversion-blueprint build: same benchmarked flow as v7 (Hero ->
-  // booking -> popular route -> trust -> vehicles -> how it works ->
-  // Schiphol arrival -> Amsterdam-local rides -> FAQ -> route grid ->
-  // final CTA), with one further consolidation per explicit client
-  // feedback that the page still read as a long stack of separate
-  // "cards": `FlightDelay` no longer exists as its own full-width
-  // section — its one honest sentence ("we take a delay into account")
-  // now lives as a single compact line inside `SchipholInfoCard`, since
-  // both sections were already about the same moment (arriving at
-  // Schiphol). No information lost, one fewer section boundary on the
-  // page. No reviews section — AMS Airport Ride has no real reviews yet,
-  // and a benchmarked competitor's trust section (star rating, license
-  // badge, free-cancellation policy) doesn't carry over since none of it
-  // is true here.
-  //
-  // Two sections from an earlier pass were already retired for the same
-  // reason: `WhySection` and `PaymentTrust` restated claims ("fixed
-  // price, no surprises", "pay after your ride by card or cash", "a
-  // receipt is available") that already live in Hero's subtitle/trust
-  // points, in `TrustBadges`' compact strip, and — in more detail — as
-  // real FAQ answers.
+  // v9 — full frontend rebuild. The booking widget is no longer "a
+  // widget somewhere on a marketing page" — it IS the hero, the first
+  // thing on the page. Everything after it exists only because it adds
+  // real value: one honest trust line, one compact 4-step confirmation
+  // (kept because the header/footer nav link to it, not as a duplicate
+  // explainer), a real price list, a genuine second entry point for
+  // non-Schiphol rides, the two real vehicles, Schiphol arrival
+  // practicalities, FAQ, one final CTA. No reviews section — AMS
+  // Airport Ride has no real reviews yet.
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Hero />
-      <BookingSection />
-      <PopularRoute />
-      <TrustBadges />
-      <VehicleShowcase />
-      <HowItWorks />
-      <SchipholInfoCard />
-      <AmsterdamTaxi />
-      <FaqTeaser />
-      <RouteGrid />
+      <HeroBooking />
+      <TrustBar />
+      <HowItWorksSimple />
+      <RouteList />
+      <AmsterdamEntry />
+      <VehiclesSimple />
+      <SchipholArrival />
+      <FaqAccordion />
       <FinalCta />
     </>
   );

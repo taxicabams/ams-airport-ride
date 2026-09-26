@@ -209,13 +209,13 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
   return (
     <div
       id="boeken"
-      className="mx-auto w-full max-w-md rounded-2xl border border-brand/10 bg-surface p-5 shadow-elevated sm:p-6"
+      className="mx-auto w-full max-w-xl rounded-3xl border border-border bg-surface p-6 shadow-elevated sm:p-8"
     >
       {step !== "confirmed" && (
         <>
           <div className="mb-1 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-foreground">{t("heading")}</h2>
-            <span className="text-xs text-muted">
+            <h2 className="text-xl font-bold tracking-tight text-foreground">{t("heading")}</h2>
+            <span className="text-xs font-medium text-muted">
               {t("step", { current: stepIndex + 1, total: STEP_ORDER.length })}
             </span>
           </div>
@@ -224,9 +224,9 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
               micro-copy, kept to a single line so it never competes with
               the address fields for attention. */}
           {step === "route" && (
-            <p className="mb-3 text-xs text-muted">{t("headingSubtitle")}</p>
+            <p className="mb-3 text-sm text-muted">{t("headingSubtitle")}</p>
           )}
-          <div className="mb-5 mt-3 h-1 w-full overflow-hidden rounded-full bg-muted-background">
+          <div className="mb-6 mt-3 h-1 w-full overflow-hidden rounded-full bg-muted-background">
             <div
               className="h-full rounded-full bg-brand transition-all"
               style={{ width: `${((stepIndex + 1) / STEP_ORDER.length) * 100}%` }}
@@ -294,7 +294,7 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
             submitting={submitting}
           />
           {submitError && (
-            <p role="alert" className="mt-3 text-center text-sm text-red-600">{t("submitError")}</p>
+            <p role="alert" className="mt-3 text-center text-sm text-danger">{t("submitError")}</p>
           )}
         </>
       )}

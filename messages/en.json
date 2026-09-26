@@ -7,13 +7,13 @@
     "home": "Home",
     "routes": "Routes",
     "about": "About us",
-    "taxiSchiphol": "Schiphol Taxi",
-    "taxiAmsterdam": "Amsterdam Taxi",
+    "taxiSchiphol": "Schiphol",
+    "taxiAmsterdam": "Amsterdam",
     "howItWorks": "How it works",
     "prices": "Prices",
     "contact": "Contact",
     "faq": "FAQ",
-    "bookNow": "Book now",
+    "bookNow": "Book a taxi",
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
   },
@@ -21,10 +21,10 @@
     "eyebrow": "Schiphol taxi",
     "title": "Taxi to and from Schiphol",
     "heroPrice": "Fixed price from €{price}",
-    "subtitle": "Door-to-door. Clear on what you pay, before you travel.",
+    "subtitle": "Fixed price upfront. Door-to-door.",
     "supportingText": "Enter your route and see your price right away — before you book.",
     "ctaPrimary": "Calculate my price →",
-    "compactTrustLine": "Fixed price · Card or cash · Receipt available",
+    "compactTrustLine": "Fixed price at Schiphol · Card or cash · Receipt available",
     "floatingCardRoute": "Schiphol → Amsterdam"
   },
   "BookingSection": {
@@ -84,11 +84,11 @@
   },
   "SchipholSteps": {
     "title": "Arriving at Schiphol",
-    "step1": "Collect your luggage",
-    "step2": "Clear customs",
-    "step3": "Contact your driver",
-    "step4": "Your driver confirms the meeting point",
-    "step5": "Start your journey"
+    "step1": "Land",
+    "step2": "Collect your luggage",
+    "step3": "Head to the agreed meeting point",
+    "step4": "Meet your driver",
+    "step5": "Continue to your destination"
   },
   "Booking": {
     "heading": "Calculate my fixed price →",
@@ -195,6 +195,12 @@
     "note": "Connecting flight or a chance of delay? Add your flight number when booking and we'll take it into account.",
     "cta": "Calculate your airport transfer →"
   },
+  "TrustBar": {
+    "item1": "Fixed price Schiphol",
+    "item2": "No online payment",
+    "item3": "Card or cash",
+    "item4": "Book 24/7"
+  },
   "Trust": {
     "fixedPriceTitle": "Clear price",
     "fixedPriceBody": "For Schiphol rides you know the price upfront. For other rides you see the price based on distance and travel time, before you book.",
@@ -245,12 +251,10 @@
     "infoTitle": "Information",
     "legalTitle": "Legal"
   },
-  "FinalCta": {
-    "eyebrow": "Ready to go?",
-    "title": "Your Schiphol ride is just a few clicks away.",
-    "body": "See your fixed price before you book.",
-    "cta": "Calculate your fare →",
-    "note": "Fixed Schiphol price upfront · Card or cash · Receipt available"
+  "FinalCtaSimple": {
+    "title": "Ready to go?",
+    "body": "Calculate your ride price and book your taxi online.",
+    "cta": "Calculate my ride price →"
   },
   "StickyCta": {
     "label": "Your Schiphol taxi",

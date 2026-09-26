@@ -1,95 +1,74 @@
 @import "tailwindcss";
 
 /*
- * Design tokens — brand system v4: the light palette below is unchanged
- * from v3, but this pass reintroduces a real, deliberately-designed dark
- * theme (v3 had removed it in favour of "one fixed brand identity" — the
- * current brief explicitly reverses that). --ink ("deep airport navy")
- * is used for headings inside the light theme AND as the background for
- * a handful of deliberately dark full-bleed sections (footer,
- * flight-delay, final CTA) even in light mode; in dark mode it becomes
- * an even deeper near-black navy so those sections still read as a
- * distinct, deliberate accent rather than blending into the now-dark
- * page background. --brand ("airport blue") and --accent share one hue,
- * in both themes, per the brief.
+ * Design tokens — v9, a genuine new design system for the full frontend
+ * rebuild (not a palette tweak on top of v1-v8's token set). New hex
+ * values throughout, a new dark theme built from first principles
+ * (deep charcoal-navy, not an inverted light palette), and a real
+ * --danger token so validation-error color lives here instead of a
+ * hardcoded Tailwind red patched in a media query.
+ *
+ * --ink is the deliberately dark band used for the footer and the final
+ * CTA — distinct from --background in both themes, never identical to
+ * it (or those sections would silently blend into the page).
  *
  * Every Tailwind utility used across the app (bg-surface, text-muted,
  * border-border, bg-brand, ...) is generated from these variables via
- * the @theme inline block below, so the dark block that follows re-
- * themes the entire site without touching a single component's
- * className — system-preference only (`prefers-color-scheme`), since no
- * theme-switcher UI was requested.
+ * the @theme inline block below, so both themes re-theme the entire
+ * site without touching a single component's className —
+ * system-preference only (`prefers-color-scheme`), no theme-switcher UI.
  */
 :root {
-  --background: #f5f7fa;
+  /* Warm off-white, not clinical pure white. */
+  --background: #faf9f6;
   --surface: #ffffff;
-  --foreground: #111827;
-  --muted: #64748b;
-  --muted-background: #eaf4fb;
-  --border: #e2e8f0;
+  /* Warm near-black charcoal, not pure #000. */
+  --foreground: #14181f;
+  --muted: #5b6472;
+  --muted-background: #eef1f5;
+  --border: #e3e6ec;
 
-  --brand: #1769a8;
+  /* One clear accent — a clean, confident blue, not the previous
+     brand's exact hue. */
+  --brand: #0a5fcb;
   --brand-foreground: #ffffff;
-  --brand-dark: #12547f;
-  --brand-light: #eaf4fb;
+  --brand-dark: #084a9e;
+  --brand-light: #e8f1fc;
 
-  --accent: #1769a8;
+  --accent: #0a5fcb;
   --accent-foreground: #ffffff;
 
-  --ink: #0b1728;
+  --ink: #0b0f17;
   --ink-foreground: #ffffff;
 
-  --success: #15803d;
+  --success: #16794f;
+  --danger: #c81e3a;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Deep desaturated navy, not pure black — the same hue family as
-       the light theme's --ink, so the two themes still feel like one
-       brand rather than an inverted palette. */
-    --background: #0b1220;
-    /* One deliberate step lighter than the page background, for cards/
-       the booking widget/vehicle options — never identical to
-       --background, or every card would silently disappear. */
-    --surface: #131c2e;
-    /* Off-white, not pure #fff — easier on the eyes on a dark screen
-       and consistent with never using pure black for --background. */
-    --foreground: #e7ecf3;
-    --muted: #8b9bb4;
-    /* A subtle bluish tint one step up from --surface, for hover/open
-       states (e.g. the FAQ accordion) that need to read as "raised"
-       rather than identical to a plain card. */
-    --muted-background: #1a2740;
-    --border: #26334a;
+    /* Deep charcoal-navy, built as its own dark palette rather than an
+       inversion of the light one. */
+    --background: #0a0e16;
+    --surface: #121826;
+    --foreground: #edeff3;
+    --muted: #8b93a6;
+    --muted-background: #182131;
+    --border: #232c3e;
 
-    /* Brightened from the light theme's #1769a8 — the same brand hue,
-       tuned lighter/more saturated so it still pops against a dark
-       navy background instead of reading as muted or "disabled". */
-    --brand: #4da3d9;
-    --brand-foreground: #0b1220;
-    --brand-dark: #6cb6e2;
-    --brand-light: #1a2740;
+    --brand: #4c8dff;
+    --brand-foreground: #06101c;
+    --brand-dark: #6ea3ff;
+    --brand-light: #182131;
 
-    --accent: #4da3d9;
-    --accent-foreground: #0b1220;
+    --accent: #4c8dff;
+    --accent-foreground: #06101c;
 
-    /* Even deeper than --background, so the footer/flight-delay/final-
-       CTA sections that use --ink as a deliberate dark accent in light
-       mode keep reading as a distinct, richer band in dark mode too,
-       rather than blending into the page. */
-    --ink: #060a13;
-    --ink-foreground: #e7ecf3;
+    --ink: #050810;
+    --ink-foreground: #edeff3;
 
     --success: #34d399;
-  }
-
-  /* text-red-600 (validation/error text — Field, AddressField,
-     BookingWidget, DetailsStep, QuoteStep) isn't one of the CSS-variable
-     tokens above, but its fixed light-mode red falls below AA contrast
-     on the new dark background — brighten it here rather than touching
-     five component files for one utility class. */
-  .text-red-600 {
-    color: #f87171;
+    --danger: #f2657f;
   }
 }
 
@@ -109,6 +88,7 @@
   --color-ink: var(--ink);
   --color-ink-foreground: var(--ink-foreground);
   --color-success: var(--success);
+  --color-danger: var(--danger);
   --font-sans: var(--font-inter);
 }
 
@@ -118,16 +98,15 @@ body {
 }
 
 /*
- * One consistent card/shadow language, used everywhere instead of ad hoc
- * shadow-sm/shadow-lg per component — this is what makes cards across
- * different sections (trust badges, routes, FAQ, the booking widget)
- * read as one coherent design system rather than a patchwork. Subtle by
- * design: a soft ambient shadow, never a hard drop-shadow.
+ * One consistent, restrained shadow language — flatter than v1-v8's,
+ * leaning on borders more than shadows per the "functional UI, not a
+ * marketing page" brief. Only the booking interface itself gets the
+ * elevated treatment; everything else reads mostly through borders.
  */
 :root {
-  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
-  --shadow-card-hover: 0 4px 10px rgba(15, 23, 42, 0.06), 0 2px 4px rgba(15, 23, 42, 0.05);
-  --shadow-elevated: 0 10px 30px rgba(15, 23, 42, 0.08), 0 4px 8px rgba(15, 23, 42, 0.05);
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-card-hover: 0 2px 6px rgba(15, 23, 42, 0.06);
+  --shadow-elevated: 0 12px 32px rgba(10, 15, 25, 0.10), 0 2px 8px rgba(10, 15, 25, 0.06);
 }
 
 @theme inline {

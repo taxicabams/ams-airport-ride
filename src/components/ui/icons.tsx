@@ -90,6 +90,22 @@ export const CheckIcon = ({ className = "shrink-0" }: { className?: string }) =>
   </svg>
 );
 
+/** A small filled dot, used for the booking widget's vertical route
+ * indicator (pickup/destination) — deliberately plain, not a map-pin
+ * teardrop, so the two stops read as one simple connected line. */
+export const RouteDotIcon = ({ className = "shrink-0" }: { className?: string }) => (
+  <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" className={className}>
+    <circle cx="5" cy="5" r="5" />
+  </svg>
+);
+
+/** Arrow-right, used for compact route-list rows and inline CTAs. */
+export const ArrowRightIcon = ({ className = "shrink-0" }: { className?: string }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 /** Mobile nav toggle icons — Header.tsx swaps between the two. */
 export const MenuIcon = ({ className = "shrink-0" }: { className?: string }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>

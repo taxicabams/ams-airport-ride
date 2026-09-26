@@ -7,13 +7,13 @@
     "home": "Home",
     "routes": "Routes",
     "about": "Over ons",
-    "taxiSchiphol": "Taxi Schiphol",
-    "taxiAmsterdam": "Taxi Amsterdam",
+    "taxiSchiphol": "Schiphol",
+    "taxiAmsterdam": "Amsterdam",
     "howItWorks": "Hoe het werkt",
     "prices": "Prijzen",
     "contact": "Contact",
-    "faq": "Veelgestelde vragen",
-    "bookNow": "Nu boeken",
+    "faq": "FAQ",
+    "bookNow": "Boek een taxi",
     "openMenu": "Menu openen",
     "closeMenu": "Menu sluiten"
   },
@@ -21,10 +21,10 @@
     "eyebrow": "Schiphol taxi",
     "title": "Taxi van en naar Schiphol",
     "heroPrice": "Vaste prijs vanaf €{price}",
-    "subtitle": "Van deur tot deur. Vooraf duidelijk wat je betaalt.",
+    "subtitle": "Vaste prijs vooraf. Van deur tot deur.",
     "supportingText": "Vul je route in en zie direct je prijs — nog voor je boekt.",
     "ctaPrimary": "Bereken mijn prijs →",
-    "compactTrustLine": "Vaste prijs · PIN of contant · Bon beschikbaar",
+    "compactTrustLine": "Vaste prijs bij Schiphol · PIN of contant · Bon beschikbaar",
     "floatingCardRoute": "Schiphol → Amsterdam"
   },
   "BookingSection": {
@@ -84,11 +84,11 @@
   },
   "SchipholSteps": {
     "title": "Aankomst op Schiphol",
-    "step1": "Haal je bagage op",
-    "step2": "Ga door de douane",
-    "step3": "Neem contact op met je chauffeur",
-    "step4": "Je chauffeur bevestigt het ontmoetingspunt",
-    "step5": "Stap in en vertrek"
+    "step1": "Landen",
+    "step2": "Bagage ophalen",
+    "step3": "Naar het afgesproken ontmoetingspunt",
+    "step4": "Chauffeur ontmoeten",
+    "step5": "Naar bestemming"
   },
   "Booking": {
     "heading": "Bereken mijn vaste prijs →",
@@ -195,6 +195,12 @@
     "note": "Reist u met een aansluitende vlucht of kans op vertraging? Vul uw vluchtnummer in bij het boeken, dan houden we hier rekening mee.",
     "cta": "Bereken uw luchthavenvervoer →"
   },
+  "TrustBar": {
+    "item1": "Vaste prijs Schiphol",
+    "item2": "Geen online betaling",
+    "item3": "PIN of contant",
+    "item4": "24/7 reserveren"
+  },
   "Trust": {
     "fixedPriceTitle": "Duidelijke prijs",
     "fixedPriceBody": "Bij Schiphol weet u vooraf wat u betaalt. Bij andere ritten ziet u de prijs op basis van afstand en reistijd, nog voor u boekt.",
@@ -245,12 +251,10 @@
     "infoTitle": "Informatie",
     "legalTitle": "Juridisch"
   },
-  "FinalCta": {
-    "eyebrow": "Klaar om te gaan?",
-    "title": "Uw Schiphol-rit is maar een paar klikken verwijderd.",
-    "body": "Zie uw vaste prijs voordat u boekt.",
-    "cta": "Bereken uw ritprijs →",
-    "note": "Vaste Schiphol-prijs vooraf · PIN of contant · Bon beschikbaar"
+  "FinalCtaSimple": {
+    "title": "Klaar om te vertrekken?",
+    "body": "Bereken je ritprijs en boek je taxi online.",
+    "cta": "Bereken mijn ritprijs →"
   },
   "StickyCta": {
     "label": "Uw Schiphol taxi",
