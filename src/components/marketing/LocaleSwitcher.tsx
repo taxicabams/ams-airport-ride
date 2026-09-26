@@ -24,10 +24,14 @@ export function LocaleSwitcher() {
             // convention (Stepper, SegmentedControl) — the previous
             // py-1-only sizing measured ~28px tall, under the
             // recommended ~40-44px minimum for a mobile tap target.
+            // Only ever rendered inside the (permanently dark-navy)
+            // Header, so the inactive state is tuned for a dark
+            // background, not the light-surface --muted/--foreground
+            // pair used elsewhere.
             "flex min-h-9 min-w-9 items-center justify-center rounded-full px-2.5",
             loc === locale
               ? "bg-brand text-brand-foreground"
-              : "text-muted hover:text-foreground",
+              : "text-white/60 hover:text-white",
           ].join(" ")}
         >
           {LABELS[loc]}

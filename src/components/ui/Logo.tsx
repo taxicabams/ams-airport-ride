@@ -49,7 +49,7 @@ export function Logo({
       <LogoMark className="h-9 w-9 shrink-0" />
       <span className="flex flex-col leading-none">
         <span
-          className={`text-lg font-bold tracking-tight ${variant === "dark" ? "text-white" : "text-brand"}`}
+          className={`text-lg font-bold tracking-tight ${variant === "dark" ? "text-white" : "text-brand-text"}`}
         >
           AMS
         </span>

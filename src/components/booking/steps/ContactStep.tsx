@@ -89,7 +89,7 @@ export function ContactStep({
       <label className="flex items-center gap-2 text-sm text-foreground">
         <input
           type="checkbox"
-          className="h-4 w-4 rounded border-border text-brand focus:ring-brand/40"
+          className="h-4 w-4 rounded border-border text-brand-text focus:ring-brand/40"
           checked={form.childSeat}
           onChange={(e) => onChange({ childSeat: e.target.checked })}
         />

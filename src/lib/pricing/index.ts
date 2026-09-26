@@ -95,3 +95,4 @@ export {
   BUS_MAX_LUGGAGE,
   recommendedVehicle,
 } from "./vehicle";
+export { CHEAPEST_SCHIPHOL_PRICE } from "./staticRoutes";

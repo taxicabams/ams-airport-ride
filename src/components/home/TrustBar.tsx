@@ -1,24 +1,28 @@
 import { getTranslations } from "next-intl/server";
-import { CheckIcon } from "@/components/ui/icons";
+import { ShieldCheckIcon, ClockIcon, PaymentIcon, ReceiptIcon } from "@/components/ui/icons";
 
 /**
- * A single horizontal line of real, provable claims — deliberately NOT
- * four cards with titles/bodies (that's `Trust`/the old `TrustBadges`,
- * still used more compactly elsewhere). This is the client's own exact
- * spec: "compacte trust bar" directly under the booking widget, four
- * short items, nothing invented.
+ * v10 rebuild — four short title+description items with an icon each,
+ * per the client's new mockup (was a single-line checkmark list in v9).
+ * Still exactly four real, provable claims, nothing invented.
  */
 export async function TrustBar() {
   const t = await getTranslations("TrustBar");
-  const items = [t("item1"), t("item2"), t("item3"), t("item4")];
+  const items = [
+    { Icon: ShieldCheckIcon, title: t("title1"), body: t("body1") },
+    { Icon: ClockIcon, title: t("title2"), body: t("body2") },
+    { Icon: PaymentIcon, title: t("title3"), body: t("body3") },
+    { Icon: ReceiptIcon, title: t("title4"), body: t("body4") },
+  ];
 
   return (
-    <section className="border-y border-border bg-muted-background/60 py-4">
-      <ul className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-6 gap-y-2 px-4 text-sm font-medium text-foreground/80 sm:px-6">
-        {items.map((item) => (
-          <li key={item} className="flex items-center gap-1.5">
-            <CheckIcon className="h-4 w-4 shrink-0 text-brand" />
-            {item}
+    <section className="border-b border-border bg-surface py-10">
+      <ul className="mx-auto grid max-w-4xl grid-cols-2 gap-x-6 gap-y-8 px-4 text-center sm:px-6 md:grid-cols-4">
+        {items.map(({ Icon, title, body }) => (
+          <li key={title} className="flex flex-col items-center gap-2">
+            <Icon className="h-6 w-6 text-brand-text" />
+            <p className="text-sm font-semibold text-foreground">{title}</p>
+            <p className="text-xs text-muted">{body}</p>
           </li>
         ))}
       </ul>

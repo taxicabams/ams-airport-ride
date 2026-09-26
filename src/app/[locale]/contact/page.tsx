@@ -46,7 +46,7 @@ export default async function ContactPage({
             {companyInfo.phone && (
               <li>
                 {l === "nl" ? "Telefoon" : "Phone"}:{" "}
-                <a href={`tel:${companyInfo.phone}`} className="font-medium text-brand">
+                <a href={`tel:${companyInfo.phone}`} className="font-medium text-brand-text">
                   {companyInfo.phone}
                 </a>
               </li>
@@ -58,7 +58,7 @@ export default async function ContactPage({
                   href={`https://wa.me/${companyInfo.whatsapp}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-medium text-brand"
+                  className="font-medium text-brand-text"
                 >
                   {companyInfo.whatsapp}
                 </a>
@@ -67,7 +67,7 @@ export default async function ContactPage({
             {companyInfo.email && (
               <li>
                 Email:{" "}
-                <a href={`mailto:${companyInfo.email}`} className="font-medium text-brand">
+                <a href={`mailto:${companyInfo.email}`} className="font-medium text-brand-text">
                   {companyInfo.email}
                 </a>
               </li>

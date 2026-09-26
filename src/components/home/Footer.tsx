@@ -2,25 +2,26 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { companyInfo } from "@/lib/companyInfo";
 import { Logo } from "@/components/ui/Logo";
+import { LocaleSwitcher } from "@/components/marketing/LocaleSwitcher";
 
 /**
- * v9 rebuild — one minimal link list instead of the previous 4-column
- * grid, per the client's exact spec: logo + tagline, a single row of
- * links, then Privacy/Terms and the copyright line. Real company facts
- * only (KvK, when known) — never a fabricated license/certification.
+ * v10 rebuild — same minimal link list as v9, reordered/relabeled to the
+ * client's exact new spec: Taxi Schiphol / Amsterdam taxi / Tarieven /
+ * Contact / FAQ, then Voorwaarden/Privacy, then a locale switch. Real
+ * company facts only (KvK, when known) — never a fabricated
+ * license/certification.
  */
 export async function Footer() {
   const t = await getTranslations("Footer");
-  const tr = await getTranslations("Routes");
+  const tn = await getTranslations("Nav");
   const year = new Date().getFullYear();
 
   const links = [
     { href: "/#populaire-routes", label: t("serviceSchiphol") },
     { href: "/#amsterdam-taxi", label: t("serviceAmsterdam") },
-    { href: "/#populaire-routes", label: tr("eyebrow") },
-    { href: "/#hoe-het-werkt", label: t("howItWorksLink") },
-    { href: "/veelgestelde-vragen", label: "FAQ" },
+    { href: "/#populaire-routes", label: tn("prices") },
     { href: "/contact", label: "Contact" },
+    { href: "/veelgestelde-vragen", label: "FAQ" },
   ];
 
   return (
@@ -54,13 +55,14 @@ export async function Footer() {
           ))}
         </nav>
 
-        <div className="mt-6 flex justify-center gap-6 text-xs">
-          <Link href="/privacy" className="text-white/50 hover:text-white/80">
-            {t("privacyLink")}
-          </Link>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-xs">
           <Link href="/voorwaarden" className="text-white/50 hover:text-white/80">
             {t("termsLink")}
           </Link>
+          <Link href="/privacy" className="text-white/50 hover:text-white/80">
+            {t("privacyLink")}
+          </Link>
+          <LocaleSwitcher />
         </div>
 
         <div className="mt-6 border-t border-white/10 pt-5 text-xs text-white/50">

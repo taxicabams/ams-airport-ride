@@ -1,44 +1,52 @@
 @import "tailwindcss";
 
 /*
- * Design tokens — v9, a genuine new design system for the full frontend
- * rebuild (not a palette tweak on top of v1-v8's token set). New hex
- * values throughout, a new dark theme built from first principles
- * (deep charcoal-navy, not an inverted light palette), and a real
- * --danger token so validation-error color lives here instead of a
- * hardcoded Tailwind red patched in a media query.
+ * Design tokens — v10, a full palette relaunch per the client's explicit
+ * brief: "diepe navy/donkere blauwe tinten, wit, één warme gele/gouden
+ * accentkleur voor CTA's." Replaces v9's blue-brand system.
  *
- * --ink is the deliberately dark band used for the footer and the final
- * CTA — distinct from --background in both themes, never identical to
- * it (or those sections would silently blend into the page).
+ * Two distinct brand roles, not one, because a single hue can't serve
+ * both jobs at once:
+ *  - --brand / --brand-foreground: the gold CTA *fill* (buttons, active
+ *    pills, small filled badges) with dark-navy text on top. The exact
+ *    same gold in both themes — "gele/gouden accentkleur blijft
+ *    duidelijk" in light AND dark.
+ *  - --brand-text: gold *as text* (eyebrows, links, icons, big prices)
+ *    fails WCAG contrast against a light background at any usable gold
+ *    shade (checked: ~2.1-2.7:1, need 4.5:1) — so this token is navy in
+ *    light mode and gold in dark mode (where gold-on-navy reads at
+ *    ~8:1). Same visual "premium navy+gold" language, without an
+ *    illegible eyebrow label.
+ *
+ * --ink is the deliberately dark band used for the header/footer — a
+ * richer, distinctly *navy* near-black, never identical to --background.
  *
  * Every Tailwind utility used across the app (bg-surface, text-muted,
- * border-border, bg-brand, ...) is generated from these variables via
- * the @theme inline block below, so both themes re-theme the entire
- * site without touching a single component's className —
- * system-preference only (`prefers-color-scheme`), no theme-switcher UI.
+ * border-border, bg-brand, text-brand-text, ...) is generated from these
+ * variables via the @theme inline block below — system-preference only
+ * (`prefers-color-scheme`), no theme-switcher UI.
  */
 :root {
-  /* Warm off-white, not clinical pure white. */
-  --background: #faf9f6;
+  /* Clean white with a subtle warm-gray section tint (spec: "veel wit,
+     subtiele grijze achtergronden"), not the previous off-white. */
+  --background: #f7f6f3;
   --surface: #ffffff;
-  /* Warm near-black charcoal, not pure #000. */
-  --foreground: #14181f;
-  --muted: #5b6472;
+  /* Professional navy-charcoal body text, not flat black. */
+  --foreground: #14212f;
+  --muted: #5c6b7a;
   --muted-background: #eef1f5;
-  --border: #e3e6ec;
+  --border: #e1e6ec;
 
-  /* One clear accent — a clean, confident blue, not the previous
-     brand's exact hue. */
-  --brand: #0a5fcb;
-  --brand-foreground: #ffffff;
-  --brand-dark: #084a9e;
-  --brand-light: #e8f1fc;
+  --brand: #e2a83d;
+  --brand-foreground: #12233d;
+  --brand-dark: #c68f2a;
+  --brand-light: #fbf1de;
+  --brand-text: #163a5f;
 
-  --accent: #0a5fcb;
-  --accent-foreground: #ffffff;
+  --accent: #e2a83d;
+  --accent-foreground: #12233d;
 
-  --ink: #0b0f17;
+  --ink: #0f2038;
   --ink-foreground: #ffffff;
 
   --success: #16794f;
@@ -47,25 +55,27 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Deep charcoal-navy, built as its own dark palette rather than an
-       inversion of the light one. */
-    --background: #0a0e16;
-    --surface: #121826;
-    --foreground: #edeff3;
-    --muted: #8b93a6;
-    --muted-background: #182131;
-    --border: #232c3e;
+    /* Deep navy, built as its own dark palette rather than an inversion
+       of the light one. */
+    --background: #0a1526;
+    --surface: #10203a;
+    --foreground: #edf1f7;
+    --muted: #93a1b8;
+    --muted-background: #16283f;
+    --border: #223350;
 
-    --brand: #4c8dff;
-    --brand-foreground: #06101c;
-    --brand-dark: #6ea3ff;
-    --brand-light: #182131;
+    /* Same gold, both roles, both themes — see file header note. */
+    --brand: #e2a83d;
+    --brand-foreground: #12233d;
+    --brand-dark: #f0ba57;
+    --brand-light: #16283f;
+    --brand-text: #e9b658;
 
-    --accent: #4c8dff;
-    --accent-foreground: #06101c;
+    --accent: #e2a83d;
+    --accent-foreground: #12233d;
 
-    --ink: #050810;
-    --ink-foreground: #edeff3;
+    --ink: #060d1b;
+    --ink-foreground: #ffffff;
 
     --success: #34d399;
     --danger: #f2657f;
@@ -83,6 +93,7 @@
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-dark: var(--brand-dark);
   --color-brand-light: var(--brand-light);
+  --color-brand-text: var(--brand-text);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-ink: var(--ink);
@@ -98,15 +109,14 @@ body {
 }
 
 /*
- * One consistent, restrained shadow language — flatter than v1-v8's,
- * leaning on borders more than shadows per the "functional UI, not a
- * marketing page" brief. Only the booking interface itself gets the
- * elevated treatment; everything else reads mostly through borders.
+ * One consistent, restrained shadow language — a bit more elevation than
+ * v9 for the booking card, which now needs to visually "float" out of
+ * the hero photo.
  */
 :root {
   --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04);
   --shadow-card-hover: 0 2px 6px rgba(15, 23, 42, 0.06);
-  --shadow-elevated: 0 12px 32px rgba(10, 15, 25, 0.10), 0 2px 8px rgba(10, 15, 25, 0.06);
+  --shadow-elevated: 0 24px 48px -12px rgba(6, 12, 24, 0.35), 0 4px 12px rgba(6, 12, 24, 0.08);
 }
 
 @theme inline {

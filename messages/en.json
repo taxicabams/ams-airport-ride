@@ -50,6 +50,14 @@
     "cta": "Calculate my price →",
     "disclaimer": "Your exact price is calculated based on your pickup address and destination."
   },
+  "TwoColumnBanner": {
+    "amsterdamTitle": "Taxi in Amsterdam",
+    "amsterdamBody": "From Amsterdam West to the city centre and every other district. Calculate your ride price based on distance and travel time.",
+    "amsterdamCta": "Calculate my ride price →",
+    "schipholTitle": "Arriving at Schiphol",
+    "schipholBody": "After a long journey, you want to get to your destination quickly and comfortably. Your driver will contact you as soon as you clear customs.",
+    "schipholLink": "How Schiphol pickup works →"
+  },
   "AmsterdamTaxi": {
     "eyebrow": "More than airport transfers",
     "title": "Need a taxi in Amsterdam?",
@@ -99,6 +107,9 @@
     "pickupPlaceholder": "Enter pickup address",
     "destinationLabel": "Destination",
     "destinationPlaceholder": "Enter destination address",
+    "tabToSchiphol": "To Schiphol",
+    "tabOtherRide": "Other ride",
+    "schipholDestinationLabel": "Schiphol Airport",
     "addressLoading": "Searching…",
     "addressNoResults": "No addresses found",
     "addressNotConfigured": "Address lookup is temporarily unavailable",
@@ -200,7 +211,15 @@
     "item1": "Fixed price Schiphol",
     "item2": "No online payment",
     "item3": "Card or cash",
-    "item4": "Book 24/7"
+    "item4": "Book 24/7",
+    "title1": "Fixed price",
+    "body1": "Know what you'll pay, upfront.",
+    "title2": "Easy booking",
+    "body2": "From address to confirmed reservation, online.",
+    "title3": "Card or cash",
+    "body3": "Pay after your ride.",
+    "title4": "Receipt available",
+    "body4": "Available after your ride."
   },
   "Trust": {
     "fixedPriceTitle": "Clear price",

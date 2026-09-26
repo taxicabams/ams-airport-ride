@@ -209,7 +209,7 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
   return (
     <div
       id="boeken"
-      className="mx-auto w-full max-w-xl rounded-3xl border border-border bg-surface p-6 shadow-elevated sm:p-8"
+      className="mx-auto w-full max-w-3xl rounded-3xl border border-border bg-surface p-6 shadow-elevated sm:p-8"
     >
       {step !== "confirmed" && (
         <>
@@ -308,7 +308,7 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
             <a
               href={`tel:${companyInfo.phone}`}
               onClick={() => track("phone_clicked")}
-              className="font-semibold text-brand hover:underline"
+              className="font-semibold text-brand-text hover:underline"
             >
               {t("callUs")}
             </a>

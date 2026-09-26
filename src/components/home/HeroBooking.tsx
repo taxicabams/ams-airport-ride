@@ -1,34 +1,22 @@
-import { getTranslations } from "next-intl/server";
+import { Hero } from "@/components/home/Hero";
 import { BookingWidget } from "@/components/booking/BookingWidget";
 
 /**
- * v9 rebuild — the single biggest structural change: there is no
- * separate marketing hero with a big photo/illustration pushing the
- * booking widget below the fold. The booking widget IS the hero. A
- * short label + headline + one honest subline sit directly above it,
- * centered, then the wide booking interface, then one compact trust
- * line — the whole first viewport is the product, per the client's
- * explicit spec ("GEEN gigantische marketinghero... De booking is het
- * centrale product").
+ * v10 rebuild — composes the new photo Hero with the booking widget,
+ * overlapping the hero's bottom edge on desktop via a negative top
+ * margin (per the client's mockup: "een grote witte/glazen bookingbox
+ * over de onderkant van de hero heen hangt"). On mobile the negative
+ * margin is much smaller — the box returns to normal vertical flow
+ * right below the hero, exactly as the brief requires ("bookingbox mag
+ * op mobiel niet het volledige scherm overnemen voordat de gebruiker
+ * begrijpt waar de site over gaat").
  */
-export async function HeroBooking() {
-  const t = await getTranslations("Hero");
-
+export function HeroBooking() {
   return (
-    <section className="bg-background pb-10 pt-10 sm:pb-14 sm:pt-14">
-      <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-        <p className="text-sm font-semibold uppercase tracking-wide text-brand">
-          {t("eyebrow")}
-        </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          {t("title")}
-        </h1>
-        <p className="mt-2 text-lg font-medium text-foreground/80">{t("subtitle")}</p>
-      </div>
-
-      <div className="mx-auto mt-8 max-w-xl px-4 sm:px-6">
+    <section className="bg-background">
+      <Hero />
+      <div className="relative z-10 mx-auto -mt-6 max-w-3xl px-4 pb-10 sm:-mt-24 sm:px-6 sm:pb-14 md:-mt-32">
         <BookingWidget />
-        <p className="mt-4 text-center text-sm text-muted">{t("compactTrustLine")}</p>
       </div>
     </section>
   );

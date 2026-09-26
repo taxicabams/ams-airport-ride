@@ -148,3 +148,20 @@ export const CarIcon = ({ className = "shrink-0" }: { className?: string }) => (
     <path d="M6 44h6M52 44h6" />
   </svg>
 );
+
+/**
+ * A taller, boxier people-carrier/van silhouette — used for the "Van"
+ * vehicle option so it reads as visibly distinct from CarIcon's sedan
+ * profile (a real gap the site had: both vehicle cards used the exact
+ * same car icon). Same hand-drawn-SVG approach, no icon library.
+ */
+export const VanIcon = ({ className = "shrink-0" }: { className?: string }) => (
+  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    <path d="M6 40V24a3 3 0 0 1 3-3h9l6-7h20a3 3 0 0 1 3 3v9h3a4 4 0 0 1 4 4v10" strokeLinejoin="round" />
+    <rect x="6" y="40" width="52" height="10" rx="3" />
+    <path d="M24 21v10M15 31h34" />
+    <circle cx="18" cy="50" r="5" />
+    <circle cx="46" cy="50" r="5" />
+    <path d="M6 44h6M52 44h6" />
+  </svg>
+);

@@ -71,7 +71,7 @@ export function ConfirmationCard({ result }: { result: BookingResult }) {
       {returnQuote && (
         <div className="flex items-center justify-between rounded-xl bg-brand/5 px-4 py-3">
           <p className="text-sm font-semibold text-foreground">{tb("totalLabel")}</p>
-          <p className="text-xl font-bold text-brand">€{totalPrice}</p>
+          <p className="text-xl font-bold text-brand-text">€{totalPrice}</p>
         </div>
       )}
 
@@ -84,7 +84,7 @@ export function ConfirmationCard({ result }: { result: BookingResult }) {
 
       {isAirport && (
         <div className="rounded-xl border border-brand/20 bg-brand/5 p-4">
-          <p className="text-sm font-semibold text-brand">{t("schipholTitle")}</p>
+          <p className="text-sm font-semibold text-brand-text">{t("schipholTitle")}</p>
           <p className="mt-1 text-sm text-foreground/80">
             {getSchipholMeetingPointText(locale)}
           </p>
@@ -93,7 +93,7 @@ export function ConfirmationCard({ result }: { result: BookingResult }) {
 
       <Link
         href="/"
-        className="text-center text-sm font-medium text-brand hover:underline"
+        className="text-center text-sm font-medium text-brand-text hover:underline"
       >
         {t("backHome")}
       </Link>
@@ -105,7 +105,7 @@ function Row({ label, value, strong }: { label: string; value: string; strong?: 
   return (
     <div className="flex items-center justify-between gap-4">
       <dt className="text-muted">{label}</dt>
-      <dd className={strong ? "font-semibold text-brand" : "text-foreground"}>{value}</dd>
+      <dd className={strong ? "font-semibold text-brand-text" : "text-foreground"}>{value}</dd>
     </div>
   );
 }

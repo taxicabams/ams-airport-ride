@@ -18,7 +18,7 @@ export async function RouteList() {
   return (
     <section id="populaire-routes" className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
       <div className="text-center">
-        <p className="text-sm font-semibold uppercase tracking-wide text-brand">{t("eyebrow")}</p>
+        <p className="text-sm font-semibold uppercase tracking-wide text-brand-text">{t("eyebrow")}</p>
         <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground">{t("title")}</h2>
       </div>
 
@@ -32,7 +32,7 @@ export async function RouteList() {
               className="group flex items-center justify-between gap-4 px-5 py-4 transition hover:bg-muted-background/60 focus-visible:bg-muted-background/60 focus-visible:outline-none"
             >
               <span className="font-semibold text-foreground">{city} ↔ Schiphol</span>
-              <span className="flex items-center gap-2 text-brand">
+              <span className="flex items-center gap-2 text-brand-text">
                 <span className="font-bold">{t("fixedPrice", { price: `€${route.basePrice}` })}</span>
                 <ArrowRightIcon className="h-4 w-4 opacity-0 transition group-hover:opacity-100" />
               </span>

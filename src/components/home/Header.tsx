@@ -7,12 +7,11 @@ import { companyInfo } from "@/lib/companyInfo";
 import { PhoneIcon } from "@/components/ui/icons";
 
 /**
- * v9 rebuild — deliberately minimal: logo, four nav words, locale
- * switch, one CTA. Per the client's own spec ("Geen 8 menu-items"),
- * trimmed to single-word labels (Schiphol / Amsterdam / Hoe het werkt /
- * FAQ) rather than the previous "Schiphol Taxi" / "Amsterdam Taxi" —
- * both still point into the homepage's own sections, no separate pages
- * to keep in sync.
+ * v10 rebuild — permanently dark-navy header bar (bg-ink), not
+ * theme-following like v9's `bg-surface/95`. Per the client's mockup:
+ * white logo/nav on navy, one gold CTA pill, in both light and dark
+ * site themes — a premium airline/travel-brand top bar, not a
+ * light-mode-switching one. Nav labels/links unchanged in logic.
  *
  * The phone link below renders only once companyInfo.phone is real
  * (still `null` today) — wired now so a confirmed number appears,
@@ -30,15 +29,15 @@ export async function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-ink text-ink-foreground">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
         <Link href="/" className="shrink-0">
-          <Logo />
+          <Logo variant="dark" />
         </Link>
 
-        <nav className="hidden items-center gap-7 text-sm font-medium text-foreground/75 md:flex">
+        <nav className="hidden items-center gap-7 text-sm font-medium text-white/75 md:flex">
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className="transition hover:text-brand">
+            <Link key={item.href} href={item.href} className="transition hover:text-white">
               {item.label}
             </Link>
           ))}
@@ -48,7 +47,7 @@ export async function Header() {
           {companyInfo.phone && (
             <a
               href={`tel:${companyInfo.phone}`}
-              className="hidden items-center gap-1.5 text-sm font-medium text-foreground/80 transition hover:text-brand lg:inline-flex"
+              className="hidden items-center gap-1.5 text-sm font-medium text-white/75 transition hover:text-white lg:inline-flex"
             >
               <PhoneIcon className="h-4 w-4" />
               {companyInfo.phone}

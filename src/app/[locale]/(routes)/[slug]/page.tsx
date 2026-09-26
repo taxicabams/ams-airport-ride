@@ -121,7 +121,7 @@ export default async function RoutePage({
         <div>
           <Link
             href="/"
-            className="mb-4 inline-block text-sm font-medium text-brand hover:underline"
+            className="mb-4 inline-block text-sm font-medium text-brand-text hover:underline"
           >
             {t("backToHome")}
           </Link>
@@ -135,7 +135,7 @@ export default async function RoutePage({
               <dt className="text-xs text-muted">
                 {l === "nl" ? "Vaste prijs" : "Fixed price"}
               </dt>
-              <dd className="mt-1 text-xl font-bold text-brand">€{route.basePrice}</dd>
+              <dd className="mt-1 text-xl font-bold text-brand-text">€{route.basePrice}</dd>
             </div>
             <div>
               <dt className="text-xs text-muted">{l === "nl" ? "Afstand" : "Distance"}</dt>

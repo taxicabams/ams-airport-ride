@@ -4,9 +4,8 @@ import { HeroBooking } from "@/components/home/HeroBooking";
 import { TrustBar } from "@/components/home/TrustBar";
 import { HowItWorksSimple } from "@/components/home/HowItWorksSimple";
 import { RouteList } from "@/components/home/RouteList";
-import { AmsterdamEntry } from "@/components/home/AmsterdamEntry";
+import { TwoColumnBanner } from "@/components/home/TwoColumnBanner";
 import { VehiclesSimple } from "@/components/home/VehiclesSimple";
-import { SchipholArrival } from "@/components/home/SchipholArrival";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
 import { FinalCta } from "@/components/home/FinalCta";
 import { buildAlternates } from "@/lib/seo";
@@ -51,15 +50,13 @@ export default async function HomePage({
     areaServed: ["Amsterdam", "Schiphol", "Nederland"],
   };
 
-  // v9 — full frontend rebuild. The booking widget is no longer "a
-  // widget somewhere on a marketing page" — it IS the hero, the first
-  // thing on the page. Everything after it exists only because it adds
-  // real value: one honest trust line, one compact 4-step confirmation
-  // (kept because the header/footer nav link to it, not as a duplicate
-  // explainer), a real price list, a genuine second entry point for
-  // non-Schiphol rides, the two real vehicles, Schiphol arrival
-  // practicalities, FAQ, one final CTA. No reviews section — AMS
-  // Airport Ride has no real reviews yet.
+  // v10 — full visual rebuild per the client's photo-hero mockup: a
+  // real background-photo hero with the booking card overlapping its
+  // bottom edge, then trust row → how-it-works (kept: the header/footer
+  // nav still link to #hoe-het-werkt) → price list → one combined
+  // Amsterdam/Schiphol photo-banner section (replaces two separate
+  // plain-text sections) → vehicles → FAQ → final CTA. No reviews
+  // section — AMS Airport Ride has no real reviews yet.
   return (
     <>
       <script
@@ -70,9 +67,8 @@ export default async function HomePage({
       <TrustBar />
       <HowItWorksSimple />
       <RouteList />
-      <AmsterdamEntry />
+      <TwoColumnBanner />
       <VehiclesSimple />
-      <SchipholArrival />
       <FaqAccordion />
       <FinalCta />
     </>

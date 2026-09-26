@@ -35,7 +35,7 @@ export function Stepper({
           aria-label={decreaseLabel}
           disabled={value <= min}
           onClick={() => onChange(Math.max(min, value - 1))}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-lg font-semibold text-brand transition hover:bg-muted-background disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-lg font-semibold text-brand-text transition hover:bg-muted-background disabled:cursor-not-allowed disabled:opacity-30"
         >
           −
         </button>
@@ -52,7 +52,7 @@ export function Stepper({
           aria-label={increaseLabel}
           disabled={value >= max}
           onClick={() => onChange(Math.min(max, value + 1))}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-lg font-semibold text-brand transition hover:bg-muted-background disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-lg font-semibold text-brand-text transition hover:bg-muted-background disabled:cursor-not-allowed disabled:opacity-30"
         >
           +
         </button>

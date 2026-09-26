@@ -90,14 +90,14 @@ export function QuoteStep({
         <p className="text-sm font-semibold uppercase tracking-wide text-muted">
           {t("priceHeading")}
         </p>
-        <p className="mt-2 text-6xl font-bold tracking-tight text-brand sm:text-7xl">
+        <p className="mt-2 text-6xl font-bold tracking-tight text-brand-text sm:text-7xl">
           €{grandTotal}
         </p>
         <p className="mt-3 truncate text-base font-medium text-foreground/90">
           {pickup} → {destination}
         </p>
         <p className="mt-1 text-sm text-muted">{vehicleSummary}</p>
-        <p className="mt-3 text-sm font-semibold text-brand">{priceBasis}</p>
+        <p className="mt-3 text-sm font-semibold text-brand-text">{priceBasis}</p>
 
         {returnQuote && (
           <div className="mt-5 border-t border-brand/10 pt-4 text-left">
@@ -143,7 +143,7 @@ function TripPriceRow({ label, route, price }: { label: string; route: string; p
         <p className="text-xs font-medium uppercase tracking-wide text-muted">{label}</p>
         <p className="truncate text-sm text-foreground/90">{route}</p>
       </div>
-      <p className="shrink-0 text-lg font-bold text-brand">€{price}</p>
+      <p className="shrink-0 text-lg font-bold text-brand-text">€{price}</p>
     </div>
   );
 }
