@@ -78,6 +78,30 @@ export function isDateNotInPast(date: string): boolean {
 }
 
 /**
+ * True when the combined `date`+`time` is not already in the past —
+ * catches the softer version of the same bug: `date` alone can be
+ * "today" (passes isDateNotInPast) while `time` is a time earlier
+ * today that has already gone by. Kept separate from isDateNotInPast
+ * (rather than folded into it) so the two can show distinct, specific
+ * error messages — "choose a date from today" vs. "that time has
+ * already passed today" are different customer mistakes.
+ *
+ * A 15-minute grace period, not an exact "right now" cutoff: a customer
+ * who picks a valid time and then spends a few minutes filling in the
+ * rest of the form (contact details, etc.) shouldn't have an otherwise
+ * legitimate booking rejected on submission just because those minutes
+ * ticked by — only used server-side (the client's own live check
+ * doesn't need slack, since it re-evaluates continuously as the
+ * customer interacts with the form).
+ */
+export function isDateTimeNotInPast(date: string, time: string, graceMinutes = 0): boolean {
+  if (!date || !time) return false;
+  const target = new Date(`${date}T${time}`);
+  if (Number.isNaN(target.getTime())) return false;
+  return target.getTime() >= Date.now() - graceMinutes * 60_000;
+}
+
+/**
  * Shared by POST /api/bookings. We validate the *whole* form here even
  * though the price itself is always recalculated server-side (see the
  * route handler) — never trust a price the client could have tampered
@@ -116,6 +140,10 @@ export const bookingInputSchema = z
   .refine((data) => isDateNotInPast(data.date), {
     message: "Date must not be in the past",
     path: ["date"],
+  })
+  .refine((data) => isDateTimeNotInPast(data.date, data.time, 15), {
+    message: "Date/time must not be in the past",
+    path: ["time"],
   })
   .refine(
     (data) =>

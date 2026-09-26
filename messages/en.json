@@ -122,6 +122,7 @@
     "timeLabel": "Time",
     "chooseDate": "Choose date",
     "dateInPastError": "Please choose a date from today onwards.",
+    "timeInPastError": "That time has already passed today. Please choose a later time.",
     "chooseTime": "Choose time",
     "passengersLabel": "Passengers",
     "luggageLabel": "Bags",

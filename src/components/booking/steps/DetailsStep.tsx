@@ -17,7 +17,7 @@ import {
 } from "@/lib/pricing";
 import { track } from "@/lib/analytics";
 import { formatDateLong } from "@/lib/formatDate";
-import { isReturnDateTimeValid, isDateNotInPast } from "@/lib/validation";
+import { isReturnDateTimeValid, isDateNotInPast, isDateTimeNotInPast } from "@/lib/validation";
 import type { BookingFormState } from "../types";
 
 export function DetailsStep({
@@ -113,6 +113,19 @@ export function DetailsStep({
   // never enough.
   const dateInPast = form.date.length > 0 && !isDateNotInPast(form.date);
 
+  // The softer sibling of dateInPast: the date itself is fine (today or
+  // later), but the time is one that's already passed today. Its own
+  // check/message (not folded into dateInPast) since it's a different
+  // mistake with a different fix ("pick a later time today", not
+  // "pick a different date"). No grace period here (unlike the
+  // server's matching check) — this re-evaluates live as the customer
+  // types, so there's nothing to be lenient about yet.
+  const timeInPast =
+    form.date.length > 0 &&
+    form.time.length > 0 &&
+    !dateInPast &&
+    !isDateTimeNotInPast(form.date, form.time);
+
   // Require an actually-valid date (not just a non-empty string) so an
   // in-progress/garbled native input value can never be used to
   // continue to the price step. A return trip additionally needs its
@@ -125,6 +138,7 @@ export function DetailsStep({
     dateDisplay.length > 0 &&
     !dateInPast &&
     form.time.length > 0 &&
+    !timeInPast &&
     (!form.returnTrip || (returnDateDisplay.length > 0 && form.returnTime.length > 0 && returnDateTimeValid)) &&
     priceReady;
 
@@ -166,6 +180,11 @@ export function DetailsStep({
         {dateInPast && (
           <p role="alert" className="mt-2 text-xs font-medium text-danger">
             {t("dateInPastError")}
+          </p>
+        )}
+        {timeInPast && (
+          <p role="alert" className="mt-2 text-xs font-medium text-danger">
+            {t("timeInPastError")}
           </p>
         )}
 

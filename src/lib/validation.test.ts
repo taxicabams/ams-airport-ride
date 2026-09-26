@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { isReturnDateTimeValid, isDateNotInPast, bookingInputSchema } from "./validation";
+import {
+  isReturnDateTimeValid,
+  isDateNotInPast,
+  isDateTimeNotInPast,
+  bookingInputSchema,
+} from "./validation";
 
 // Computed relative to "now" (not hardcoded) so these never go stale.
 const TODAY = new Date().toISOString().slice(0, 10);
@@ -49,6 +54,39 @@ describe("isDateNotInPast", () => {
   });
 });
 
+// isDateTimeNotInPast takes date/time in *local* time (matching what a
+// native <input type="date"|"time"> actually produces) — build the
+// local-time strings from a Date's local getters, not toISOString()
+// (which is UTC and would silently shift by the runner's UTC offset).
+function localDateTimeParts(d: Date): { date: string; time: string } {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return {
+    date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
+    time: `${pad(d.getHours())}:${pad(d.getMinutes())}`,
+  };
+}
+
+describe("isDateTimeNotInPast", () => {
+  it("accepts a time later today", () => {
+    const { date, time } = localDateTimeParts(new Date(Date.now() + 2 * 3_600_000));
+    expect(isDateTimeNotInPast(date, time)).toBe(true);
+  });
+
+  it("rejects a time earlier today (no grace period by default)", () => {
+    const { date, time } = localDateTimeParts(new Date(Date.now() - 2 * 3_600_000));
+    expect(isDateTimeNotInPast(date, time)).toBe(false);
+  });
+
+  it("with a grace period, still accepts a time just a few minutes ago", () => {
+    const { date, time } = localDateTimeParts(new Date(Date.now() - 5 * 60_000));
+    expect(isDateTimeNotInPast(date, time, 15)).toBe(true);
+  });
+
+  it("rejects empty input rather than throwing", () => {
+    expect(isDateTimeNotInPast("", "")).toBe(false);
+  });
+});
+
 describe("bookingInputSchema — date must not be in the past", () => {
   const base = {
     pickup: "Schiphol",
@@ -68,8 +106,15 @@ describe("bookingInputSchema — date must not be in the past", () => {
     expect(result.success).toBe(false);
   });
 
-  it("accepts a booking dated today or later", () => {
-    expect(bookingInputSchema.safeParse({ ...base, date: TODAY }).success).toBe(true);
+  it("accepts a booking with a date/time 2 hours from now", () => {
+    // Date and time must come from the *same* moment — near midnight,
+    // "now + 2h" can roll over to tomorrow's date, so forcing date:
+    // TODAY while only adjusting the time would test the wrong thing.
+    const { date, time } = localDateTimeParts(new Date(Date.now() + 2 * 3_600_000));
+    expect(bookingInputSchema.safeParse({ ...base, date, time }).success).toBe(true);
+  });
+
+  it("accepts a booking dated next year, regardless of clock time", () => {
     expect(bookingInputSchema.safeParse(base).success).toBe(true);
   });
 });
