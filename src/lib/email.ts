@@ -238,7 +238,7 @@ function internalNotificationBody(booking: Booking, locale: "nl" | "en"): string
     detailRow("Naar", booking.destination),
     detailRow("Wanneer", `${booking.date} ${booking.time}`),
     detailRow("Passagiers / bagage", `${booking.passengers} / ${booking.luggage}`),
-    detailRow("Voertuig", booking.vehicleType === "BUS" ? "Bus / 7-persoons" : "Personenauto"),
+    detailRow("Voertuig", booking.vehicleType === "BUS" ? "Van" : "Comfort"),
     detailRow("Prijs", `${formatPrice(booking.price)} (${booking.priceSource})`),
   ];
   if (booking.flightNumber) rows.push(detailRow("Vluchtnummer", booking.flightNumber));
