@@ -1,22 +1,20 @@
 import { getTranslations } from "next-intl/server";
-import { CheckIcon, ShieldCheckIcon, StarIcon } from "@/components/ui/icons";
+import { CheckIcon } from "@/components/ui/icons";
 import { BookingWidget } from "@/components/booking/BookingWidget";
-import { companyInfo } from "@/lib/companyInfo";
 
 /**
- * "Vertrekbord" hero — full rebuild per the brief's two-column spec:
- * left column is the pitch (labels, heading, subtext, trust lines),
- * right column is the actual booking card (BookingWidget rendered
- * directly, not floated below on a separate row like the previous
- * Layout 4.0 hero). BookingWidget's own internals are untouched — only
- * where it's placed changed.
+ * "Vertrekbord" hero — two-column spec: left column is the pitch
+ * (labels, heading, subtext, trust checkmarks), right column is the
+ * actual booking card (BookingWidget rendered directly, not floated
+ * below on a separate row like the previous Layout 4.0 hero).
+ * BookingWidget's own internals are untouched — only where it's placed
+ * changed.
  *
- * The Google review score/count still show a bracket placeholder
- * ("[Google-score] · [aantal] reviews") rather than an invented number —
- * companyInfo.googleReviewScore/Count are deliberately still null (no
- * real profile exists yet), unlike kvkNumber/licenseNumber, which the
- * client explicitly asked to fill with an obvious "1234567"-style
- * preview value and so are shown for real here.
+ * Per explicit client feedback this pass: the Google-review-score line,
+ * the ILT/KvK line and the payment-logo line are all removed — none of
+ * them were wanted (Google reviews are being replaced by the site's own
+ * database-backed reviews — see Reviews.tsx — and ILT/KvK/iDEAL were
+ * simply "hoef ik niet").
  */
 export async function Hero() {
   const t = await getTranslations("Hero");
@@ -42,24 +40,6 @@ export async function Hero() {
           </h1>
 
           <p className="mt-4 max-w-lg text-ink-foreground-muted">{t("subtitle")}</p>
-
-          <div className="mt-6 space-y-2.5 text-sm">
-            <p className="flex items-center gap-2 text-ink-foreground-muted">
-              <span className="flex items-center gap-0.5 text-brand">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <StarIcon key={i} className="h-3 w-3" />
-                ))}
-              </span>
-              {t("trustReviews")}
-            </p>
-            <p className="flex items-center gap-2 text-ink-foreground-muted">
-              <ShieldCheckIcon className="h-4 w-4 shrink-0 text-success" />
-              {companyInfo.kvkNumber
-                ? t("trustLicenseReal", { kvk: companyInfo.kvkNumber })
-                : t("trustLicense")}
-            </p>
-            <p className="font-mono text-xs text-ink-foreground-muted">{t("trustPayment")}</p>
-          </div>
         </div>
 
         <div id="boeken" className="scroll-mt-24">

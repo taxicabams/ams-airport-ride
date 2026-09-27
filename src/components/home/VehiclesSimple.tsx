@@ -9,22 +9,23 @@ import {
 } from "@/lib/pricing/vehicle";
 import { CHEAPEST_SCHIPHOL_PRICE } from "@/lib/pricing";
 import { vehiclePhoto } from "@/lib/vehiclePhoto";
+import { heroPhoto } from "@/lib/heroPhoto";
 
 /**
- * "Vertrekbord" rebuild — real photo slots (still a designed placeholder
- * until vehiclePhoto.url is set — see that file's own null-until-real
- * convention; the client's brief explicitly wants real fleet photos here
- * and has said they'll supply them), "Meest gekozen" badge on Comfort,
- * and real "vanaf €X" prices computed from the actual pricing engine
+ * "Vertrekbord" rebuild — "Meest gekozen" badge on Comfort, and real
+ * "vanaf €X" prices computed from the actual pricing engine
  * (CHEAPEST_SCHIPHOL_PRICE + BUS_SURCHARGE_EUR) — never invented.
  *
- * This brief describes a third tier ("Business," between Comfort and
- * Taxibus). The real vehicle/pricing engine only has two vehicle types
- * (PERSONENAUTO/BUS) — adding a third, real, separately-priced tier is a
- * backend/pricing change, not a visual one, so it's deliberately not
- * added here; see the session's own report. "Van" is relabelled
- * "Taxibus" for this marketing section only (Vehicles namespace) — the
- * booking flow itself still says "Van" (Booking namespace, untouched).
+ * Real photos, per direct feedback ("zoek taxi auto fotos en gebruik
+ * ze"): searched Pexels for a generic black sedan for Comfort, but every
+ * clean-looking result had a visible, legible (non-Dutch) license plate
+ * or actual company livery — the same honesty bar this project has held
+ * to all along (no plates/logos that could misrepresent the vehicle).
+ * Comfort stays the icon placeholder for now rather than use a photo
+ * that fails that bar. Taxibus reuses heroPhoto.ts's already-vetted,
+ * plate-free, generic MPV/van-at-an-airport photo — a legitimate reuse,
+ * not a new/unvetted image. vehiclePhoto.ts (the client's own real
+ * fleet photo, still null) still overrides both the moment it's set.
  */
 export async function VehiclesSimple() {
   const t = await getTranslations("Vehicles");
@@ -37,6 +38,7 @@ export async function VehiclesSimple() {
       capacity: tb("vehiclePersonenautoCapacity", { max: PERSONENAUTO_MAX_PASSENGERS }),
       price: CHEAPEST_SCHIPHOL_PRICE,
       mostChosen: true,
+      photo: null as { url: string; alt: { nl: string; en: string } } | null,
     },
     {
       Icon: VanIcon,
@@ -44,6 +46,7 @@ export async function VehiclesSimple() {
       capacity: tb("vehicleBusCapacity", { max: BUS_MAX_PASSENGERS }),
       price: CHEAPEST_SCHIPHOL_PRICE + BUS_SURCHARGE_EUR,
       mostChosen: false,
+      photo: heroPhoto,
     },
   ];
 
@@ -59,7 +62,9 @@ export async function VehiclesSimple() {
       </div>
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2">
-        {vehicles.map(({ Icon, title, capacity, price, mostChosen }) => (
+        {vehicles.map(({ Icon, title, capacity, price, mostChosen, photo }) => {
+          const displayPhoto = vehiclePhoto.url ? { url: vehiclePhoto.url, alt: vehiclePhoto.alt } : photo;
+          return (
           <Link
             key={title}
             href="/#boeken"
@@ -71,8 +76,8 @@ export async function VehiclesSimple() {
               </span>
             )}
             <div className="relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-[#17263d] to-ink-2 sm:h-48">
-              {vehiclePhoto.url ? (
-                <Image src={vehiclePhoto.url} alt={vehiclePhoto.alt.nl} fill className="object-cover" />
+              {displayPhoto ? (
+                <Image src={displayPhoto.url} alt={displayPhoto.alt.nl} fill className="object-cover" />
               ) : (
                 <Icon className="h-16 w-16 text-brand sm:h-20 sm:w-20" />
               )}
@@ -88,7 +93,8 @@ export async function VehiclesSimple() {
               <ArrowRightIcon className="h-4 w-4 shrink-0 text-muted transition duration-200 group-hover:translate-x-1 group-hover:text-brand-text" />
             </div>
           </Link>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

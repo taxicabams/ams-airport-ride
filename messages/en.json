@@ -22,10 +22,8 @@
   },
   "TopBar": {
     "available": "Available 24/7",
-    "directCarrier": "Direct with the carrier – no middleman",
-    "freeCancellation": "Free cancellation up to [X] hours",
-    "bookingLookup": "Find your booking",
-    "businessAccount": "Business account"
+    "freeCancellation": "Free cancellation up to 3 hours in advance",
+    "bookingLookup": "Find your booking"
   },
   "Hero": {
     "eyebrow": "Schiphol taxi",
@@ -38,11 +36,7 @@
     "subtitle": "Your price is fixed before you book — even at night, on weekends, or in traffic. Add your flight number and we'll take any delay into account. Booking takes 30 seconds.",
     "supportingText": "Enter your route and see your price right away — before you book.",
     "ctaPrimary": "Show my fixed price →",
-    "compactTrustLine": "No surcharges · Luggage included · Free cancellation",
-    "trustReviews": "[Google score] · [count] reviews",
-    "trustLicense": "ILT license · KvK [number]",
-    "trustLicenseReal": "ILT license · KvK {kvk}",
-    "trustPayment": "iDEAL · Visa · Mastercard · Card or cash",
+    "compactTrustLine": "No surcharges · Luggage included · Free cancellation up to 3 hours ahead",
     "floatingCardRoute": "Schiphol → Amsterdam"
   },
   "FlightMonitor": {
@@ -145,6 +139,8 @@
     "addressUnavailable": "Couldn't fetch addresses. Please try again.",
     "addressSelectRequired": "Select an address from the suggestions",
     "addressHouseNumberRequired": "Please enter your house number.",
+    "houseNumberLabel": "House number",
+    "houseNumberPlaceholder": "E.g. 12",
     "whenHeading": "When would you like to leave?",
     "dateLabel": "Date",
     "timeLabel": "Time",
@@ -180,7 +176,7 @@
     "vehicleSummarySedan": "Comfort · 1–{max} passengers",
     "vehicleSummaryBus": "Van · up to {max} passengers",
     "noHiddenCosts": "No hidden costs.",
-    "paymentNote": "Pay easily after your ride with card or cash.",
+    "paymentNote": "Pay the driver after your ride, in the car: card, credit card or cash. You always get a receipt.",
     "bookButton": "Book this ride",
     "nameLabel": "Name",
     "phoneLabel": "Phone number",
@@ -222,7 +218,7 @@
     "price": "Fixed price",
     "flightNumber": "Flight number",
     "paymentTitle": "Payment",
-    "paymentBody": "Fixed price upfront. Pay easily after your ride with card or cash.",
+    "paymentBody": "Fixed price upfront. Pay the driver after your ride, in the car: card, credit card or cash. You always get a receipt.",
     "schipholTitle": "Where will you find your driver?",
     "contactTitle": "Questions about your booking?",
     "backHome": "← Back to home"
@@ -243,11 +239,11 @@
     "title1": "Price is fixed",
     "body1": "No surprises afterwards.",
     "title2": "Free waiting time",
-    "body2": "[Y] minutes included after landing.",
+    "body2": "60 minutes included after landing.",
     "title3": "You know who's coming",
     "body3": "Name, plate and number via WhatsApp.",
     "title4": "Free cancellation",
-    "body4": "Up to [X] hours in advance."
+    "body4": "Up to 3 hours in advance."
   },
   "Trust": {
     "fixedPriceTitle": "Clear price",
@@ -286,12 +282,7 @@
   "Reviews": {
     "eyebrow": "Reviews",
     "title": "What customers say",
-    "scoreLine": "[Google score] · [count] reviews",
-    "cta": "See our Google reviews →",
-    "writeReview": "Write a review",
-    "placeholderQuote": "[Review text will appear here once available]",
-    "placeholderName": "[Name]",
-    "empty": "Our real Google reviews will appear here soon."
+    "empty": "Real reviews from our customers will appear here soon."
   },
   "Zakelijk": {
     "eyebrow": "Business transport",
@@ -300,7 +291,7 @@
     "item1": "Pay by invoice",
     "item2": "Dedicated contact person",
     "item3": "Meet & Greet with a name sign",
-    "ctaAccount": "Request a business account",
+    "ctaAccount": "Get in touch",
     "ctaCall": "Call us"
   },
   "Faq": {

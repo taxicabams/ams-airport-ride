@@ -297,6 +297,17 @@ export function DetailsStep({
             </button>
           </p>
         )}
+        {/* Real bug found live: the vehicle picker + "Bereken vaste
+            prijs" button go silently disabled — with zero visible
+            explanation — every time carQuoteLoading is true, which
+            re-fires (a fresh loadCarQuotePreview() call) any time the
+            customer goes Back to the route step and Next again. From
+            the outside that reads exactly like "it worked a moment ago,
+            now the button doesn't do anything" — indistinguishable from
+            a broken button without this message. */}
+        {carQuoteLoading && !carQuoteError && (
+          <p className="text-xs text-muted">{t("calculating")}</p>
+        )}
         {showAutoSwitchNote && (
           <p className="text-xs text-muted">{t("vehicleAutoSwitchNote")}</p>
         )}

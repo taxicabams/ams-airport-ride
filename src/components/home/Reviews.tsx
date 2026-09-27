@@ -1,25 +1,38 @@
 import { getTranslations } from "next-intl/server";
 import { StarIcon } from "@/components/ui/icons";
-import { companyInfo } from "@/lib/companyInfo";
+import { prisma } from "@/lib/db";
 
 /**
- * Reviews section — deliberately NOT filled with invented star ratings,
- * review counts, customer names or quotes. This is a hard line carried
- * through this entire project ("verzin niets... nooit reviews of
- * klantaantallen verzinnen"), and it doesn't bend even for a
- * not-to-be-deployed preview: fabricated testimonial text is fabricated
- * regardless of whether it ships. Where companyInfo.googleReviewsUrl/
- * Score/Count are still null (as they are today), this renders the
- * section's real structure with the brief's own bracket-placeholder
- * convention ("[Google-score]", "[Naam]", "[Review-tekst volgt...]") —
- * exactly what the client's own brief asked for missing content — so
- * the layout is visible without asserting anything false. The moment
- * real values are supplied, swap them in here; no fake numbers ever sat
- * in this file waiting to accidentally go live.
+ * Real reviews from AMS Airport Ride's own database — replaces the
+ * Google-reviews section entirely, per direct feedback ("google review
+ * hoeft niet, me eigen review gekoppeld aan mijn database"). Reads
+ * published Review rows directly (see prisma/schema.prisma) — nothing
+ * here is invented; an empty result renders the honest "coming soon"
+ * message, never a placeholder star rating or fabricated quote.
+ *
+ * Wrapped in try/catch because the Review table's migration has NOT
+ * been run against the live database yet (a schema migration wasn't run
+ * without explicit confirmation, per this session's "don't deploy
+ * anything without my review" instruction) — until it has, this
+ * degrades to the empty state instead of crashing the homepage.
  */
 export async function Reviews() {
   const t = await getTranslations("Reviews");
-  const hasRealScore = Boolean(companyInfo.googleReviewScore && companyInfo.googleReviewCount);
+
+  let reviews: { id: string; customerName: string; rating: number; comment: string }[] = [];
+  try {
+    reviews = await prisma.review.findMany({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+      take: 9,
+      select: { id: true, customerName: true, rating: true, comment: true },
+    });
+  } catch {
+    reviews = [];
+  }
+
+  const averageRating =
+    reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : null;
 
   return (
     <section id="reviews" className="scroll-mt-24 mx-auto max-w-4xl px-4 py-16 sm:px-6">
@@ -28,45 +41,31 @@ export async function Reviews() {
         <h2 className="mt-2 font-heading text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
           {t("title")}
         </h2>
-        <p className="mt-3 flex items-center justify-center gap-2 font-mono text-sm text-muted">
-          <span className="flex items-center gap-0.5 text-brand">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <StarIcon key={i} className="h-4 w-4" />
-            ))}
-          </span>
-          {hasRealScore
-            ? `${companyInfo.googleReviewScore} · ${companyInfo.googleReviewCount} reviews`
-            : t("scoreLine")}
-        </p>
+        {averageRating !== null && (
+          <p className="mt-3 flex items-center justify-center gap-2 font-mono text-sm text-muted">
+            <span className="flex items-center gap-0.5 text-brand">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <StarIcon key={i} className={`h-4 w-4 ${i < Math.round(averageRating) ? "" : "opacity-25"}`} />
+              ))}
+            </span>
+            {averageRating.toFixed(1)} · {reviews.length} reviews
+          </p>
+        )}
       </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="rounded-[18px] border border-border bg-surface p-5">
-            <p className="text-sm text-muted">{t("placeholderQuote")}</p>
-            <p className="mt-3 text-sm font-semibold text-foreground">{t("placeholderName")}</p>
-          </div>
-        ))}
-      </div>
-
-      {companyInfo.googleReviewsUrl ? (
-        <div className="mt-8 flex flex-wrap justify-center gap-4">
-          <a
-            href={companyInfo.googleReviewsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-[10px] bg-brand px-5 py-2.5 text-sm font-semibold text-brand-foreground shadow-sm transition duration-150 hover:bg-brand-dark"
-          >
-            {t("cta")}
-          </a>
-          <a
-            href={companyInfo.googleReviewsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-[10px] border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition duration-150 hover:bg-muted-background"
-          >
-            {t("writeReview")}
-          </a>
+      {reviews.length > 0 ? (
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          {reviews.slice(0, 3).map((review) => (
+            <div key={review.id} className="rounded-[18px] border border-border bg-surface p-5">
+              <span className="flex items-center gap-0.5 text-brand">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <StarIcon key={i} className={`h-3.5 w-3.5 ${i < review.rating ? "" : "opacity-25"}`} />
+                ))}
+              </span>
+              <p className="mt-2 text-sm text-muted">{review.comment}</p>
+              <p className="mt-3 text-sm font-semibold text-foreground">{review.customerName}</p>
+            </div>
+          ))}
         </div>
       ) : (
         <p className="mt-8 text-center text-sm text-muted">{t("empty")}</p>

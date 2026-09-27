@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { MobileNav } from "@/components/marketing/MobileNav";
+import { LocaleSwitcher } from "@/components/marketing/LocaleSwitcher";
 import { Logo } from "@/components/ui/Logo";
 import { companyInfo } from "@/lib/companyInfo";
 import { PhoneIcon } from "@/components/ui/icons";
@@ -54,6 +55,7 @@ export async function Header() {
               {companyInfo.phone}
             </a>
           )}
+          <LocaleSwitcher />
           <Link
             href="/#boeken"
             className="hidden rounded-[10px] bg-brand px-4 py-2 text-sm font-semibold text-brand-foreground shadow-sm transition duration-150 hover:bg-brand-dark md:inline-block"

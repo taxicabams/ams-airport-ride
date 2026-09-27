@@ -51,11 +51,9 @@ export default async function HomePage({
     areaServed: ["Amsterdam", "Schiphol", "Nederland"],
   };
 
-  // "Vertrekbord" homepage order, per the brief's exact spec: Hero (+
-  // flight-monitoring bar, both inside HeroBooking) → USP band →
-  // How it works → Onze auto's → Amsterdam/Schiphol banner (kept for its
-  // "#amsterdam-taxi" anchor — see TwoColumnBanner.tsx) → Populaire
-  // routes → Reviews → Zakelijk → FAQ → Final CTA.
+  // Route price table moved right after the hero per direct feedback
+  // ("die tabel met vaste prijzen... gelijk duidelijk bovenaan ergens
+  // bij booking vak") — was much further down the page.
   return (
     <>
       <script
@@ -63,11 +61,11 @@ export default async function HomePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <HeroBooking />
+      <RouteList />
       <TrustBar />
       <HowItWorksSimple />
       <VehiclesSimple />
       <TwoColumnBanner />
-      <RouteList />
       <Reviews />
       <Zakelijk />
       <FaqAccordion />

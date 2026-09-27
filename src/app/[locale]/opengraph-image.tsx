@@ -1,11 +1,16 @@
 import { ImageResponse } from "next/og";
 
 /**
- * No OG image existed before this — a link shared on WhatsApp/social
- * would show no preview image at all. Generated at build/request time
- * with next/og (Satori under the hood, so only simple flex/text nodes —
- * no raw SVG paths like the real logo uses), matching the brand's navy/
- * amber palette. Real asset, not a stock photo.
+ * Rebuilt for the "vertrekbord" identity — the previous version was
+ * badly stale (a leftover pre-Layout-4.0 blue, and a generic "A" badge
+ * instead of the real logo mark). Per direct feedback ("als je zoekt
+ * moet er een logo komen bij website zoekbalk als je al die website
+ * preview ziet") — this OG image is exactly what a search engine or a
+ * WhatsApp/social link preview shows, so it now uses the *real* logo
+ * mark (the same path data as LogoMark.tsx, inlined here since next/og
+ * can't import a React component that renders a plain <svg>, only plain
+ * flex/text nodes plus raw SVG elements) and the current navy/amber
+ * palette + real hero copy.
  */
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -28,36 +33,35 @@ export default async function OpengraphImage({
           flexDirection: "column",
           alignItems: "flex-start",
           justifyContent: "center",
-          backgroundColor: "#0b3d59",
+          backgroundColor: "#0f1a2b",
           padding: "80px",
           color: "#ffffff",
           fontFamily: "sans-serif",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 48 }}>
-          <div
-            style={{
-              width: 64,
-              height: 64,
-              borderRadius: 16,
-              background: "#ffffff",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 30,
-              fontWeight: 700,
-              color: "#0b3d59",
-            }}
-          >
-            A
-          </div>
+          <svg width="72" height="72" viewBox="0 0 40 40">
+            <rect width="40" height="40" rx="10" fill="#f5a524" />
+            <path
+              d="M9 30 Q16 13, 30 9"
+              stroke="#ffffff"
+              strokeWidth="2.6"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <circle cx="9" cy="30" r="2.8" fill="#ffffff" />
+            <path d="M30 9 36.5 4.5 32 13.5 28.5 12Z" fill="#ffffff" />
+          </svg>
           <div style={{ fontSize: 26, fontWeight: 700, letterSpacing: 3 }}>AMS AIRPORT RIDE</div>
         </div>
         <div style={{ display: "flex", fontSize: 58, fontWeight: 800, lineHeight: 1.15, maxWidth: 920 }}>
-          {isNl ? "Taxi van en naar Schiphol" : "Taxi to and from Schiphol"}
+          {isNl ? "Taxi naar Schiphol." : "Taxi to Schiphol."}
         </div>
-        <div style={{ display: "flex", fontSize: 30, marginTop: 28, color: "#9fd3ea" }}>
-          {isNl ? "Vaste prijs vanaf €35 · Deur-tot-deur" : "Fixed price from €35 · Door-to-door"}
+        <div style={{ display: "flex", fontSize: 30, marginTop: 28, color: "#f5a524", fontWeight: 700 }}>
+          {isNl ? "Op tijd. Vaste prijs." : "On time. Fixed price."}
+        </div>
+        <div style={{ display: "flex", fontSize: 24, marginTop: 16, color: "#b9c4d6" }}>
+          {isNl ? "Vaste prijs vanaf €35 · 24/7 bereikbaar" : "Fixed price from €35 · Available 24/7"}
         </div>
       </div>
     ),

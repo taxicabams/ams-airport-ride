@@ -22,10 +22,8 @@
   },
   "TopBar": {
     "available": "24/7 bereikbaar",
-    "directCarrier": "Direct bij de vervoerder – geen tussenpartij",
-    "freeCancellation": "Gratis annuleren tot [X] uur",
-    "bookingLookup": "Boeking opzoeken",
-    "businessAccount": "Zakelijk account"
+    "freeCancellation": "Gratis annuleren tot 3 uur van tevoren",
+    "bookingLookup": "Boeking opzoeken"
   },
   "Hero": {
     "eyebrow": "Schiphol taxi",
@@ -38,11 +36,7 @@
     "subtitle": "Je prijs staat vast vóórdat je boekt — ook 's nachts, in het weekend of bij file. Vul je vluchtnummer in en wij houden rekening met eventuele vertraging. Boeken kost je 30 seconden.",
     "supportingText": "Vul je route in en zie direct je prijs — nog voor je boekt.",
     "ctaPrimary": "Toon mijn vaste prijs →",
-    "compactTrustLine": "Geen toeslagen · Bagage gratis · Gratis annuleren",
-    "trustReviews": "[Google-score] · [aantal] reviews",
-    "trustLicense": "ILT-vergunning · KvK [nummer]",
-    "trustLicenseReal": "ILT-vergunning · KvK {kvk}",
-    "trustPayment": "iDEAL · Visa · Mastercard · PIN of contant",
+    "compactTrustLine": "Geen toeslagen · Bagage gratis · Gratis annuleren tot 3 uur van tevoren",
     "floatingCardRoute": "Schiphol → Amsterdam"
   },
   "FlightMonitor": {
@@ -145,6 +139,8 @@
     "addressUnavailable": "Kon adressen niet ophalen. Probeer het opnieuw.",
     "addressSelectRequired": "Selecteer een adres uit de suggesties",
     "addressHouseNumberRequired": "Vul je huisnummer in.",
+    "houseNumberLabel": "Huisnummer",
+    "houseNumberPlaceholder": "Bijv. 12",
     "whenHeading": "Wanneer wilt u vertrekken?",
     "dateLabel": "Datum",
     "timeLabel": "Tijd",
@@ -180,7 +176,7 @@
     "vehicleSummarySedan": "Comfort · 1–{max} passagiers",
     "vehicleSummaryBus": "Van · tot {max} passagiers",
     "noHiddenCosts": "Geen verborgen kosten.",
-    "paymentNote": "Betaal eenvoudig na de rit met PIN of contant.",
+    "paymentNote": "Betaal na de rit bij de chauffeur in de auto: PIN, creditcard of contant. U krijgt altijd een bon mee.",
     "bookButton": "Boek deze rit",
     "nameLabel": "Naam",
     "phoneLabel": "Telefoonnummer",
@@ -222,7 +218,7 @@
     "price": "Vaste prijs",
     "flightNumber": "Vluchtnummer",
     "paymentTitle": "Betaling",
-    "paymentBody": "Vaste prijs vooraf. Betaal eenvoudig na de rit met PIN of contant.",
+    "paymentBody": "Vaste prijs vooraf. Betaal na de rit bij de chauffeur in de auto: PIN, creditcard of contant. U krijgt altijd een bon mee.",
     "schipholTitle": "Waar vindt u uw chauffeur?",
     "contactTitle": "Vragen over uw boeking?",
     "backHome": "← Terug naar home"
@@ -243,11 +239,11 @@
     "title1": "Prijs staat vast",
     "body1": "Geen verrassingen achteraf.",
     "title2": "Gratis wachten",
-    "body2": "[Y] minuten na landing inbegrepen.",
+    "body2": "60 minuten na landing inbegrepen.",
     "title3": "Je weet wie er komt",
     "body3": "Naam, kenteken en nummer via WhatsApp.",
     "title4": "Gratis annuleren",
-    "body4": "Tot [X] uur van tevoren."
+    "body4": "Tot 3 uur van tevoren."
   },
   "Trust": {
     "fixedPriceTitle": "Duidelijke prijs",
@@ -286,12 +282,7 @@
   "Reviews": {
     "eyebrow": "Reviews",
     "title": "Wat klanten zeggen",
-    "scoreLine": "[Google-score] · [aantal] reviews",
-    "cta": "Bekijk onze Google reviews →",
-    "writeReview": "Schrijf een review",
-    "placeholderQuote": "[Review-tekst volgt hier zodra beschikbaar]",
-    "placeholderName": "[Naam]",
-    "empty": "Hier komen binnenkort onze echte Google-reviews."
+    "empty": "Hier komen binnenkort echte reviews van onze klanten."
   },
   "Zakelijk": {
     "eyebrow": "Zakelijk vervoer",
@@ -300,7 +291,7 @@
     "item1": "Betalen op factuur",
     "item2": "Vaste contactpersoon",
     "item3": "Meet & Greet met naambordje",
-    "ctaAccount": "Zakelijk account aanvragen",
+    "ctaAccount": "Neem contact op",
     "ctaCall": "Bel ons"
   },
   "Faq": {

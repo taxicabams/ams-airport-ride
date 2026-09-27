@@ -107,3 +107,24 @@ model Booking {
   @@index([createdAt])
   @@index([rideType])
 }
+
+// Real reviews, submitted by real customers, stored in our own
+// database — replaces relying on a Google Business review widget (no
+// real Google profile exists yet, and the client explicitly asked for
+// "me eigen review gekoppeld aan mijn database" instead). `published`
+// defaults to false: a submitted review needs a manual approval step
+// before it's ever shown on the site — this is what keeps the honesty
+// rule ("nooit reviews verzinnen") intact even with public submissions:
+// nothing a stranger types becomes a visible testimonial automatically.
+model Review {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  customerName String
+  rating       Int // 1-5
+  comment      String
+
+  published Boolean @default(false)
+
+  @@index([published, createdAt])
+}

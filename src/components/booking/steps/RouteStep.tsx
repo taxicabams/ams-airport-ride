@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { AddressField } from "@/components/ui/AddressField";
+import { inputClassName } from "@/components/ui/Field";
 import { PlaneIcon, ArrowRightIcon } from "@/components/ui/icons";
 import type { ResolvedPlace } from "@/lib/places";
 import type { BookingFormState } from "../types";
@@ -22,6 +23,23 @@ const SCHIPHOL = {
 } as const;
 
 type RideMode = "toSchiphol" | "fromSchiphol" | "other";
+
+/**
+ * Splices a house number into a Google-formatted address that resolved
+ * without one — e.g. "Damrak, 1012 LP Amsterdam, Netherlands" + "1" ->
+ * "Damrak 1, 1012 LP Amsterdam, Netherlands". Google's formatted_address
+ * convention puts the street name first, before the first comma, so
+ * inserting right there is correct for the vast majority of real
+ * addresses. Real bug found live this session: customers found it
+ * awkward/confusing to edit the house number back into the same text
+ * field a suggestion had just filled in — this gives them a small,
+ * separate, single-purpose input instead.
+ */
+function insertHouseNumber(formattedAddress: string, houseNumber: string): string {
+  const commaIndex = formattedAddress.indexOf(",");
+  if (commaIndex === -1) return `${formattedAddress} ${houseNumber}`;
+  return `${formattedAddress.slice(0, commaIndex)} ${houseNumber}${formattedAddress.slice(commaIndex)}`;
+}
 
 /**
  * Three explicit modes instead of the earlier two-tab "Naar Schiphol /
@@ -52,6 +70,8 @@ export function RouteStep({
   const t = useTranslations("Booking");
   const locale = useLocale() as "nl" | "en";
   const [touched, setTouched] = useState<{ pickup?: boolean; destination?: boolean }>({});
+  const [pickupHouseNumber, setPickupHouseNumber] = useState("");
+  const [destinationHouseNumber, setDestinationHouseNumber] = useState("");
   const [rideMode, setRideMode] = useState<RideMode>(() => {
     if (form.pickup.toLowerCase().includes("schiphol")) return "fromSchiphol";
     if (form.destination.toLowerCase().includes("schiphol")) return "toSchiphol";
@@ -106,6 +126,7 @@ export function RouteStep({
     // Surface the house-number message right away — don't make the
     // customer blur the field first to discover why Next stays disabled.
     if (place?.missingHouseNumber) setTouched((s) => ({ ...s, pickup: true }));
+    else setPickupHouseNumber(""); // fresh resolution, any earlier number no longer applies
   }
 
   function resolveDestination(place: ResolvedPlace | null) {
@@ -116,6 +137,28 @@ export function RouteStep({
       destinationMissingHouseNumber: place?.missingHouseNumber ?? false,
     });
     if (place?.missingHouseNumber) setTouched((s) => ({ ...s, destination: true }));
+    else setDestinationHouseNumber("");
+  }
+
+  // Applied from the separate "Huisnummer" field below (see
+  // insertHouseNumber's own note) — never from editing the address text
+  // itself, which is still Google-autocomplete-only.
+  function applyPickupHouseNumber(value: string) {
+    setPickupHouseNumber(value);
+    if (value.trim().length === 0) return;
+    onChange({
+      pickup: insertHouseNumber(form.pickup, value.trim()),
+      pickupMissingHouseNumber: false,
+    });
+  }
+
+  function applyDestinationHouseNumber(value: string) {
+    setDestinationHouseNumber(value);
+    if (value.trim().length === 0) return;
+    onChange({
+      destination: insertHouseNumber(form.destination, value.trim()),
+      destinationMissingHouseNumber: false,
+    });
   }
 
   function selectRideMode(mode: RideMode) {
@@ -213,12 +256,31 @@ export function RouteStep({
               onChange={(value) => onChange({ pickup: value })}
               onResolve={resolvePickup}
               locale={locale}
-              error={pickupError}
+              error={pickupNeedsHouseNumber ? undefined : pickupError}
               loadingLabel={t("addressLoading")}
               noResultsLabel={t("addressNoResults")}
               notConfiguredLabel={t("addressNotConfigured")}
               unavailableLabel={t("addressUnavailable")}
             />
+            {/* Separate from the Google-autocomplete text field on
+                purpose — real feedback this session: typing a house
+                number back into the same field a suggestion just filled
+                in was awkward and confusing. */}
+            {pickupNeedsHouseNumber && (
+              <div className="mt-1.5">
+                <label htmlFor="pickup-housenumber" className="text-sm font-medium text-foreground">
+                  {t("houseNumberLabel")}
+                </label>
+                <input
+                  id="pickup-housenumber"
+                  className={inputClassName}
+                  placeholder={t("houseNumberPlaceholder")}
+                  value={pickupHouseNumber}
+                  autoFocus
+                  onChange={(e) => applyPickupHouseNumber(e.target.value)}
+                />
+              </div>
+            )}
           </div>
         )}
 
@@ -240,12 +302,27 @@ export function RouteStep({
               onChange={(value) => onChange({ destination: value })}
               onResolve={resolveDestination}
               locale={locale}
-              error={destinationError}
+              error={destinationNeedsHouseNumber ? undefined : destinationError}
               loadingLabel={t("addressLoading")}
               noResultsLabel={t("addressNoResults")}
               notConfiguredLabel={t("addressNotConfigured")}
               unavailableLabel={t("addressUnavailable")}
             />
+            {destinationNeedsHouseNumber && (
+              <div className="mt-1.5">
+                <label htmlFor="destination-housenumber" className="text-sm font-medium text-foreground">
+                  {t("houseNumberLabel")}
+                </label>
+                <input
+                  id="destination-housenumber"
+                  className={inputClassName}
+                  placeholder={t("houseNumberPlaceholder")}
+                  value={destinationHouseNumber}
+                  autoFocus
+                  onChange={(e) => applyDestinationHouseNumber(e.target.value)}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
