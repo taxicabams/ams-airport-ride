@@ -20,10 +20,22 @@ const SCHIPHOL_LOCATION = LOCATIONS.find((l) => l.id === "schiphol")!;
  * the app's own real distance/duration formula (fallback.ts) from each
  * location's real coordinates (lib/locations.ts) when no hand-
  * researched CANONICAL_ROUTE_FACTS entry exists for it.
+ *
+ * "sloten" (Amsterdam-Sloten, the neighborhood bordering Schiphol) is
+ * listed FIRST and deliberately: it's the one real curated route that
+ * actually prices at €35 — the exact number the hero badge advertises
+ * ("Vaste prijs vanaf €35"). Before this, the visible table's cheapest
+ * row was Amstelveen at €40, so a visitor saw the hero's €35 claim
+ * immediately contradicted by the very next thing on the page — a real
+ * trust/credibility gap, not just a cosmetic one. This isn't a new or
+ * invented price; it was already in SCHIPHOL_PRICES and already the
+ * source of CHEAPEST_SCHIPHOL_PRICE (used by the hero badge) — it just
+ * wasn't previously surfaced in this summary table.
  */
-const EXTRA_LOCATION_IDS = ["west", "zuid", "oost", "centrum", "noord", "heemstede"] as const;
+const EXTRA_LOCATION_IDS = ["sloten", "west", "zuid", "oost", "centrum", "noord", "heemstede"] as const;
 
 const EXTRA_LABELS: Record<(typeof EXTRA_LOCATION_IDS)[number], { nl: string; en: string }> = {
+  sloten: { nl: "Amsterdam Sloten", en: "Amsterdam Sloten" },
   west: { nl: "Amsterdam West", en: "Amsterdam West" },
   zuid: { nl: "Amsterdam Zuid", en: "Amsterdam South" },
   oost: { nl: "Amsterdam Oost", en: "Amsterdam East" },

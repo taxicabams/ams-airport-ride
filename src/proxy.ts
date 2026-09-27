@@ -27,8 +27,39 @@ const intlMiddleware = createMiddleware(routing);
  * race a stale cookie against, and the canonical URL structure (Dutch at
  * bare paths, no "/nl/..." prefix) is unchanged.
  */
+const WWW_HOST = "www.amsairportride.nl";
+const APEX_HOST = "amsairportride.nl";
+
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Real SEO bug found live: both https://amsairportride.nl AND
+  // https://www.amsairportride.nl serve identical 200 content with NO
+  // redirect between them — confirmed via curl (DNS puts both hostnames
+  // on the same CDN/origin, so this app's own middleware sees both).
+  // That's duplicate content at the domain level, and it's exactly why
+  // Lighthouse's canonical audit failed on the live site: the page's own
+  // <link rel="canonical"> (and sitemap.xml, and OG tags) all already
+  // point at the apex host (no "www"), so a visit arriving via "www"
+  // rendered a canonical that disagreed with the URL actually in the
+  // address bar. Redirect "www" -> apex, permanently, before anything
+  // else runs, so only one host is ever indexable and canonical/hreflang
+  // always matches the URL the visitor (and Google) actually see.
+  const host = request.headers.get("host");
+  if (host === WWW_HOST) {
+    const url = request.nextUrl.clone();
+    // Real bug caught in local testing: `url.host = APEX_HOST` alone left
+    // a stray ":3000" (the dev server's own port) in the redirect's
+    // Location header — NextURL's `.host` setter doesn't reliably clear
+    // an existing port the way the WHATWG URL spec would. Setting
+    // `.hostname` and `.port` separately is unambiguous in every
+    // environment, including production, where an internal proxy port
+    // could just as easily leak through unnoticed.
+    url.hostname = APEX_HOST;
+    url.port = "";
+    url.protocol = "https";
+    return NextResponse.redirect(url, 308);
+  }
 
   // Real bug found live: the Ads landing page (src/app/boek-taxi-schiphol,
   // deliberately its own root route OUTSIDE the [locale] segment — see
