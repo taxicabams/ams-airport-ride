@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { CheckIcon } from "@/components/ui/icons";
 import { BookingWidget } from "@/components/booking/BookingWidget";
+import { CHEAPEST_SCHIPHOL_PRICE } from "@/lib/pricing";
 
 /**
  * "Vertrekbord" hero — two-column spec: left column is the pitch
@@ -24,6 +25,14 @@ import { BookingWidget } from "@/components/booking/BookingWidget";
  * position) at desktop width; the text column is `order-2 lg:order-1`.
  * Pure CSS reorder — the DOM/markup order (and therefore reading order
  * for screen readers) is unchanged, only the visual position moves.
+ *
+ * A real, concrete "Vaste prijs vanaf €X" badge now sits directly above
+ * the booking card itself (not just implied by the "Vaste prijs" text
+ * in the H1) — per direct feedback that the cheap fixed price is very
+ * important and needs to be unmistakable the instant the site opens.
+ * Living in this column means it's genuinely the first thing shown on
+ * mobile (this column is order-1 there) and still immediately visible
+ * on desktop next to the booking card.
  */
 export async function Hero() {
   const t = await getTranslations("Hero");
@@ -56,6 +65,9 @@ export async function Hero() {
             sharing one id is invalid HTML and makes "#boeken" anchor
             behavior/getElementById ambiguous). */}
         <div className="order-1 scroll-mt-24 lg:order-2">
+          <p className="mb-3 inline-flex items-center gap-2 rounded-[10px] bg-brand px-4 py-2 font-mono text-base font-bold text-brand-foreground sm:text-lg">
+            {t("heroPrice", { price: CHEAPEST_SCHIPHOL_PRICE })}
+          </p>
           <BookingWidget />
           <ul className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm font-medium text-ink-foreground-muted">
             {trustItems.map((item) => (

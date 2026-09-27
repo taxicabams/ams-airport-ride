@@ -1,54 +1,46 @@
 @import "tailwindcss";
 
 /*
- * Design tokens — "Schiphol-inspired" identity, replacing the amber/
- * "vertrekbord" palette per direct feedback ("schiphol.nl heeft ook een
- * bepaalde huisstijl en kleuren... kan je ongeveer hetzelfde bij mij
- * doen"). Colors are genuinely sampled from schiphol.nl's own live site
- * (dark slate header #2e3f42, light powder-blue section background
- * #edf6fc, button blue rgb(38,112,199) = #2670c7 — checked directly via
- * getComputedStyle, not guessed) for real inspiration, not copied
- * verbatim — this is still AMS Airport Ride's own palette, not
- * Schiphol's. Deliberately NOT reusing Schiphol's actual logo mark (the
- * "AMS" roundel) — that's Schiphol Group's own registered identity, and
- * using it would misleadingly imply an official affiliation this
- * business doesn't have. The original route/plane logo mark (see
- * Logo.tsx) stays, just recolored.
- *
- * Token NAMES are unchanged from the previous "vertrekbord" pass
- * (--brand, --ink, --ink-2, --ink-3, ...) — only the values change —
- * so every component that already referenced them re-skins for free.
+ * Design tokens — "Vertrekbord" identity, replacing the v10-v13 navy/gold
+ * system per the client's explicit brief and confirmed decision ("dit
+ * vervangt Layout 4.0 volledig"). Theme: Schiphol departure board — a
+ * single, fixed, deliberate brand palette, not a light/dark toggle. Some
+ * SECTIONS (topbar, header, hero, flight-monitoring bar, final CTA,
+ * footer) are permanently dark navy/near-black by design; the rest of
+ * the page (cards, body) is permanently crème/white. This replaces the
+ * previous `prefers-color-scheme` dark-mode variant entirely — there is
+ * no user-facing theme switch in this design, so no dark-mode media
+ * query block exists below.
  */
 :root {
-  --background: #edf6fc; /* light powder-blue page ground, sampled from schiphol.nl */
+  --background: #f5f2ea; /* crème page ground */
   --surface: #ffffff; /* white cards */
-  --foreground: #1c2b33; /* dark slate body text, close to schiphol.nl's own #2e3f42 */
-  --muted: #5c7180; /* cool slate-grey */
-  --muted-background: #dcebf7; /* subtle blue tint for zebra/alt sections */
-  --border: #c9dff0;
+  --foreground: #0f1a2b; /* navy body text */
+  --muted: #5a6272; /* grey */
+  --muted-background: #eee8d9; /* subtle warm tint for zebra/alt sections */
+  --border: #e3ddd0;
 
-  /* Blue has two roles: #2670c7 is the button *fill* (white text on
-     top, the standard readable combo — unlike the previous amber
-     scheme, which needed dark text); a darker #1d5aa0 is blue *as
-     text* on a light background (still legible at 4.97:1, but the
-     darker shade reads better for small text/links, checked at
-     6.95:1). On permanently-dark sections (--ink/--ink-2/--ink-3),
-     text uses the brighter --brand blue directly (good contrast on
-     dark slate). */
-  --brand: #2670c7;
-  --brand-foreground: #ffffff;
-  --brand-dark: #1d5aa0;
-  --brand-light: #dcebf7;
-  --brand-text: #1d5aa0;
+  /* Amber has two roles, same reasoning as the old --brand/--brand-text
+     split: #f5a524 is the button *fill* (with dark navy text on top);
+     #8a5200 is amber *as text* on a light background — the client's own
+     spec calls this out explicitly for contrast. On permanently-dark
+     sections (--ink/--ink-2/--ink-3), amber text uses the brighter fill
+     color directly (good contrast on navy), so components pick
+     --brand-text on light backgrounds and --brand on dark ones. */
+  --brand: #f5a524;
+  --brand-foreground: #0f1a2b;
+  --brand-dark: #da8e12;
+  --brand-light: #fdecc8;
+  --brand-text: #8a5200;
 
-  --accent: #2670c7;
-  --accent-foreground: #ffffff;
+  --accent: #f5a524;
+  --accent-foreground: #0f1a2b;
 
-  --ink: #22323a; /* dark slate — header, hero — close to schiphol.nl's own #2e3f42 */
-  --ink-2: #16232a; /* near-black slate — topbar, footer */
-  --ink-3: #0e1a1f; /* "departure board" black — flight-monitoring bar */
+  --ink: #0f1a2b; /* navy — header, hero */
+  --ink-2: #0b1422; /* near-black — topbar, footer */
+  --ink-3: #070e19; /* "departure board" black — flight-monitoring bar */
   --ink-foreground: #ffffff;
-  --ink-foreground-muted: #a8bac4; /* light slate-blue, light-on-dark secondary text */
+  --ink-foreground-muted: #b9c4d6; /* light-on-dark secondary text */
 
   --success: #3ddc84;
   --warning: #ff9a6b;

@@ -72,6 +72,18 @@ export function RouteStep({
   const [touched, setTouched] = useState<{ pickup?: boolean; destination?: boolean }>({});
   const [pickupHouseNumber, setPickupHouseNumber] = useState("");
   const [destinationHouseNumber, setDestinationHouseNumber] = useState("");
+  // Real bug found live: committing the house number into form state on
+  // every keystroke (so after typing just "1" of "12") immediately set
+  // pickupMissingHouseNumber to false — which hid this very input
+  // (rendered only while that flag is true) after one digit, and let
+  // "Volgende" enable before the number was actually finished. Showing
+  // the field is now driven by this separate, stable flag instead of
+  // the live derived one, and the value only commits to form state on
+  // blur/Enter (see commitPickupHouseNumber) — never mid-keystroke — so
+  // any number of digits and suffixes ("12", "12a", "12-1", ...) can be
+  // typed freely before anything is considered "resolved."
+  const [pickupHouseNumberActive, setPickupHouseNumberActive] = useState(false);
+  const [destinationHouseNumberActive, setDestinationHouseNumberActive] = useState(false);
   const [rideMode, setRideMode] = useState<RideMode>(() => {
     if (form.pickup.toLowerCase().includes("schiphol")) return "fromSchiphol";
     if (form.destination.toLowerCase().includes("schiphol")) return "toSchiphol";
@@ -125,8 +137,13 @@ export function RouteStep({
     });
     // Surface the house-number message right away — don't make the
     // customer blur the field first to discover why Next stays disabled.
-    if (place?.missingHouseNumber) setTouched((s) => ({ ...s, pickup: true }));
-    else setPickupHouseNumber(""); // fresh resolution, any earlier number no longer applies
+    if (place?.missingHouseNumber) {
+      setTouched((s) => ({ ...s, pickup: true }));
+      setPickupHouseNumberActive(true);
+    } else {
+      setPickupHouseNumber(""); // fresh resolution, any earlier number no longer applies
+      setPickupHouseNumberActive(false);
+    }
   }
 
   function resolveDestination(place: ResolvedPlace | null) {
@@ -136,29 +153,36 @@ export function RouteStep({
       destinationLng: place?.lng,
       destinationMissingHouseNumber: place?.missingHouseNumber ?? false,
     });
-    if (place?.missingHouseNumber) setTouched((s) => ({ ...s, destination: true }));
-    else setDestinationHouseNumber("");
+    if (place?.missingHouseNumber) {
+      setTouched((s) => ({ ...s, destination: true }));
+      setDestinationHouseNumberActive(true);
+    } else {
+      setDestinationHouseNumber("");
+      setDestinationHouseNumberActive(false);
+    }
   }
 
   // Applied from the separate "Huisnummer" field below (see
   // insertHouseNumber's own note) — never from editing the address text
-  // itself, which is still Google-autocomplete-only.
-  function applyPickupHouseNumber(value: string) {
-    setPickupHouseNumber(value);
-    if (value.trim().length === 0) return;
+  // itself, which is still Google-autocomplete-only. Only commits on
+  // blur/Enter (see the input's own handlers below), never mid-
+  // keystroke — see the pickupHouseNumberActive note above for why.
+  function commitPickupHouseNumber() {
+    if (pickupHouseNumber.trim().length === 0) return;
     onChange({
-      pickup: insertHouseNumber(form.pickup, value.trim()),
+      pickup: insertHouseNumber(form.pickup, pickupHouseNumber.trim()),
       pickupMissingHouseNumber: false,
     });
+    setPickupHouseNumberActive(false);
   }
 
-  function applyDestinationHouseNumber(value: string) {
-    setDestinationHouseNumber(value);
-    if (value.trim().length === 0) return;
+  function commitDestinationHouseNumber() {
+    if (destinationHouseNumber.trim().length === 0) return;
     onChange({
-      destination: insertHouseNumber(form.destination, value.trim()),
+      destination: insertHouseNumber(form.destination, destinationHouseNumber.trim()),
       destinationMissingHouseNumber: false,
     });
+    setDestinationHouseNumberActive(false);
   }
 
   // Real, working swap — not shown for the two Schiphol-locked tabs
@@ -297,8 +321,12 @@ export function RouteStep({
             {/* Separate from the Google-autocomplete text field on
                 purpose — real feedback this session: typing a house
                 number back into the same field a suggestion just filled
-                in was awkward and confusing. */}
-            {pickupNeedsHouseNumber && (
+                in was awkward and confusing. Any number of digits and
+                any suffix ("12", "12a", "12-1", ...) can be typed freely
+                — it only commits on blur or Enter, never mid-keystroke
+                (see commitPickupHouseNumber's own note on the real bug
+                this fixes). */}
+            {pickupHouseNumberActive && (
               <div className="mt-1.5">
                 <label htmlFor="pickup-housenumber" className="text-sm font-medium text-foreground">
                   {t("houseNumberLabel")}
@@ -309,7 +337,14 @@ export function RouteStep({
                   placeholder={t("houseNumberPlaceholder")}
                   value={pickupHouseNumber}
                   autoFocus
-                  onChange={(e) => applyPickupHouseNumber(e.target.value)}
+                  onChange={(e) => setPickupHouseNumber(e.target.value)}
+                  onBlur={commitPickupHouseNumber}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      commitPickupHouseNumber();
+                    }
+                  }}
                 />
               </div>
             )}
@@ -340,7 +375,7 @@ export function RouteStep({
               notConfiguredLabel={t("addressNotConfigured")}
               unavailableLabel={t("addressUnavailable")}
             />
-            {destinationNeedsHouseNumber && (
+            {destinationHouseNumberActive && (
               <div className="mt-1.5">
                 <label htmlFor="destination-housenumber" className="text-sm font-medium text-foreground">
                   {t("houseNumberLabel")}
@@ -351,7 +386,14 @@ export function RouteStep({
                   placeholder={t("houseNumberPlaceholder")}
                   value={destinationHouseNumber}
                   autoFocus
-                  onChange={(e) => applyDestinationHouseNumber(e.target.value)}
+                  onChange={(e) => setDestinationHouseNumber(e.target.value)}
+                  onBlur={commitDestinationHouseNumber}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      commitDestinationHouseNumber();
+                    }
+                  }}
                 />
               </div>
             )}
