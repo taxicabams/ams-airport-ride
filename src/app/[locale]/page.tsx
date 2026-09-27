@@ -32,7 +32,7 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Metadata");
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.amsairportride.nl";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://amsairportride.nl";
 
   // Deliberately minimal: only fields that are actually true today.
   // companyInfo.ts's phone/address/etc. are all preview placeholders

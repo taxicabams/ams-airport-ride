@@ -27,7 +27,7 @@ export async function generateMetadata({
     title: { default: t("title"), template: `%s — AMS Airport Ride` },
     description: t("description"),
     metadataBase: new URL(
-      process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.amsairportride.nl"
+      process.env.NEXT_PUBLIC_SITE_URL ?? "https://amsairportride.nl"
     ),
   };
 }

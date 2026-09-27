@@ -12,7 +12,7 @@ type Locale = "nl" | "en";
 // `item` must be an absolute URL per schema.org (a relative one fails
 // Google's Rich Results validation), so this can't reuse getPathname()
 // alone the way in-app links do.
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.amsairportride.nl";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://amsairportride.nl";
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>

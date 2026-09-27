@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   description:
     "Boek direct uw taxi van of naar Schiphol. Vaste prijs vooraf, geen toeslagen, betaal na de rit. Bereken uw prijs in 30 seconden.",
   robots: { index: true, follow: true },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.amsairportride.nl"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://amsairportride.nl"),
   alternates: {
     canonical: "/boek-taxi-schiphol",
     languages: { nl: "/boek-taxi-schiphol", en: "/en/boek-taxi-schiphol" },

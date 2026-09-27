@@ -3,7 +3,7 @@ import { routing } from "@/i18n/routing";
 import { getPathname } from "@/i18n/navigation";
 import { ROUTE_PAGES } from "@/lib/routes-data";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.amsairportride.nl";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://amsairportride.nl";
 
 const STATIC_PATHS = [
   "/",
@@ -42,5 +42,32 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })
   );
 
-  return [...staticEntries, ...routeEntries];
+  // The Ads landing pages (src/app/boek-taxi-schiphol,
+  // src/app/en/boek-taxi-schiphol) live outside the [locale] segment
+  // entirely (see those routes' own layout.tsx notes), so getPathname
+  // can't resolve them — real gap found live: they were missing from
+  // this sitemap entirely. Hardcoded here since there are only two and
+  // their paths never change.
+  const landingEntries = [
+    {
+      url: `${SITE_URL}/boek-taxi-schiphol`,
+      alternates: {
+        languages: {
+          nl: `${SITE_URL}/boek-taxi-schiphol`,
+          en: `${SITE_URL}/en/boek-taxi-schiphol`,
+        },
+      },
+    },
+    {
+      url: `${SITE_URL}/en/boek-taxi-schiphol`,
+      alternates: {
+        languages: {
+          nl: `${SITE_URL}/boek-taxi-schiphol`,
+          en: `${SITE_URL}/en/boek-taxi-schiphol`,
+        },
+      },
+    },
+  ];
+
+  return [...staticEntries, ...routeEntries, ...landingEntries];
 }

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   description:
     "Book your taxi to or from Schiphol directly. Fixed price upfront, no surcharges, pay after your ride. Get your price in 30 seconds.",
   robots: { index: true, follow: true },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.amsairportride.nl"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://amsairportride.nl"),
   alternates: {
     canonical: "/en/boek-taxi-schiphol",
     languages: { nl: "/boek-taxi-schiphol", en: "/en/boek-taxi-schiphol" },
