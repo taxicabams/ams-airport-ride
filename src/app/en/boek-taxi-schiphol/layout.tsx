@@ -24,6 +24,12 @@ export const metadata: Metadata = {
     canonical: "/en/boek-taxi-schiphol",
     languages: { nl: "/boek-taxi-schiphol", en: "/en/boek-taxi-schiphol" },
   },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    alternateLocale: "nl_NL",
+    siteName: "AMS Airport Ride",
+  },
 };
 
 export default async function LandingLayoutEn({ children }: { children: React.ReactNode }) {

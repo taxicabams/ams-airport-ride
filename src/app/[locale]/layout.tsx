@@ -23,12 +23,24 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Metadata" });
+  // og:locale/og:type were missing entirely (Next.js only auto-derives
+  // og:title/description/image from the plain fields above, not these) -
+  // real, if minor, SEO/social-share gap: without it, a share on
+  // Facebook/LinkedIn can't tell this is a Dutch vs. English page.
+  const ogLocale = locale === "en" ? "en_US" : "nl_NL";
+  const ogAlternateLocale = locale === "en" ? "nl_NL" : "en_US";
   return {
     title: { default: t("title"), template: `%s — AMS Airport Ride` },
     description: t("description"),
     metadataBase: new URL(
       process.env.NEXT_PUBLIC_SITE_URL ?? "https://amsairportride.nl"
     ),
+    openGraph: {
+      type: "website",
+      locale: ogLocale,
+      alternateLocale: ogAlternateLocale,
+      siteName: "AMS Airport Ride",
+    },
   };
 }
 
