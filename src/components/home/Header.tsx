@@ -1,4 +1,7 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/marketing/LocaleSwitcher";
 import { MobileNav } from "@/components/marketing/MobileNav";
@@ -7,29 +10,51 @@ import { companyInfo } from "@/lib/companyInfo";
 import { PhoneIcon } from "@/components/ui/icons";
 
 /**
- * v10 rebuild — permanently dark-navy header bar (bg-ink), not
- * theme-following like v9's `bg-surface/95`. Per the client's mockup:
- * white logo/nav on navy, one gold CTA pill, in both light and dark
- * site themes — a premium airline/travel-brand top bar, not a
- * light-mode-switching one. Nav labels/links unchanged in logic.
+ * Layout 4.0 — client-ified (was a plain async server component) so the
+ * header can start transparent over the hero photo and pick up a solid
+ * --ink background + border once the page scrolls past it, per the
+ * brief's explicit "transparant over hero, solide bij scroll" ask. Text
+ * stays white in both states on purpose: the transparent state only ever
+ * sits over the hero's own dark-scrim photo (never over light page
+ * background), so white nav text is legible either way — no separate
+ * light-header variant needed.
  *
- * The phone link below renders only once companyInfo.phone is real
- * (still `null` today) — wired now so a confirmed number appears,
- * tap-to-call, on every page the instant it's added, with zero further
- * code changes. Never a placeholder number.
+ * Nav now: Schiphol (routes/price list), Amsterdam, Bestemmingen (same
+ * section, its own label — the destinations grid *is* the price list),
+ * Over ons, Contact. Also fixes a real, pre-existing bug found in this
+ * pass: "Amsterdam" linked to "/#amsterdam-taxi", an anchor that never
+ * existed anywhere in the DOM (TwoColumnBanner had no id) — clicking it
+ * silently did nothing. Fixed by giving that section the id.
  */
-export async function Header() {
-  const t = await getTranslations("Nav");
+export function Header() {
+  const t = useTranslations("Nav");
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 24);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const navItems = [
     { href: "/#populaire-routes", label: t("taxiSchiphol") },
     { href: "/#amsterdam-taxi", label: t("taxiAmsterdam") },
-    { href: "/#hoe-het-werkt", label: t("howItWorks") },
-    { href: "/veelgestelde-vragen", label: t("faq") },
+    { href: "/#populaire-routes", label: t("prices") },
+    { href: "/over-ons", label: t("about") },
+    { href: "/contact", label: t("contact") },
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-ink text-ink-foreground">
+    <header
+      className={`sticky top-0 z-40 transition-colors duration-300 ${
+        scrolled
+          ? "border-b border-white/10 bg-ink text-ink-foreground"
+          : "border-b border-transparent bg-transparent text-ink-foreground"
+      }`}
+    >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
         <Link href="/" className="shrink-0">
           <Logo variant="dark" />
@@ -37,7 +62,11 @@ export async function Header() {
 
         <nav className="hidden items-center gap-7 text-sm font-medium text-white/75 md:flex">
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className="transition hover:text-white">
+            <Link
+              key={item.label}
+              href={item.href}
+              className="transition duration-150 hover:text-white"
+            >
               {item.label}
             </Link>
           ))}
@@ -47,7 +76,7 @@ export async function Header() {
           {companyInfo.phone && (
             <a
               href={`tel:${companyInfo.phone}`}
-              className="hidden items-center gap-1.5 text-sm font-medium text-white/75 transition hover:text-white lg:inline-flex"
+              className="hidden items-center gap-1.5 text-sm font-medium text-white/75 transition duration-150 hover:text-white lg:inline-flex"
             >
               <PhoneIcon className="h-4 w-4" />
               {companyInfo.phone}
@@ -56,7 +85,7 @@ export async function Header() {
           <LocaleSwitcher />
           <Link
             href="/#boeken"
-            className="hidden rounded-full bg-brand px-4 py-2 text-sm font-semibold text-brand-foreground shadow-sm transition hover:bg-brand-dark md:inline-block"
+            className="hidden rounded-full bg-brand px-4 py-2 text-sm font-semibold text-brand-foreground shadow-sm transition duration-150 hover:bg-brand-dark md:inline-block"
           >
             {t("bookNow")}
           </Link>
