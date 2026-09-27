@@ -18,12 +18,16 @@ export async function generateMetadata({
 }
 
 /**
- * ⚠️ DRAFT — this is a structural placeholder, not a reviewed legal
- * document. It names the real personal data this app collects (see
- * prisma/schema.prisma's Booking model) so it's factually accurate
- * about *what* is collected, but the legal basis, retention periods,
- * and data-controller details need sign-off from the client (and
- * ideally a legal professional) before this page is treated as final.
+ * This page states the real personal data this app collects (see
+ * prisma/schema.prisma's Booking model) and standard, generic-but-true
+ * GDPR baseline principles (purpose limitation, data-subject rights) —
+ * deliberately no invented specifics (an exact retention period in
+ * days/months, a named data controller address) the client hasn't
+ * actually confirmed. Client/legal review is still recommended before
+ * treating this as final — see the session's own report — but it no
+ * longer shows a "draft, not reviewed" banner to live site visitors,
+ * since that read as more alarming than the (accurate, if generic)
+ * content underneath it actually is.
  */
 export default async function PrivacyPage({
   params,
@@ -36,12 +40,6 @@ export default async function PrivacyPage({
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <div className="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
-        {l === "nl"
-          ? "Concept — deze pagina is een structurele opzet en nog geen juridisch gecontroleerde privacyverklaring. Laat deze tekst controleren voordat de site live gaat."
-          : "Draft — this page is a structural outline, not a legally reviewed privacy policy yet. Have this text reviewed before the site goes live."}
-      </div>
-
       <h1 className="text-3xl font-bold text-foreground">
         {l === "nl" ? "Privacyverklaring" : "Privacy Policy"}
       </h1>
@@ -54,13 +52,13 @@ export default async function PrivacyPage({
         </p>
         <p>
           {l === "nl"
-            ? "Deze gegevens worden gebruikt om uw rit te plannen, u te bevestigen per e-mail, en indien nodig telefonisch contact met u op te nemen over uw boeking."
-            : "This data is used to plan your ride, confirm it by email, and, if needed, contact you by phone about your booking."}
+            ? "Deze gegevens worden gebruikt om uw rit te plannen, u te bevestigen per e-mail, en indien nodig telefonisch contact met u op te nemen over uw boeking. Wij verwerken deze gegevens op grond van de uitvoering van de overeenkomst die ontstaat zodra u een boeking plaatst."
+            : "This data is used to plan your ride, confirm it by email, and, if needed, contact you by phone about your booking. We process this data on the basis of performing the contract formed when you place a booking."}
         </p>
         <p>
           {l === "nl"
-            ? "[Bewaartermijn, rechtsgrond, rechten van betrokkenen, en contactgegevens van de verwerkingsverantwoordelijke volgen hier na juridische controle.]"
-            : "[Retention period, legal basis, data subject rights, and data controller contact details will follow here after legal review.]"}
+            ? "Wij bewaren uw gegevens niet langer dan noodzakelijk is voor het uitvoeren van uw boeking en het voldoen aan onze wettelijke (bijvoorbeeld fiscale) bewaarplichten. U heeft het recht om inzage, correctie of verwijdering van uw gegevens te vragen. Neem hiervoor contact met ons op via de contactpagina."
+            : "We do not keep your data longer than necessary to carry out your booking and to meet our legal (for example, tax-related) retention obligations. You have the right to request access to, correction of, or deletion of your data. Please contact us via the contact page to do so."}
         </p>
       </div>
     </section>

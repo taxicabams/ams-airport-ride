@@ -332,7 +332,14 @@ export function DetailsStep({
           onClick={onNext}
           className="flex-1 rounded-full bg-brand px-5 py-3 text-base font-semibold text-brand-foreground shadow-sm transition enabled:hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {t("calculateButton")}
+          {/* Found live in the QA sprint: this used to always say
+              "Calculate fixed price," even for an "Other ride" route
+              that QuoteStep (using the same carQuote.source signal)
+              correctly labels "Price based on distance and travel
+              time" a moment later — misleading for one screen. Mirror
+              QuoteStep's own honesty check here instead of a static
+              string. */}
+          {carQuote?.source === "fixed" ? t("calculateButton") : t("calculateButtonEstimate")}
         </button>
       </div>
     </div>

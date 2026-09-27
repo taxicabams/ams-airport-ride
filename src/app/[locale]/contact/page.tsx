@@ -40,8 +40,12 @@ export default async function ContactPage({
           : "Want to book a ride? You can do that directly through our booking calculator on the homepage — within a few minutes you'll have a fixed price and a confirmed ride."}
       </p>
 
-      <div className="mt-6 rounded-xl border border-border p-5">
-        {hasAnyContact ? (
+      {/* Only rendered once real contact details exist — see
+          companyInfo.ts's null-until-real convention. No "coming soon"
+          placeholder text: a page that simply doesn't mention contact
+          methods it doesn't have yet reads as complete, not unfinished. */}
+      {hasAnyContact && (
+        <div className="mt-6 rounded-xl border border-border p-5">
           <ul className="space-y-2 text-foreground">
             {companyInfo.phone && (
               <li>
@@ -73,14 +77,8 @@ export default async function ContactPage({
               </li>
             )}
           </ul>
-        ) : (
-          <p className="text-sm text-muted">
-            {l === "nl"
-              ? "Contactgegevens volgen zodra deze door AMS Airport Ride zijn aangeleverd."
-              : "Contact details will follow once provided by AMS Airport Ride."}
-          </p>
-        )}
-      </div>
+        </div>
+      )}
 
       <Link
         href="/#boeken"

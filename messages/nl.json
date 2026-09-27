@@ -142,6 +142,7 @@
     "backButton": "Vorige",
     "nextButton": "Volgende",
     "calculateButton": "Bereken vaste prijs",
+    "calculateButtonEstimate": "Bereken mijn prijs",
     "calculating": "Prijs berekenen…",
     "quoteError": "Kon de prijs niet berekenen. Probeer het opnieuw of pas uw gegevens aan.",
     "retryButton": "Opnieuw proberen",

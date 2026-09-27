@@ -142,6 +142,7 @@
     "backButton": "Back",
     "nextButton": "Next",
     "calculateButton": "Calculate fixed price",
+    "calculateButtonEstimate": "Calculate my price",
     "calculating": "Calculating price…",
     "quoteError": "Couldn't calculate the price. Please try again or adjust your details.",
     "retryButton": "Try again",

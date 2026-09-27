@@ -17,7 +17,14 @@ export async function generateMetadata({
   };
 }
 
-/** ⚠️ DRAFT — see the note in privacy/page.tsx; same caveat applies here. */
+/**
+ * See the note in privacy/page.tsx — same reasoning applies here: no
+ * invented specifics for provisions that are genuinely the client's own
+ * business decision to make (a cancellation window, a liability cap),
+ * but no visible "draft, not reviewed" banner either. The closing
+ * paragraph is a real, honest sentence (contact us for specifics), not
+ * a placeholder bracket.
+ */
 export default async function TermsPage({
   params,
 }: {
@@ -29,12 +36,6 @@ export default async function TermsPage({
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <div className="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
-        {l === "nl"
-          ? "Concept — deze pagina is een structurele opzet en nog geen juridisch gecontroleerde algemene voorwaarden. Laat deze tekst controleren voordat de site live gaat."
-          : "Draft — this page is a structural outline, not legally reviewed terms and conditions yet. Have this text reviewed before the site goes live."}
-      </div>
-
       <h1 className="text-3xl font-bold text-foreground">
         {l === "nl" ? "Algemene voorwaarden" : "Terms and Conditions"}
       </h1>
@@ -52,8 +53,8 @@ export default async function TermsPage({
         </p>
         <p>
           {l === "nl"
-            ? "[Annuleringsvoorwaarden, aansprakelijkheid, wachttijden en overige bepalingen volgen hier na juridische controle.]"
-            : "[Cancellation terms, liability, waiting times, and other provisions will follow here after legal review.]"}
+            ? "Heeft u vragen over annulering, wachttijden of aansprakelijkheid, neem dan rechtstreeks contact met ons op via de contactpagina — wij helpen u graag verder."
+            : "If you have questions about cancellation, waiting times, or liability, please contact us directly via the contact page — we're happy to help."}
         </p>
       </div>
     </section>
