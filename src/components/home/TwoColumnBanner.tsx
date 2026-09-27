@@ -28,6 +28,12 @@ import { schipholArrivalPhoto } from "@/lib/schipholArrivalPhoto";
  * in the DOM), found and fixed in this pass. Cards themselves enlarged
  * (taller, bigger heading, more padding) to read as two real sections
  * rather than two small banners.
+ *
+ * "Vertrekbord" pass — kept as-is structurally (this brief's own
+ * homepage order has no dedicated Amsterdam section, but Header/Footer
+ * both still link to "#amsterdam-taxi" for it, so removing this section
+ * entirely would recreate the exact dead-anchor bug fixed last pass).
+ * Only typography/radius touched up to match the new identity.
  */
 export async function TwoColumnBanner() {
   const t = await getTranslations("TwoColumnBanner");
@@ -35,7 +41,7 @@ export async function TwoColumnBanner() {
   return (
     <section id="amsterdam-taxi" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-16 sm:px-6">
       <div className="grid gap-6 sm:grid-cols-2">
-        <div className="relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-2xl bg-ink p-7 sm:p-8">
+        <div className="relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-[18px] bg-ink p-7 sm:p-8">
           <Image
             src={amsterdamPhoto.url}
             alt={amsterdamPhoto.alt.nl}
@@ -45,18 +51,18 @@ export async function TwoColumnBanner() {
           />
           <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-transparent" />
           <div className="relative">
-            <h3 className="text-2xl font-bold text-white">{t("amsterdamTitle")}</h3>
+            <h3 className="font-heading text-2xl font-bold text-white">{t("amsterdamTitle")}</h3>
             <p className="mt-2 max-w-sm text-white/80">{t("amsterdamBody")}</p>
             <Link
               href="/#boeken"
-              className="mt-5 inline-block rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-brand-foreground shadow-sm transition duration-150 hover:bg-brand-dark"
+              className="mt-5 inline-block rounded-[10px] bg-brand px-5 py-2.5 text-sm font-semibold text-brand-foreground shadow-sm transition duration-150 hover:bg-brand-dark"
             >
               {t("amsterdamCta")}
             </Link>
           </div>
         </div>
 
-        <div className="relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-2xl bg-ink p-7 sm:p-8">
+        <div className="relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-[18px] bg-ink p-7 sm:p-8">
           <Image
             src={schipholArrivalPhoto.url}
             alt={schipholArrivalPhoto.alt.nl}
@@ -66,7 +72,7 @@ export async function TwoColumnBanner() {
           />
           <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-transparent" />
           <div className="relative">
-            <h3 className="text-2xl font-bold text-white">{t("schipholTitle")}</h3>
+            <h3 className="font-heading text-2xl font-bold text-white">{t("schipholTitle")}</h3>
             <p className="mt-2 max-w-sm text-white/80">{t("schipholBody")}</p>
             <Link
               href="/veelgestelde-vragen"

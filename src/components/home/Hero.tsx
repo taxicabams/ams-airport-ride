@@ -1,78 +1,78 @@
 import { getTranslations } from "next-intl/server";
-import Image from "next/image";
-import { Link } from "@/i18n/navigation";
-import { CheckIcon } from "@/components/ui/icons";
-import { CHEAPEST_SCHIPHOL_PRICE } from "@/lib/pricing";
-import { heroPhoto } from "@/lib/heroPhoto";
+import { CheckIcon, ShieldCheckIcon, StarIcon } from "@/components/ui/icons";
+import { BookingWidget } from "@/components/booking/BookingWidget";
+import { companyInfo } from "@/lib/companyInfo";
 
 /**
- * Layout 4.0 — deliberately much taller than v13's compact hero (roughly
- * 640-680px tall on desktop vs. ~300px before), per the client's explicit
- * new brief: "Dit moet het sterkste gedeelte van de website worden,"
- * 600-700px on desktop. This supersedes the earlier "keep it short so
- * the booking box appears immediately" note from a previous round — a
- * later, more specific instruction from the same client, not a
- * regression. Content (eyebrow/title/price/subtitle/CTA/trust row) is
- * unchanged from v13, just given real room to breathe and set in a much
- * bigger, more confident type scale. The header now starts transparent
- * over this photo (see Header.tsx) instead of a permanently solid bar —
- * Hero pulls itself up by roughly the header's own height (-mt-16, ~64px:
- * py-3.5 + the 36px logo mark) so the sticky header's transparent
- * background reveals the photo underneath it on page load, exactly the
- * way HeroBooking already pulls the booking card up over Hero's own
- * bottom edge. The text block gets extra top padding so it clears below
- * the header instead of sitting under it.
+ * "Vertrekbord" hero — full rebuild per the brief's two-column spec:
+ * left column is the pitch (labels, heading, subtext, trust lines),
+ * right column is the actual booking card (BookingWidget rendered
+ * directly, not floated below on a separate row like the previous
+ * Layout 4.0 hero). BookingWidget's own internals are untouched — only
+ * where it's placed changed.
+ *
+ * The Google review score/count still show a bracket placeholder
+ * ("[Google-score] · [aantal] reviews") rather than an invented number —
+ * companyInfo.googleReviewScore/Count are deliberately still null (no
+ * real profile exists yet), unlike kvkNumber/licenseNumber, which the
+ * client explicitly asked to fill with an obvious "1234567"-style
+ * preview value and so are shown for real here.
  */
 export async function Hero() {
   const t = await getTranslations("Hero");
   const trustItems = t("compactTrustLine").split(" · ");
 
   return (
-    <section className="relative isolate -mt-16 flex min-h-[520px] flex-col justify-center overflow-hidden bg-ink pb-16 pt-28 sm:min-h-[620px] sm:pb-20 sm:pt-32 lg:min-h-[720px] lg:pb-24">
-      <Image
-        src={heroPhoto.url}
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover object-[42%_55%] opacity-90"
-      />
-      {/* Bottom-heavy navy scrim: nearly opaque where the text/booking
-          card sit, fading out toward the top so the photo still reads —
-          and dark enough at the very top that the transparent header's
-          white logo/nav stay legible over the sky/tarmac. */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-ink/50"
-      />
+    <section className="bg-ink text-ink-foreground">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:items-center lg:py-16">
+        <div>
+          <div className="flex flex-wrap gap-2">
+            {[t("label1"), t("label2"), t("label3")].map((label) => (
+              <span
+                key={label}
+                className="rounded-[10px] border border-brand/40 px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-brand"
+              >
+                {label}
+              </span>
+            ))}
+          </div>
 
-      <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/70">
-          {t("eyebrow")}
-        </p>
-        <h1 className="mt-3 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-          {t("title")}
-        </h1>
-        <p className="mt-3 text-2xl font-bold text-brand sm:text-3xl">
-          {t("heroPrice", { price: CHEAPEST_SCHIPHOL_PRICE })}
-        </p>
-        <p className="mt-2 text-base text-white/80 sm:text-lg">{t("subtitle")}</p>
+          <h1 className="mt-5 font-heading text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
+            {t("title")} <span className="text-brand">{t("titleHighlight")}</span>
+          </h1>
 
-        <Link
-          href="/#boeken"
-          className="mt-7 inline-block rounded-full bg-brand px-7 py-3.5 text-base font-semibold text-brand-foreground shadow-sm transition duration-150 hover:bg-brand-dark hover:shadow-elevated"
-        >
-          {t("ctaPrimary")}
-        </Link>
+          <p className="mt-4 max-w-lg text-ink-foreground-muted">{t("subtitle")}</p>
 
-        <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-white/80">
-          {trustItems.map((item) => (
-            <li key={item} className="flex items-center gap-1.5">
-              <CheckIcon className="h-4 w-4 shrink-0 text-brand" />
-              {item}
-            </li>
-          ))}
-        </ul>
+          <div className="mt-6 space-y-2.5 text-sm">
+            <p className="flex items-center gap-2 text-ink-foreground-muted">
+              <span className="flex items-center gap-0.5 text-brand">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <StarIcon key={i} className="h-3 w-3" />
+                ))}
+              </span>
+              {t("trustReviews")}
+            </p>
+            <p className="flex items-center gap-2 text-ink-foreground-muted">
+              <ShieldCheckIcon className="h-4 w-4 shrink-0 text-success" />
+              {companyInfo.kvkNumber
+                ? t("trustLicenseReal", { kvk: companyInfo.kvkNumber })
+                : t("trustLicense")}
+            </p>
+            <p className="font-mono text-xs text-ink-foreground-muted">{t("trustPayment")}</p>
+          </div>
+        </div>
+
+        <div id="boeken" className="scroll-mt-24">
+          <BookingWidget />
+          <ul className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm font-medium text-ink-foreground-muted">
+            {trustItems.map((item) => (
+              <li key={item} className="flex items-center gap-1.5">
+                <CheckIcon className="h-4 w-4 shrink-0 text-brand" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

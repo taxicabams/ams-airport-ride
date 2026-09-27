@@ -2,22 +2,29 @@ import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { CarIcon, VanIcon, ArrowRightIcon } from "@/components/ui/icons";
-import { PERSONENAUTO_MAX_PASSENGERS, BUS_MAX_PASSENGERS } from "@/lib/pricing/vehicle";
+import {
+  PERSONENAUTO_MAX_PASSENGERS,
+  BUS_MAX_PASSENGERS,
+  BUS_SURCHARGE_EUR,
+} from "@/lib/pricing/vehicle";
+import { CHEAPEST_SCHIPHOL_PRICE } from "@/lib/pricing";
 import { vehiclePhoto } from "@/lib/vehiclePhoto";
 
 /**
- * Layout 4.0 — bigger, more premium cards: a tall image panel per
- * vehicle instead of a small inline icon. vehiclePhoto.ts is still null
- * (no real fleet photo confirmed) — per its own documented convention
- * (and the client's own earlier, explicit decision this session not to
- * source generic stock sedan/van photography), the panel stays a
- * designed navy/gold placeholder rather than a stock or AI-generated
- * image. The moment vehiclePhoto.url is set, this component needs zero
- * changes: the <Image> branch below picks it up automatically.
+ * "Vertrekbord" rebuild — real photo slots (still a designed placeholder
+ * until vehiclePhoto.url is set — see that file's own null-until-real
+ * convention; the client's brief explicitly wants real fleet photos here
+ * and has said they'll supply them), "Meest gekozen" badge on Comfort,
+ * and real "vanaf €X" prices computed from the actual pricing engine
+ * (CHEAPEST_SCHIPHOL_PRICE + BUS_SURCHARGE_EUR) — never invented.
  *
- * Names stay "Comfort"/"Van" (not "Comfort Electric"/"Van Electric") —
- * see the standing note in messages/*.json's Vehicles namespace; the
- * fleet's electric status has never been confirmed.
+ * This brief describes a third tier ("Business," between Comfort and
+ * Taxibus). The real vehicle/pricing engine only has two vehicle types
+ * (PERSONENAUTO/BUS) — adding a third, real, separately-priced tier is a
+ * backend/pricing change, not a visual one, so it's deliberately not
+ * added here; see the session's own report. "Van" is relabelled
+ * "Taxibus" for this marketing section only (Vehicles namespace) — the
+ * booking flow itself still says "Van" (Booking namespace, untouched).
  */
 export async function VehiclesSimple() {
   const t = await getTranslations("Vehicles");
@@ -28,29 +35,42 @@ export async function VehiclesSimple() {
       Icon: CarIcon,
       title: t("sedanTitle"),
       capacity: tb("vehiclePersonenautoCapacity", { max: PERSONENAUTO_MAX_PASSENGERS }),
+      price: CHEAPEST_SCHIPHOL_PRICE,
+      mostChosen: true,
     },
     {
       Icon: VanIcon,
       title: t("busTitle"),
       capacity: tb("vehicleBusCapacity", { max: BUS_MAX_PASSENGERS }),
+      price: CHEAPEST_SCHIPHOL_PRICE + BUS_SURCHARGE_EUR,
+      mostChosen: false,
     },
   ];
 
   return (
-    <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+    <section id="onze-autos" className="scroll-mt-24 mx-auto max-w-4xl px-4 py-16 sm:px-6">
       <div className="text-center">
-        <p className="text-sm font-semibold uppercase tracking-wide text-brand-text">{t("eyebrow")}</p>
-        <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{t("title")}</h2>
+        <p className="font-mono text-xs font-semibold uppercase tracking-wide text-brand-text">
+          {t("eyebrow")}
+        </p>
+        <h2 className="mt-2 font-heading text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          {t("title")}
+        </h2>
       </div>
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2">
-        {vehicles.map(({ Icon, title, capacity }) => (
+        {vehicles.map(({ Icon, title, capacity, price, mostChosen }) => (
           <Link
             key={title}
             href="/#boeken"
-            className="group overflow-hidden rounded-2xl border border-border bg-surface shadow-card transition duration-200 hover:-translate-y-1 hover:shadow-elevated"
+            className="group relative overflow-hidden rounded-[18px] border border-border bg-surface shadow-card transition duration-200 hover:-translate-y-1 hover:shadow-elevated"
           >
-            <div className="relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-[#17335a] to-[#0b1930] sm:h-48">
+            {mostChosen && (
+              <span className="absolute left-4 top-4 z-10 rounded-[10px] bg-brand px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-wide text-brand-foreground">
+                {t("mostChosen")}
+              </span>
+            )}
+            <div className="relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-[#17263d] to-ink-2 sm:h-48">
               {vehiclePhoto.url ? (
                 <Image src={vehiclePhoto.url} alt={vehiclePhoto.alt.nl} fill className="object-cover" />
               ) : (
@@ -61,6 +81,9 @@ export async function VehiclesSimple() {
               <span>
                 <span className="block text-lg font-bold text-foreground">{title}</span>
                 <span className="block text-sm text-muted">{capacity}</span>
+                <span className="mt-1 block font-mono text-sm font-semibold text-brand-text">
+                  {t("fromPrice", { price })}
+                </span>
               </span>
               <ArrowRightIcon className="h-4 w-4 shrink-0 text-muted transition duration-200 group-hover:translate-x-1 group-hover:text-brand-text" />
             </div>

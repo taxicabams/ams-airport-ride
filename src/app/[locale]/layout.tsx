@@ -1,16 +1,34 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Bricolage_Grotesque, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import { TopBar } from "@/components/home/TopBar";
 import { Header } from "@/components/home/Header";
 import { Footer } from "@/components/home/Footer";
 import { StickyMobileCta } from "@/components/marketing/StickyMobileCta";
 import { WhatsAppButton } from "@/components/marketing/WhatsAppButton";
 import "../globals.css";
 
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
+// "Vertrekbord" identity fonts (see globals.css): Bricolage Grotesque for
+// headings, IBM Plex Sans for body copy, IBM Plex Mono for departure-
+// board-style labels/prices — replaces the previous single Inter font.
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+  weight: ["700", "800"],
+});
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -51,9 +69,13 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${inter.variable} h-full antialiased`}>
+    <html
+      lang={locale}
+      className={`${bricolage.variable} ${plexSans.variable} ${plexMono.variable} h-full antialiased`}
+    >
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <NextIntlClientProvider messages={messages}>
+          <TopBar />
           <Header />
           {/* pb-16 clears the fixed StickyMobileCta bar on small screens
               (md:pb-0 once that bar hides itself) so it never overlaps

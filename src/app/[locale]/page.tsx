@@ -3,9 +3,11 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { HeroBooking } from "@/components/home/HeroBooking";
 import { TrustBar } from "@/components/home/TrustBar";
 import { HowItWorksSimple } from "@/components/home/HowItWorksSimple";
-import { RouteList } from "@/components/home/RouteList";
-import { TwoColumnBanner } from "@/components/home/TwoColumnBanner";
 import { VehiclesSimple } from "@/components/home/VehiclesSimple";
+import { TwoColumnBanner } from "@/components/home/TwoColumnBanner";
+import { RouteList } from "@/components/home/RouteList";
+import { Reviews } from "@/components/home/Reviews";
+import { Zakelijk } from "@/components/home/Zakelijk";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
 import { FinalCta } from "@/components/home/FinalCta";
 import { buildAlternates } from "@/lib/seo";
@@ -34,13 +36,12 @@ export default async function HomePage({
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.amsairportride.nl";
 
   // Deliberately minimal: only fields that are actually true today.
-  // companyInfo.ts's phone/address/reviews are all still null (no real
-  // data confirmed yet) — a LocalBusiness/TaxiService schema must never
-  // invent a telephone, street address, or aggregateRating just because
-  // the type usually has one. priceRange is left out for the same reason
-  // (it would need to track the pricing engine to stay accurate, and a
-  // stale number is worse than none). See companyInfo.ts's own
-  // null-until-real convention.
+  // companyInfo.ts's phone/address/etc. are all preview placeholders
+  // (see that file's own header note) — a LocalBusiness/TaxiService
+  // schema must never invent a telephone/address/aggregateRating just
+  // because the type usually has one, so this still leaves those out
+  // entirely rather than emit the "1234567"-style preview values as
+  // structured data. Revisit once real values replace the placeholders.
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TaxiService",
@@ -50,11 +51,11 @@ export default async function HomePage({
     areaServed: ["Amsterdam", "Schiphol", "Nederland"],
   };
 
-  // v11 — audit pass: reordered per the client's own suggested structure
-  // (popular routes before "how it works", not after) — trust row →
-  // how-it-works → price list → Amsterdam/Schiphol banner → vehicles →
-  // FAQ → final CTA, per the client's latest explicit structure. No
-  // reviews section — AMS Airport Ride has no real reviews yet.
+  // "Vertrekbord" homepage order, per the brief's exact spec: Hero (+
+  // flight-monitoring bar, both inside HeroBooking) → USP band →
+  // How it works → Onze auto's → Amsterdam/Schiphol banner (kept for its
+  // "#amsterdam-taxi" anchor — see TwoColumnBanner.tsx) → Populaire
+  // routes → Reviews → Zakelijk → FAQ → Final CTA.
   return (
     <>
       <script
@@ -64,9 +65,11 @@ export default async function HomePage({
       <HeroBooking />
       <TrustBar />
       <HowItWorksSimple />
-      <RouteList />
-      <TwoColumnBanner />
       <VehiclesSimple />
+      <TwoColumnBanner />
+      <RouteList />
+      <Reviews />
+      <Zakelijk />
       <FaqAccordion />
       <FinalCta />
     </>

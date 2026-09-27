@@ -1,31 +1,35 @@
 import { getTranslations } from "next-intl/server";
-import { ShieldCheckIcon, ClockIcon, PaymentIcon, ReceiptIcon } from "@/components/ui/icons";
+import { ShieldCheckIcon, ClockIcon, PhoneIcon, CalendarIcon } from "@/components/ui/icons";
 
 /**
- * Layout 4.0 — collapsed from four icon+title+body mini-cards into one
- * elegant single-line strip (icon + short label only), per the brief's
- * explicit "geen vier enorme cards... elegante horizontal trust strip,
- * subtiele iconen, veel whitespace, geen zware card borders." The
- * title/body copy pairs still exist in messages (title1/body1, etc.) —
- * only body1-4 go unused here now, kept for now rather than deleted in
- * case a future section wants the fuller two-line version back.
+ * "Vertrekbord" USP band — 4 columns, each with a navy icon block + amber
+ * icon, per the brief's exact spec: Prijs staat vast · gratis wachten ·
+ * je weet wie er komt · gratis annuleren. The two numeric specifics
+ * (wait minutes, cancellation hours) are still unconfirmed real policy
+ * values, so their copy keeps the brief's own "[Y]"/"[X]" bracket
+ * notation rather than inventing a number.
  */
 export async function TrustBar() {
   const t = await getTranslations("TrustBar");
   const items = [
-    { Icon: ShieldCheckIcon, label: t("title1") },
-    { Icon: ClockIcon, label: t("title2") },
-    { Icon: PaymentIcon, label: t("title3") },
-    { Icon: ReceiptIcon, label: t("title4") },
+    { Icon: ShieldCheckIcon, title: t("title1"), body: t("body1") },
+    { Icon: ClockIcon, title: t("title2"), body: t("body2") },
+    { Icon: PhoneIcon, title: t("title3"), body: t("body3") },
+    { Icon: CalendarIcon, title: t("title4"), body: t("body4") },
   ];
 
   return (
-    <section className="border-b border-border bg-surface py-8">
-      <ul className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-10 gap-y-4 px-4 sm:px-6">
-        {items.map(({ Icon, label }) => (
-          <li key={label} className="flex items-center gap-2.5 text-sm font-semibold text-foreground">
-            <Icon className="h-5 w-5 shrink-0 text-brand-text" />
-            {label}
+    <section className="border-b border-border bg-surface py-12">
+      <ul className="mx-auto grid max-w-5xl grid-cols-2 gap-x-6 gap-y-8 px-4 sm:px-6 md:grid-cols-4">
+        {items.map(({ Icon, title, body }) => (
+          <li key={title} className="flex flex-col items-center gap-3 text-center">
+            <span className="flex h-12 w-12 items-center justify-center rounded-[12px] bg-ink">
+              <Icon className="h-5 w-5 text-brand" />
+            </span>
+            <span>
+              <span className="block text-sm font-semibold text-foreground">{title}</span>
+              <span className="block text-xs text-muted">{body}</span>
+            </span>
           </li>
         ))}
       </ul>

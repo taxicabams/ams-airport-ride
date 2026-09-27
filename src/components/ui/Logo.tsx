@@ -40,16 +40,21 @@ export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
 export function Logo({
   className = "",
   variant = "light",
+  tagline,
 }: {
   className?: string;
   variant?: "light" | "dark";
+  /** Optional third mono line under the wordmark, e.g. "SCHIPHOL ·
+   *  AMSTERDAM · 24/7" — the header's own "vertrekbord" departure-board
+   *  flourish. Omitted (footer, other pages) when not passed. */
+  tagline?: string;
 }) {
   return (
     <span className={`flex items-center gap-2.5 ${className}`}>
       <LogoMark className="h-9 w-9 shrink-0" />
       <span className="flex flex-col leading-none">
         <span
-          className={`text-lg font-bold tracking-tight ${variant === "dark" ? "text-white" : "text-brand-text"}`}
+          className={`font-heading text-lg font-bold tracking-tight ${variant === "dark" ? "text-white" : "text-brand-text"}`}
         >
           AMS
         </span>
@@ -58,6 +63,13 @@ export function Logo({
         >
           Airport Ride
         </span>
+        {tagline && (
+          <span
+            className={`mt-0.5 font-mono text-[10px] uppercase tracking-widest ${variant === "dark" ? "text-brand" : "text-brand-text"}`}
+          >
+            {tagline}
+          </span>
+        )}
       </span>
     </span>
   );

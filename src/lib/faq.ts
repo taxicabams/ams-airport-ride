@@ -56,6 +56,26 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
       a: "Vul uw vluchtnummer in bij het boeken, dan houden wij hier rekening mee, zodat uw chauffeur ook bij vertraging voor u klaarstaat.",
     },
     {
+      q: "Waar wacht mijn chauffeur op Schiphol?",
+      a: "Uw chauffeur neemt telefonisch of per sms contact met u op zodra u door de douane bent, om de exacte ophaalplek af te spreken — meestal bij het Meeting Point op Schiphol Plaza.",
+    },
+    {
+      q: "Is een taxi goedkoper dan Uber of Bolt?",
+      a: "Onze prijs staat vast op het moment van boeken, ongeacht drukte, spits of tijdstip — bij platforms met dynamische prijzen kan de prijs juist oplopen tijdens piekmomenten. Wij kunnen niet garanderen altijd goedkoper te zijn, maar wel dat u vooraf precies weet wat u betaalt.",
+    },
+    {
+      q: "Kan ik een kinderzitje bestellen?",
+      a: "Ja, geef dit aan bij het boeken via de optie 'Kinderzitje nodig'. Neem voor de exacte kosten contact met ons op.",
+    },
+    {
+      q: "Tot wanneer kan ik gratis annuleren?",
+      a: "Neem rechtstreeks contact met ons op voor de exacte voorwaarden rond annuleren — wij helpen u graag verder.",
+    },
+    {
+      q: "Rijden jullie ook 's nachts?",
+      a: "Ja, wij zijn 24/7 bereikbaar, ook voor vroege vluchten en late aankomsten.",
+    },
+    {
       q: "Hoe ontvang ik mijn reserveringsbevestiging?",
       a: "Direct na het boeken ziet u een bevestiging met al uw ritgegevens op het scherm, en ontvangt u deze ook per e-mail. Heeft u toch niets ontvangen, neem dan gerust contact met ons op.",
     },
@@ -96,6 +116,26 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     {
       q: "What happens if my flight is delayed?",
       a: "Add your flight number when booking, so we can take it into account and your driver is ready for you even if it's delayed.",
+    },
+    {
+      q: "Where does my driver wait at Schiphol?",
+      a: "Your driver will contact you by phone or text as soon as you clear customs, to confirm the exact pickup spot — usually near the Meeting Point at Schiphol Plaza.",
+    },
+    {
+      q: "Is a taxi cheaper than Uber or Bolt?",
+      a: "Our price is fixed the moment you book, regardless of demand, rush hour or time of day — platforms with dynamic pricing can actually charge more during peak times. We can't promise we're always cheaper, but we can promise you'll know exactly what you'll pay upfront.",
+    },
+    {
+      q: "Can I request a child seat?",
+      a: "Yes, let us know when booking via the 'Child seat needed' option. Contact us directly for the exact cost.",
+    },
+    {
+      q: "Until when can I cancel for free?",
+      a: "Please contact us directly for the exact cancellation terms — we're happy to help.",
+    },
+    {
+      q: "Do you also drive at night?",
+      a: "Yes, we're available 24/7, including for early flights and late arrivals.",
     },
     {
       q: "How do I receive my booking confirmation?",

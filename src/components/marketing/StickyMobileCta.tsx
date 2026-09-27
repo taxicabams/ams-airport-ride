@@ -3,34 +3,24 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { companyInfo } from "@/lib/companyInfo";
+import { PhoneIcon, WhatsAppIcon } from "@/components/ui/icons";
 
 const FOCUSABLE_SELECTOR = "input, textarea, select";
 
 /**
- * Mobile-only bottom bar keeping the primary CTA reachable while
- * scrolling (the brief's explicit "sticky mobile CTA" requirement) —
- * desktop already has the header's own "Book now" button always in
- * view, so this is `md:hidden`. `pb-[env(safe-area-inset-bottom)]`
- * keeps it clear of the home-indicator area on notched phones; the
- * layout adds matching bottom padding to <main> so this bar never
- * covers the last bit of page content (see layout.tsx).
- *
- * Client component so it can hide itself while any form field has
- * focus. Confirmed root cause of a real booking bug ("Confirm booking
- * sometimes not clickable"): on a shrunk mobile viewport (e.g. the
- * on-screen keyboard open while filling in the booking form's contact
- * step), this bar's own fixed-positioned rect can geometrically
- * overlap the booking flow's real submit button, so a tap there hits
- * this bar instead — reproduced and measured via
- * `document.elementFromPoint()` at a reduced viewport height, which
- * resolved to this bar rather than the button. Hiding the bar exactly
- * while a field is focused (the same moment the keyboard is open and
- * the collision becomes possible) removes the overlap entirely, and is
- * also the moment a second, redundant "Book" CTA floating over the
- * form is actively unhelpful anyway.
+ * "Vertrekbord" rebuild — 3 buttons per the brief's exact mobile spec:
+ * Bellen (tel:) / WhatsApp (wa.me, green) / Boek nu (amber). Call and
+ * WhatsApp only render while their companyInfo field is set (same
+ * null-until-real safety convention used everywhere else) — today
+ * that's the client's own "1234567"-style preview values, see
+ * companyInfo.ts. Still hidden entirely while a form field has focus
+ * (the real on-screen-keyboard-overlap bug fixed earlier this project —
+ * see the git history for the repro).
  */
 export function StickyMobileCta() {
   const t = useTranslations("StickyCta");
+  const tb = useTranslations("Booking");
   const [fieldFocused, setFieldFocused] = useState(false);
 
   useEffect(() => {
@@ -56,14 +46,33 @@ export function StickyMobileCta() {
 
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-surface/95 backdrop-blur md:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-ink-2 md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
-      <div className="flex items-center justify-between gap-3 px-4 py-2.5">
-        <p className="text-sm font-semibold text-foreground">{t("label")}</p>
+      <div className="grid grid-cols-3 gap-px bg-white/10">
+        {companyInfo.phone && (
+          <a
+            href={`tel:${companyInfo.phone.replace(/\s/g, "")}`}
+            className="flex min-h-[44px] flex-col items-center justify-center gap-0.5 bg-ink-2 py-2 text-[11px] font-semibold text-white"
+          >
+            <PhoneIcon className="h-4 w-4" />
+            {t("call")}
+          </a>
+        )}
+        {companyInfo.whatsapp && (
+          <a
+            href={`https://wa.me/${companyInfo.whatsapp}?text=${encodeURIComponent(tb("whatsappPrefill"))}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex min-h-[44px] flex-col items-center justify-center gap-0.5 bg-ink-2 py-2 text-[11px] font-semibold text-whatsapp"
+          >
+            <WhatsAppIcon className="h-4 w-4" />
+            {t("whatsapp")}
+          </a>
+        )}
         <Link
           href="/#boeken"
-          className="shrink-0 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground shadow-sm transition hover:brightness-95"
+          className="flex min-h-[44px] flex-col items-center justify-center gap-0.5 bg-brand py-2 text-[11px] font-bold text-brand-foreground"
         >
           {t("cta")}
         </Link>

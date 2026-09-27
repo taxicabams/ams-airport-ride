@@ -11,21 +11,47 @@
     "taxiAmsterdam": "Amsterdam",
     "howItWorks": "How it works",
     "prices": "Prices",
+    "ourCars": "Our cars",
+    "business": "Business",
+    "reviews": "Reviews",
     "contact": "Contact",
     "faq": "FAQ",
-    "bookNow": "Book a taxi",
+    "bookNow": "Book now",
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
   },
+  "TopBar": {
+    "available": "Available 24/7",
+    "directCarrier": "Direct with the carrier – no middleman",
+    "freeCancellation": "Free cancellation up to [X] hours",
+    "bookingLookup": "Find your booking",
+    "businessAccount": "Business account"
+  },
   "Hero": {
     "eyebrow": "Schiphol taxi",
-    "title": "Taxi to and from Schiphol",
+    "label1": "Fixed price",
+    "label2": "Flight number? We account for delays",
+    "label3": "24/7",
+    "title": "Taxi to Schiphol.",
+    "titleHighlight": "On time. Fixed price.",
     "heroPrice": "Fixed price from €{price}",
-    "subtitle": "Fixed price upfront. Door-to-door.",
+    "subtitle": "Your price is fixed before you book — even at night, on weekends, or in traffic. Add your flight number and we'll take any delay into account. Booking takes 30 seconds.",
     "supportingText": "Enter your route and see your price right away — before you book.",
-    "ctaPrimary": "Calculate my price →",
-    "compactTrustLine": "Fixed price at Schiphol · Card or cash · Receipt available",
+    "ctaPrimary": "Show my fixed price →",
+    "compactTrustLine": "No surcharges · Luggage included · Free cancellation",
+    "trustReviews": "[Google score] · [count] reviews",
+    "trustLicense": "ILT license · KvK [number]",
+    "trustLicenseReal": "ILT license · KvK {kvk}",
+    "trustPayment": "iDEAL · Visa · Mastercard · Card or cash",
     "floatingCardRoute": "Schiphol → Amsterdam"
+  },
+  "FlightMonitor": {
+    "label": "How our flight monitoring works — example",
+    "flightCode": "KL 1234",
+    "landingExpected": "LANDING EXPECTED",
+    "delay": "+35 MIN DELAY",
+    "adjusted": "PICKUP TIME AUTOMATICALLY ADJUSTED",
+    "disclaimer": "Example display — enter your own flight number when booking and we'll account for the actual delay."
   },
   "BookingSection": {
     "eyebrow": "Book directly",
@@ -79,16 +105,18 @@
     "receipt": "A receipt is available in the taxi."
   },
   "Vehicles": {
-    "eyebrow": "Choose your ride",
+    "eyebrow": "Our cars",
     "title": "Comfortable rides for every trip",
+    "mostChosen": "Most chosen",
+    "fromPrice": "from €{price}",
     "sedanTitle": "Comfort",
     "sedanCapacity": "1–{max} passengers",
     "sedanBody": "Comfortable for individuals, couples and small groups.",
-    "sedanCta": "Book Comfort →",
-    "busTitle": "Van",
+    "sedanCta": "Choose Comfort →",
+    "busTitle": "Taxibus",
     "busCapacity": "Up to {max} passengers",
     "busBody": "More space for larger groups and extra luggage.",
-    "busCta": "Book a Van →"
+    "busCta": "Choose Taxibus →"
   },
   "SchipholSteps": {
     "title": "Arriving at Schiphol",
@@ -212,18 +240,14 @@
     "cta": "Calculate your airport transfer →"
   },
   "TrustBar": {
-    "item1": "Fixed price Schiphol",
-    "item2": "No online payment",
-    "item3": "Card or cash",
-    "item4": "Book 24/7",
-    "title1": "Fixed price",
-    "body1": "Know what you'll pay, upfront.",
-    "title2": "Easy booking",
-    "body2": "From address to confirmed reservation, online.",
-    "title3": "Card or cash",
-    "body3": "Pay after your ride.",
-    "title4": "Receipt available",
-    "body4": "Available after your ride."
+    "title1": "Price is fixed",
+    "body1": "No surprises afterwards.",
+    "title2": "Free waiting time",
+    "body2": "[Y] minutes included after landing.",
+    "title3": "You know who's coming",
+    "body3": "Name, plate and number via WhatsApp.",
+    "title4": "Free cancellation",
+    "body4": "Up to [X] hours in advance."
   },
   "Trust": {
     "fixedPriceTitle": "Clear price",
@@ -237,30 +261,54 @@
   },
   "HowItWorks": {
     "eyebrow": "How it works",
-    "title": "Your ride in four simple steps",
-    "step1Title": "Enter your route",
-    "step1Body": "Fill in your pickup address and destination.",
-    "step2Title": "See your price",
-    "step2Body": "Schiphol: fixed price upfront. Other rides: price based on distance and travel time.",
-    "step3Title": "Choose your vehicle",
-    "step3Body": "Comfort or Van, whichever fits your ride.",
+    "title": "No app needed, no account.",
+    "subtitle": "Confirmation by email and WhatsApp.",
+    "step1Title": "Enter your ride",
+    "step1Body": "Pickup address, destination, date and time — see your fixed price right away.",
+    "step2Title": "Confirm your booking",
+    "step2Body": "Choose your vehicle, fill in your details and confirm — you pay after the ride.",
+    "step3Title": "We're ready for you",
+    "step3Body": "Your driver tracks your flight and is on time to meet you.",
     "step4Title": "Book",
     "step4Body": "Fill in your details and get your confirmation."
   },
   "Routes": {
     "eyebrow": "Popular Schiphol routes",
-    "title": "Fixed price, both directions",
+    "title": "What your ride to Schiphol costs.",
     "subtitle": "The same fixed price applies to and from Schiphol.",
-    "viewAll": "View all routes",
+    "viewAll": "View all locations →",
+    "colDeparture": "Departure",
+    "colDuration": "Travel time",
+    "colPrice": "Fixed price",
     "fixedPrice": "From {price}",
     "bookRoute": "Book route →"
+  },
+  "Reviews": {
+    "eyebrow": "Reviews",
+    "title": "What customers say",
+    "scoreLine": "[Google score] · [count] reviews",
+    "cta": "See our Google reviews →",
+    "writeReview": "Write a review",
+    "placeholderQuote": "[Review text will appear here once available]",
+    "placeholderName": "[Name]",
+    "empty": "Our real Google reviews will appear here soon."
+  },
+  "Zakelijk": {
+    "eyebrow": "Business transport",
+    "title": "Picking up guests, colleagues or clients?",
+    "subtitle": "On invoice, without the hassle.",
+    "item1": "Pay by invoice",
+    "item2": "Dedicated contact person",
+    "item3": "Meet & Greet with a name sign",
+    "ctaAccount": "Request a business account",
+    "ctaCall": "Call us"
   },
   "Faq": {
     "eyebrow": "FAQ",
     "title": "Frequently asked questions"
   },
   "Footer": {
-    "tagline": "Schiphol & Amsterdam airport transfers.",
+    "tagline": "Schiphol & Amsterdam airport transfers. Direct carrier, no middleman.",
     "rights": "All rights reserved.",
     "aboutLink": "About us",
     "howItWorksLink": "How it works",
@@ -272,17 +320,23 @@
     "serviceSchiphol": "Schiphol Taxi",
     "serviceAirportTransfers": "Airport transfers",
     "servicePrivateRides": "Private rides",
+    "routesTitle": "Routes",
     "infoTitle": "Information",
-    "legalTitle": "Legal"
+    "legalTitle": "Legal",
+    "companyDetailsTitle": "Company details"
   },
   "FinalCtaSimple": {
-    "title": "Ready to go?",
+    "title": "Flight booked?",
+    "titleHighlight": "Taxi too.",
     "body": "Calculate your ride price and book your taxi online.",
-    "cta": "Calculate my ride price →"
+    "cta": "Calculate my price →",
+    "ctaWhatsapp": "WhatsApp us"
   },
   "StickyCta": {
     "label": "Your Schiphol taxi",
-    "cta": "Book your ride"
+    "cta": "Book now",
+    "call": "Call",
+    "whatsapp": "WhatsApp"
   },
   "NotFound": {
     "title": "Page not found",

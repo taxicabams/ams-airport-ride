@@ -2,74 +2,124 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { companyInfo } from "@/lib/companyInfo";
 import { Logo } from "@/components/ui/Logo";
-import { LocaleSwitcher } from "@/components/marketing/LocaleSwitcher";
+import { ROUTE_PAGES, routePageCopy } from "@/lib/routes-data";
+import { getLocale } from "next-intl/server";
 
 /**
- * v10 rebuild — same minimal link list as v9, reordered/relabeled to the
- * client's exact new spec: Taxi Schiphol / Amsterdam taxi / Tarieven /
- * Contact / FAQ, then Voorwaarden/Privacy, then a locale switch. Real
- * company facts only (KvK, when known) — never a fabricated
- * license/certification.
+ * "Vertrekbord" rebuild — 4 columns per the brief's exact spec:
+ * company details (address/KvK/BTW/ILT), services, routes, info. All
+ * company-detail values come from companyInfo.ts, which the client
+ * asked to fill with obvious "1234567"-style preview placeholders — see
+ * that file's header comment; nothing here is invented independently.
  */
 export async function Footer() {
   const t = await getTranslations("Footer");
   const tn = await getTranslations("Nav");
+  const locale = (await getLocale()) as "nl" | "en";
   const year = new Date().getFullYear();
+  const topRoutes = ROUTE_PAGES.filter((r) => r.direction === "from-schiphol").slice(0, 6);
 
-  const links = [
+  const services = [
     { href: "/#populaire-routes", label: t("serviceSchiphol") },
     { href: "/#amsterdam-taxi", label: t("serviceAmsterdam") },
-    { href: "/#populaire-routes", label: tn("prices") },
-    { href: "/contact", label: "Contact" },
+    { href: "/#zakelijk", label: tn("business") },
+    { href: "/#onze-autos", label: tn("ourCars") },
+  ];
+
+  const info = [
+    { href: "/over-ons", label: t("aboutLink") },
     { href: "/veelgestelde-vragen", label: "FAQ" },
+    { href: "/contact", label: "Contact" },
+    { href: "/voorwaarden", label: t("termsLink") },
+    { href: "/privacy", label: t("privacyLink") },
   ];
 
   return (
-    <footer className="bg-ink text-white/70">
-      <div className="mx-auto max-w-4xl px-4 py-10 text-center sm:px-6">
+    <footer className="bg-ink-2 text-ink-foreground-muted">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <Link href="/" className="inline-block">
           <Logo variant="dark" />
         </Link>
-        <p className="mx-auto mt-3 max-w-xs text-sm text-white/60">{t("tagline")}</p>
+        <p className="mt-3 max-w-xs text-sm">{t("tagline")}</p>
 
-        {(companyInfo.phone || companyInfo.email) && (
-          <p className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-1 text-sm">
-            {companyInfo.phone && (
-              <a href={`tel:${companyInfo.phone}`} className="font-medium text-white hover:text-white/80">
-                {companyInfo.phone}
-              </a>
-            )}
-            {companyInfo.email && (
-              <a href={`mailto:${companyInfo.email}`} className="font-medium text-white hover:text-white/80">
-                {companyInfo.email}
-              </a>
-            )}
-          </p>
-        )}
+        <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <h3 className="font-mono text-xs font-semibold uppercase tracking-wide text-white/50">
+              {t("companyDetailsTitle")}
+            </h3>
+            <ul className="mt-3 space-y-1.5 text-sm">
+              {companyInfo.address && <li>{companyInfo.address}</li>}
+              {companyInfo.phone && (
+                <li>
+                  <a href={`tel:${companyInfo.phone.replace(/\s/g, "")}`} className="hover:text-white">
+                    {companyInfo.phone}
+                  </a>
+                </li>
+              )}
+              {companyInfo.email && (
+                <li>
+                  <a href={`mailto:${companyInfo.email}`} className="hover:text-white">
+                    {companyInfo.email}
+                  </a>
+                </li>
+              )}
+              {companyInfo.kvkNumber && <li>KvK {companyInfo.kvkNumber}</li>}
+              {companyInfo.btwNumber && <li>BTW {companyInfo.btwNumber}</li>}
+              {companyInfo.licenseNumber && <li>ILT {companyInfo.licenseNumber}</li>}
+            </ul>
+          </div>
 
-        <nav className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
-          {links.map((link) => (
-            <Link key={link.label} href={link.href} className="text-white/70 hover:text-white">
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+          <div>
+            <h3 className="font-mono text-xs font-semibold uppercase tracking-wide text-white/50">
+              {t("servicesTitle")}
+            </h3>
+            <ul className="mt-3 space-y-1.5 text-sm">
+              {services.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className="hover:text-white">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-xs">
-          <Link href="/voorwaarden" className="text-white/50 hover:text-white/80">
-            {t("termsLink")}
-          </Link>
-          <Link href="/privacy" className="text-white/50 hover:text-white/80">
-            {t("privacyLink")}
-          </Link>
-          <LocaleSwitcher />
+          <div>
+            <h3 className="font-mono text-xs font-semibold uppercase tracking-wide text-white/50">
+              {t("routesTitle")}
+            </h3>
+            <ul className="mt-3 space-y-1.5 text-sm">
+              {topRoutes.map((route) => {
+                const { city } = routePageCopy(route, locale);
+                return (
+                  <li key={route.slug}>
+                    <Link href={`/${route.slug}`} className="hover:text-white">
+                      {city}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="font-mono text-xs font-semibold uppercase tracking-wide text-white/50">
+              {t("infoTitle")}
+            </h3>
+            <ul className="mt-3 space-y-1.5 text-sm">
+              {info.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className="hover:text-white">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        <div className="mt-6 border-t border-white/10 pt-5 text-xs text-white/50">
-          <p>
-            © {year} AMS Airport Ride. {t("rights")}
-            {companyInfo.kvkNumber && ` · KvK ${companyInfo.kvkNumber}`}
-          </p>
+        <div className="mt-10 border-t border-white/10 pt-6 text-xs">
+          <p>© {year} AMS Airport Ride. {t("rights")}</p>
         </div>
       </div>
     </footer>

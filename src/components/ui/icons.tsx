@@ -165,3 +165,21 @@ export const VanIcon = ({ className = "shrink-0" }: { className?: string }) => (
     <path d="M6 44h6M52 44h6" />
   </svg>
 );
+
+/**
+ * Star (reviews) and briefcase (business transport) — same hand-drawn-
+ * SVG approach as every other icon in this file, added for the
+ * "vertrekbord" homepage's Reviews and Zakelijk sections.
+ */
+export const StarIcon = ({ className = "shrink-0" }: { className?: string }) => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" className={className}>
+    <path d="M12 2.5l2.9 6.6 7.1.7-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7-5.4-4.7 7.1-.7Z" />
+  </svg>
+);
+
+export const BriefcaseIcon = ({ className = "shrink-0" }: { className?: string }) => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    <rect x="3" y="8" width="18" height="12" rx="2" />
+    <path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18" />
+  </svg>
+);
