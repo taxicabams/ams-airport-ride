@@ -183,3 +183,16 @@ export const BriefcaseIcon = ({ className = "shrink-0" }: { className?: string }
     <path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18" />
   </svg>
 );
+
+/**
+ * Horizontal swap arrows — used for the real pickup/destination swap
+ * button in RouteStep.tsx (only shown in "Andere rit" mode, where both
+ * fields are free text; swapping a Schiphol-locked field wouldn't make
+ * sense and isn't offered there).
+ */
+export const SwapIcon = ({ className = "shrink-0" }: { className?: string }) => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M7 8h13M17 4l3 4-3 4" />
+    <path d="M17 16H4M7 20l-3-4 3-4" />
+  </svg>
+);

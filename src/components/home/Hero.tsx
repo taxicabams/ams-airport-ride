@@ -15,6 +15,15 @@ import { BookingWidget } from "@/components/booking/BookingWidget";
  * them were wanted (Google reviews are being replaced by the site's own
  * database-backed reviews — see Reviews.tsx — and ILT/KvK/iDEAL were
  * simply "hoef ik niet").
+ *
+ * Mobile order flipped per direct feedback ("via mobiel komt er eerst
+ * nog hele stuk met die titel etc" — the booking card should be the
+ * very first thing visible on a phone, not after a full screen of hero
+ * copy): the booking column gets `order-1` (first) below the `lg`
+ * breakpoint and `lg:order-2` (back to its natural second/right-column
+ * position) at desktop width; the text column is `order-2 lg:order-1`.
+ * Pure CSS reorder — the DOM/markup order (and therefore reading order
+ * for screen readers) is unchanged, only the visual position moves.
  */
 export async function Hero() {
   const t = await getTranslations("Hero");
@@ -23,7 +32,7 @@ export async function Hero() {
   return (
     <section className="bg-ink text-ink-foreground">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:items-center lg:py-16">
-        <div>
+        <div className="order-2 lg:order-1">
           <div className="flex flex-wrap gap-2">
             {[t("label1"), t("label2"), t("label3")].map((label) => (
               <span
@@ -42,7 +51,11 @@ export async function Hero() {
           <p className="mt-4 max-w-lg text-ink-foreground-muted">{t("subtitle")}</p>
         </div>
 
-        <div id="boeken" className="scroll-mt-24">
+        {/* Not id="boeken" here too — BookingWidget's own root already
+            has that id (a real duplicate-id bug otherwise: two elements
+            sharing one id is invalid HTML and makes "#boeken" anchor
+            behavior/getElementById ambiguous). */}
+        <div className="order-1 scroll-mt-24 lg:order-2">
           <BookingWidget />
           <ul className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm font-medium text-ink-foreground-muted">
             {trustItems.map((item) => (

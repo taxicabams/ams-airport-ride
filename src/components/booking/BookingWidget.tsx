@@ -6,6 +6,7 @@ import type { Quote, VehicleType } from "@/lib/pricing";
 import { BUS_SURCHARGE_EUR } from "@/lib/pricing";
 import { companyInfo } from "@/lib/companyInfo";
 import { track } from "@/lib/analytics";
+import { StepTracker } from "@/components/ui/StepTracker";
 import { RouteStep } from "./steps/RouteStep";
 import { DetailsStep } from "./steps/DetailsStep";
 import { QuoteStep } from "./steps/QuoteStep";
@@ -213,11 +214,12 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
     >
       {step !== "confirmed" && (
         <>
+          <StepTracker
+            steps={[t("stepRouteLabel"), t("stepVehicleLabel"), t("stepPriceLabel"), t("stepDetailsLabel")]}
+            currentIndex={stepIndex}
+          />
           <div className="mb-1 flex items-center justify-between">
             <h2 className="text-xl font-bold tracking-tight text-foreground">{t("heading")}</h2>
-            <span className="text-xs font-medium text-muted">
-              {t("step", { current: stepIndex + 1, total: STEP_ORDER.length })}
-            </span>
           </div>
           {/* Reassurance shown once, on the first step — the brief's
               "no online payment" / "see your price before booking"
@@ -226,12 +228,6 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
           {step === "route" && (
             <p className="mb-3 text-sm text-muted">{t("headingSubtitle")}</p>
           )}
-          <div className="mb-6 mt-3 h-1 w-full overflow-hidden rounded-full bg-muted-background">
-            <div
-              className="h-full rounded-full bg-brand transition-all"
-              style={{ width: `${((stepIndex + 1) / STEP_ORDER.length) * 100}%` }}
-            />
-          </div>
         </>
       )}
 

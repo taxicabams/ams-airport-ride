@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { AddressField } from "@/components/ui/AddressField";
 import { inputClassName } from "@/components/ui/Field";
-import { PlaneIcon, ArrowRightIcon } from "@/components/ui/icons";
+import { PlaneIcon, ArrowRightIcon, SwapIcon } from "@/components/ui/icons";
 import type { ResolvedPlace } from "@/lib/places";
 import type { BookingFormState } from "../types";
 
@@ -161,6 +161,27 @@ export function RouteStep({
     });
   }
 
+  // Real, working swap — not shown for the two Schiphol-locked tabs
+  // (swapping there is just "pick the other tab," already handled by
+  // the toggle above; a swap button would be confusing, not useful).
+  function swapAddresses() {
+    onChange({
+      pickup: form.destination,
+      pickupPlaceId: form.destinationPlaceId,
+      pickupLat: form.destinationLat,
+      pickupLng: form.destinationLng,
+      pickupMissingHouseNumber: form.destinationMissingHouseNumber,
+      destination: form.pickup,
+      destinationPlaceId: form.pickupPlaceId,
+      destinationLat: form.pickupLat,
+      destinationLng: form.pickupLng,
+      destinationMissingHouseNumber: form.pickupMissingHouseNumber,
+    });
+    setPickupHouseNumber(destinationHouseNumber);
+    setDestinationHouseNumber(pickupHouseNumber);
+    setTouched({});
+  }
+
   function selectRideMode(mode: RideMode) {
     setRideMode(mode);
     // Locking TO a Schiphol side is handled by the useEffect above
@@ -236,6 +257,17 @@ export function RouteStep({
           </button>
         ))}
       </div>
+
+      {rideMode === "other" && (form.pickup || form.destination) && (
+        <button
+          type="button"
+          onClick={swapAddresses}
+          className="flex items-center gap-1.5 self-end text-xs font-semibold text-brand-text transition hover:text-brand-dark"
+        >
+          <SwapIcon className="h-3.5 w-3.5" />
+          {t("swapLabel")}
+        </button>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2">
         {rideMode === "fromSchiphol" ? (
