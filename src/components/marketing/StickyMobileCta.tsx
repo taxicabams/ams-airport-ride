@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { companyInfo } from "@/lib/companyInfo";
+import { track } from "@/lib/analytics";
 import { PhoneIcon, WhatsAppIcon } from "@/components/ui/icons";
 
 const FOCUSABLE_SELECTOR = "input, textarea, select";
@@ -53,6 +54,7 @@ export function StickyMobileCta() {
         {companyInfo.phone && (
           <a
             href={`tel:${companyInfo.phone.replace(/\s/g, "")}`}
+            onClick={() => track("phone_clicked")}
             className="flex min-h-[44px] flex-col items-center justify-center gap-0.5 bg-ink-2 py-2 text-[11px] font-semibold text-white"
           >
             <PhoneIcon className="h-4 w-4" />
@@ -64,6 +66,7 @@ export function StickyMobileCta() {
             href={`https://wa.me/${companyInfo.whatsapp}?text=${encodeURIComponent(tb("whatsappPrefill"))}`}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => track("whatsapp_clicked")}
             className="flex min-h-[44px] flex-col items-center justify-center gap-0.5 bg-ink-2 py-2 text-[11px] font-semibold text-whatsapp"
           >
             <WhatsAppIcon className="h-4 w-4" />

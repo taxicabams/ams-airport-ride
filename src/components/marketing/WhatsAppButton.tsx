@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { companyInfo } from "@/lib/companyInfo";
 import { WhatsAppIcon } from "@/components/ui/icons";
+import { TrackedLink } from "@/components/marketing/TrackedLink";
 
 /**
  * Floating WhatsApp bubble — desktop only (`hidden md:flex`). On mobile,
@@ -17,7 +18,8 @@ export async function WhatsAppButton() {
   const text = encodeURIComponent(t("whatsappPrefill"));
 
   return (
-    <a
+    <TrackedLink
+      event="whatsapp_clicked"
       href={`https://wa.me/${companyInfo.whatsapp}?text=${text}`}
       target="_blank"
       rel="noopener noreferrer"
@@ -25,6 +27,6 @@ export async function WhatsAppButton() {
     >
       <WhatsAppIcon className="h-5 w-5" />
       <span className="hidden sm:inline">{t("whatsappUs")}</span>
-    </a>
+    </TrackedLink>
   );
 }

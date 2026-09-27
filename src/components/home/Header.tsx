@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { MobileNav } from "@/components/marketing/MobileNav";
 import { LocaleSwitcher } from "@/components/marketing/LocaleSwitcher";
+import { TrackedLink } from "@/components/marketing/TrackedLink";
 import { Logo } from "@/components/ui/Logo";
 import { companyInfo } from "@/lib/companyInfo";
 import { PhoneIcon } from "@/components/ui/icons";
@@ -48,13 +49,14 @@ export async function Header() {
 
         <div className="flex items-center gap-3">
           {companyInfo.phone && (
-            <a
+            <TrackedLink
+              event="phone_clicked"
               href={`tel:${companyInfo.phone.replace(/\s/g, "")}`}
               className="hidden items-center gap-1.5 font-mono text-sm font-medium text-white/85 transition duration-150 hover:text-white lg:inline-flex"
             >
               <PhoneIcon className="h-4 w-4" />
               {companyInfo.phone}
-            </a>
+            </TrackedLink>
           )}
           <LocaleSwitcher />
           <Link

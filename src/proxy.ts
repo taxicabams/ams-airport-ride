@@ -30,6 +30,19 @@ const intlMiddleware = createMiddleware(routing);
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Real bug found live: the Ads landing page (src/app/boek-taxi-schiphol,
+  // deliberately its own root route OUTSIDE the [locale] segment — see
+  // that route's own layout.tsx note) was 404ing. next-intl's own
+  // middleware, matched against every non-file path, was rewriting this
+  // unprefixed path to "/nl/boek-taxi-schiphol" internally (confirmed via
+  // the response's own x-middleware-rewrite header) — a route that
+  // genuinely doesn't exist, since this page was built to bypass i18n
+  // routing entirely. Skip the i18n middleware for this one path so
+  // Next's own file-based routing finds the real route directly.
+  if (pathname === "/boek-taxi-schiphol") {
+    return NextResponse.next();
+  }
+
   if (pathname === "/nl" || pathname.startsWith("/nl/")) {
     const url = request.nextUrl.clone();
     url.pathname = pathname === "/nl" ? "/" : pathname.slice("/nl".length);

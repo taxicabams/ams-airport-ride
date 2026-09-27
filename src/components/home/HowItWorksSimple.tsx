@@ -35,7 +35,11 @@ export async function HowItWorksSimple() {
                 isLast ? "border-transparent bg-ink text-ink-foreground" : "border-border bg-surface"
               }`}
             >
-              <span className={`font-mono text-3xl font-semibold ${isLast ? "text-brand" : "text-brand-text/50"}`}>
+              {/* Real contrast bug found via Lighthouse: /50 opacity
+                  blended down to ~2.26:1 against the white card, failing
+                  even the relaxed 3:1 minimum for large bold text.
+                  /70 blends to ~3.34:1 — checked, passes. */}
+              <span className={`font-mono text-3xl font-semibold ${isLast ? "text-brand" : "text-brand-text/70"}`}>
                 {String(i + 1).padStart(2, "0")}
               </span>
               <p className={`mt-3 text-base font-semibold ${isLast ? "text-white" : "text-foreground"}`}>

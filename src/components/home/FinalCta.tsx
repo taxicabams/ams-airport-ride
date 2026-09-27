@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { TrackedLink } from "@/components/marketing/TrackedLink";
 import { companyInfo } from "@/lib/companyInfo";
 
 /**
@@ -27,14 +28,15 @@ export async function FinalCta() {
             {t("cta")}
           </Link>
           {companyInfo.whatsapp && (
-            <a
+            <TrackedLink
+              event="whatsapp_clicked"
               href={`https://wa.me/${companyInfo.whatsapp}?text=${encodeURIComponent(tb("whatsappPrefill"))}`}
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-[10px] border border-white/20 bg-whatsapp/10 px-6 py-3.5 text-base font-semibold text-white transition duration-150 hover:bg-whatsapp/20"
             >
               {t("ctaWhatsapp")}
-            </a>
+            </TrackedLink>
           )}
         </div>
       </div>

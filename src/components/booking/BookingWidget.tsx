@@ -313,7 +313,13 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
             <a
               href={`https://wa.me/${companyInfo.whatsapp}?text=${encodeURIComponent(t("whatsappPrefill"))}`}
               onClick={() => track("whatsapp_clicked")}
-              className="font-semibold text-success hover:underline"
+              // Real accessibility bug found via a Lighthouse audit:
+              // text-success (#3ddc84, tuned for dark backgrounds like
+              // FlightMonitorBar's) is only 1.78:1 on this card's white
+              // surface — badly fails the 4.5:1 WCAG AA minimum.
+              // text-brand-text is the same already-contrast-checked
+              // color the "Bel ons" link right next to it uses.
+              className="font-semibold text-brand-text hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >
