@@ -25,13 +25,15 @@ import "../globals.css";
  *    separate route tree, which shares no layout with `[locale]` at all
  *    and doesn't have that problem.
  *
- * Hardcoded to Dutch (no /en variant yet) — Ads campaigns are normally
- * built per-language already, and Dutch is this site's own default,
- * unprefixed locale. Reuses the *same* messages/nl.json and the same
- * components (BookingWidget, TrustBar, ...) as the main site — just a
- * manually-provided locale context instead of the `[locale]` segment's
- * middleware-driven one, via the identical setRequestLocale +
- * NextIntlClientProvider pairing used there.
+ * Hardcoded to Dutch — the English campaign variant is a separate
+ * sibling route at src/app/en/boek-taxi-schiphol (own layout, same
+ * pattern), not a locale switch inside this one, so each stays a plain
+ * static route with no [locale] segment involved. Reuses the *same*
+ * messages/nl.json and the same components (BookingWidget, TrustBar,
+ * ...) as the main site — just a manually-provided locale context
+ * instead of the `[locale]` segment's middleware-driven one, via the
+ * identical setRequestLocale + NextIntlClientProvider pairing used
+ * there.
  *
  * Fonts come from lib/fonts.ts, not a fresh next/font/google call here —
  * calling the same Google Font loader from two separate root layouts
@@ -43,7 +45,10 @@ export const metadata: Metadata = {
     "Boek direct uw taxi van of naar Schiphol. Vaste prijs vooraf, geen toeslagen, betaal na de rit. Bereken uw prijs in 30 seconden.",
   robots: { index: true, follow: true },
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.amsairportride.nl"),
-  alternates: { canonical: "/boek-taxi-schiphol" },
+  alternates: {
+    canonical: "/boek-taxi-schiphol",
+    languages: { nl: "/boek-taxi-schiphol", en: "/en/boek-taxi-schiphol" },
+  },
 };
 
 export default async function LandingLayout({ children }: { children: React.ReactNode }) {

@@ -38,8 +38,9 @@ export function proxy(request: NextRequest) {
   // the response's own x-middleware-rewrite header) — a route that
   // genuinely doesn't exist, since this page was built to bypass i18n
   // routing entirely. Skip the i18n middleware for this one path so
-  // Next's own file-based routing finds the real route directly.
-  if (pathname === "/boek-taxi-schiphol") {
+  // Next's own file-based routing finds the real route directly. Same
+  // bypass for the English sibling at src/app/en/boek-taxi-schiphol.
+  if (pathname === "/boek-taxi-schiphol" || pathname === "/en/boek-taxi-schiphol") {
     return NextResponse.next();
   }
 
