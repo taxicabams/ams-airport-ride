@@ -337,9 +337,14 @@ export function DetailsStep({
               that QuoteStep (using the same carQuote.source signal)
               correctly labels "Price based on distance and travel
               time" a moment later — misleading for one screen. Mirror
-              QuoteStep's own honesty check here instead of a static
-              string. */}
-          {carQuote?.source === "fixed" ? t("calculateButton") : t("calculateButtonEstimate")}
+              QuoteStep's own honesty check — but fall back to the
+              synchronous `isAirport` guess while carQuote is still
+              loading, so the common Schiphol case doesn't flash
+              "Calculate my price" for a moment before the preview
+              quote resolves. */}
+          {(carQuote ? carQuote.source === "fixed" : isAirport)
+            ? t("calculateButton")
+            : t("calculateButtonEstimate")}
         </button>
       </div>
     </div>
