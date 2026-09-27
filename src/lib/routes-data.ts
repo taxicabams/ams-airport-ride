@@ -44,11 +44,11 @@ const CITY_CONTENT: CityContent[] = [
     faq: {
       nl: [
         { q: "Is Amstelveen ver van Schiphol?", a: "Nee, Amstelveen ligt vlak bij Schiphol — de rit duurt doorgaans ongeveer 15 minuten." },
-        { q: "Kan ik een zakelijke rit op factuur boeken?", a: "Neem contact met ons op voor zakelijke boekingen en facturatie." },
+        { q: "Rijden jullie ook 's avonds laat of 's ochtends vroeg naar Amstelveen?", a: "Ja, wij zijn 24/7 bereikbaar voor ritten van en naar Amstelveen." },
       ],
       en: [
         { q: "Is Amstelveen far from Schiphol?", a: "No, Amstelveen is very close to Schiphol — the ride typically takes about 15 minutes." },
-        { q: "Can I book a business ride on invoice?", a: "Contact us directly for business bookings and invoicing." },
+        { q: "Do you also drive late at night or early in the morning to Amstelveen?", a: "Yes, we're available 24/7 for rides to and from Amstelveen." },
       ],
     },
   },

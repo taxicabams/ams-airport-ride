@@ -12,7 +12,6 @@
     "howItWorks": "Hoe het werkt",
     "prices": "Prijzen",
     "ourCars": "Onze auto's",
-    "business": "Zakelijk",
     "reviews": "Reviews",
     "contact": "Contact",
     "faq": "FAQ",
@@ -283,16 +282,6 @@
     "eyebrow": "Reviews",
     "title": "Wat klanten zeggen",
     "empty": "Hier komen binnenkort echte reviews van onze klanten."
-  },
-  "Zakelijk": {
-    "eyebrow": "Zakelijk vervoer",
-    "title": "Gasten, collega's of klanten ophalen?",
-    "subtitle": "Op rekening, zonder gedoe.",
-    "item1": "Betalen op factuur",
-    "item2": "Vaste contactpersoon",
-    "item3": "Meet & Greet met naambordje",
-    "ctaAccount": "Neem contact op",
-    "ctaCall": "Bel ons"
   },
   "Faq": {
     "eyebrow": "FAQ",

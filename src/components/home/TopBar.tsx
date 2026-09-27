@@ -7,9 +7,10 @@ import { Link } from "@/i18n/navigation";
  * differentiator line is removed ("hoeft ook niet"), the free-
  * cancellation line now states the real, confirmed policy (3 hours)
  * instead of a "[X]" bracket placeholder, and "Zakelijk account" is
- * removed from here entirely (business account isn't wanted — see
- * Zakelijk.tsx). The locale switcher moved to Header (always visible,
- * not just desktop) — see LocaleSwitcher.tsx's own note.
+ * removed from here entirely — the whole business/invoice section was
+ * later removed site-wide too ("die zakelijk en op rekening hoef ik ook
+ * niet"). The locale switcher moved to Header (always visible, not just
+ * desktop) — see LocaleSwitcher.tsx's own note.
  */
 export async function TopBar() {
   const t = await getTranslations("TopBar");

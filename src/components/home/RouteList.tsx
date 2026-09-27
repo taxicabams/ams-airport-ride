@@ -1,19 +1,70 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ROUTE_PAGES, routePageCopy } from "@/lib/routes-data";
+import { findSchipholPrice, CANONICAL_ROUTE_FACTS } from "@/lib/pricing/staticRoutes";
+import { estimateDistanceDuration } from "@/lib/pricing/fallback";
+import { LOCATIONS } from "@/lib/locations";
 import { ArrowRightIcon } from "@/components/ui/icons";
 
+const SCHIPHOL_LOCATION = LOCATIONS.find((l) => l.id === "schiphol")!;
+
 /**
- * "Vertrekbord" rebuild — an actual navy departure-board table (mono
- * font, VERTREK | REISTIJD | VASTE PRIJS columns), replacing the photo-
- * card grid from the previous Layout 4.0 pass, per the brief's exact
- * spec. Every number (price, travel time) still comes straight from the
- * real pricing engine / CANONICAL_ROUTE_FACTS — nothing invented.
+ * Amsterdam broken into its 5 districts (per direct feedback: "west
+ * zuid oost centrum noord... dat in tabel"), plus Heemstede — none of
+ * these have a dedicated route page yet, so each links straight to the
+ * booking widget instead of a "/${slug}" page that doesn't exist.
+ * Prices are the client's own real, already-curated Schiphol price list
+ * (lib/pricing/staticRoutes.ts's SCHIPHOL_PRICES) — the exact same
+ * numbers the booking engine would already quote for these locations
+ * today, never a separately invented figure. Duration is computed with
+ * the app's own real distance/duration formula (fallback.ts) from each
+ * location's real coordinates (lib/locations.ts) when no hand-
+ * researched CANONICAL_ROUTE_FACTS entry exists for it.
  */
+const EXTRA_LOCATION_IDS = ["west", "zuid", "oost", "centrum", "noord", "heemstede"] as const;
+
+const EXTRA_LABELS: Record<(typeof EXTRA_LOCATION_IDS)[number], { nl: string; en: string }> = {
+  west: { nl: "Amsterdam West", en: "Amsterdam West" },
+  zuid: { nl: "Amsterdam Zuid", en: "Amsterdam South" },
+  oost: { nl: "Amsterdam Oost", en: "Amsterdam East" },
+  centrum: { nl: "Amsterdam Centrum", en: "Amsterdam Centre" },
+  noord: { nl: "Amsterdam Noord", en: "Amsterdam North" },
+  heemstede: { nl: "Heemstede", en: "Heemstede" },
+};
+
+function extraRow(id: (typeof EXTRA_LOCATION_IDS)[number], locale: "nl" | "en") {
+  const location = LOCATIONS.find((l) => l.id === id)!;
+  const price = findSchipholPrice(id)!;
+  const facts = CANONICAL_ROUTE_FACTS[id] ?? estimateDistanceDuration(SCHIPHOL_LOCATION, location);
+  return { key: id, city: EXTRA_LABELS[id][locale], durationMin: facts.durationMin, price, href: "/#boeken" as const };
+}
+
 export async function RouteList() {
   const t = await getTranslations("Routes");
   const locale = (await getLocale()) as "nl" | "en";
-  const fromSchiphol = ROUTE_PAGES.filter((r) => r.direction === "from-schiphol");
+
+  // Keep the existing hand-authored, full-content route pages for the
+  // other real destinations (Amstelveen, Haarlem, Utrecht, Rotterdam,
+  // Den Haag) — only the generic single "Amsterdam" row is dropped,
+  // superseded by its 5 real districts above.
+  const pageRows = ROUTE_PAGES.filter(
+    (r) => r.direction === "from-schiphol" && r.cityId !== "amsterdam"
+  ).map((route) => {
+    const { city } = routePageCopy(route, locale);
+    return { key: route.slug, city, durationMin: route.durationMin, price: route.basePrice, href: `/${route.slug}` };
+  });
+
+  const districtRows = EXTRA_LOCATION_IDS.filter((id) => id !== "heemstede").map((id) => extraRow(id, locale));
+  const heemstedeRow = extraRow("heemstede", locale);
+
+  // Amsterdam's 5 districts first, then Amstelveen/Haarlem/Heemstede
+  // (the immediate Amsterdam-area towns), then the further-out cities.
+  const rows = [
+    ...districtRows,
+    ...pageRows.filter((r) => r.key === "taxi-schiphol-amstelveen" || r.key === "taxi-schiphol-haarlem"),
+    heemstedeRow,
+    ...pageRows.filter((r) => !["taxi-schiphol-amstelveen", "taxi-schiphol-haarlem"].includes(r.key)),
+  ];
 
   return (
     <section id="populaire-routes" className="scroll-mt-24 mx-auto max-w-4xl px-4 py-16 sm:px-6">
@@ -27,10 +78,6 @@ export async function RouteList() {
           </h2>
           <p className="mt-2 text-muted">{t("subtitle")}</p>
         </div>
-        {/* "Alle plaatsen" is an overview page for a later phase (route
-            pages / all-locations, per the brief's own phasing) — it
-            doesn't exist yet, so no link renders here yet rather than
-            point at a 404. */}
       </div>
 
       <div className="mt-8 overflow-hidden rounded-[18px] border border-white/10 bg-ink">
@@ -40,25 +87,22 @@ export async function RouteList() {
           <span className="text-right">{t("colPrice")}</span>
         </div>
         <div className="divide-y divide-white/10">
-          {fromSchiphol.map((route) => {
-            const { city } = routePageCopy(route, locale);
-            return (
-              <Link
-                key={route.slug}
-                href={`/${route.slug}`}
-                className="group grid grid-cols-[1fr_auto_auto] items-center gap-4 px-5 py-4 transition duration-150 hover:bg-white/5 sm:px-7"
-              >
-                <span className="font-semibold text-white">{city}</span>
-                <span className="text-right font-mono text-sm text-ink-foreground-muted">
-                  {route.durationMin} min
-                </span>
-                <span className="flex items-center justify-end gap-2 text-right font-mono text-sm font-semibold text-brand">
-                  {t("fixedPrice", { price: `€${route.basePrice}` })}
-                  <ArrowRightIcon className="h-3.5 w-3.5 opacity-0 transition duration-150 group-hover:opacity-100" />
-                </span>
-              </Link>
-            );
-          })}
+          {rows.map((row) => (
+            <Link
+              key={row.key}
+              href={row.href}
+              className="group grid grid-cols-[1fr_auto_auto] items-center gap-4 px-5 py-4 transition duration-150 hover:bg-white/5 sm:px-7"
+            >
+              <span className="font-semibold text-white">{row.city}</span>
+              <span className="text-right font-mono text-sm text-ink-foreground-muted">
+                {row.durationMin} min
+              </span>
+              <span className="flex items-center justify-end gap-2 text-right font-mono text-sm font-semibold text-brand">
+                {t("fixedPrice", { price: `€${row.price}` })}
+                <ArrowRightIcon className="h-3.5 w-3.5 opacity-0 transition duration-150 group-hover:opacity-100" />
+              </span>
+            </Link>
+          ))}
         </div>
       </div>
     </section>

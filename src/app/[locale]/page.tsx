@@ -7,7 +7,6 @@ import { VehiclesSimple } from "@/components/home/VehiclesSimple";
 import { TwoColumnBanner } from "@/components/home/TwoColumnBanner";
 import { RouteList } from "@/components/home/RouteList";
 import { Reviews } from "@/components/home/Reviews";
-import { Zakelijk } from "@/components/home/Zakelijk";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
 import { FinalCta } from "@/components/home/FinalCta";
 import { buildAlternates } from "@/lib/seo";
@@ -67,7 +66,6 @@ export default async function HomePage({
       <VehiclesSimple />
       <TwoColumnBanner />
       <Reviews />
-      <Zakelijk />
       <FaqAccordion />
       <FinalCta />
     </>

@@ -12,7 +12,6 @@
     "howItWorks": "How it works",
     "prices": "Prices",
     "ourCars": "Our cars",
-    "business": "Business",
     "reviews": "Reviews",
     "contact": "Contact",
     "faq": "FAQ",
@@ -283,16 +282,6 @@
     "eyebrow": "Reviews",
     "title": "What customers say",
     "empty": "Real reviews from our customers will appear here soon."
-  },
-  "Zakelijk": {
-    "eyebrow": "Business transport",
-    "title": "Picking up guests, colleagues or clients?",
-    "subtitle": "On invoice, without the hassle.",
-    "item1": "Pay by invoice",
-    "item2": "Dedicated contact person",
-    "item3": "Meet & Greet with a name sign",
-    "ctaAccount": "Get in touch",
-    "ctaCall": "Call us"
   },
   "Faq": {
     "eyebrow": "FAQ",

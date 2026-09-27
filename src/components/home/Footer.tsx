@@ -22,7 +22,6 @@ export async function Footer() {
   const services = [
     { href: "/#populaire-routes", label: t("serviceSchiphol") },
     { href: "/#amsterdam-taxi", label: t("serviceAmsterdam") },
-    { href: "/#zakelijk", label: tn("business") },
     { href: "/#onze-autos", label: tn("ourCars") },
   ];
 
