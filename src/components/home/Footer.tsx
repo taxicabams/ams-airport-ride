@@ -42,31 +42,44 @@ export async function Footer() {
         <p className="mt-3 max-w-xs text-sm">{t("tagline")}</p>
 
         <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <h3 className="font-mono text-xs font-semibold uppercase tracking-wide text-white/50">
-              {t("companyDetailsTitle")}
-            </h3>
-            <ul className="mt-3 space-y-1.5 text-sm">
-              {companyInfo.address && <li>{companyInfo.address}</li>}
-              {companyInfo.phone && (
-                <li>
-                  <a href={`tel:${companyInfo.phone.replace(/\s/g, "")}`} className="hover:text-white">
-                    {companyInfo.phone}
-                  </a>
-                </li>
-              )}
-              {companyInfo.email && (
-                <li>
-                  <a href={`mailto:${companyInfo.email}`} className="hover:text-white">
-                    {companyInfo.email}
-                  </a>
-                </li>
-              )}
-              {companyInfo.kvkNumber && <li>KvK {companyInfo.kvkNumber}</li>}
-              {companyInfo.btwNumber && <li>BTW {companyInfo.btwNumber}</li>}
-              {companyInfo.licenseNumber && <li>ILT {companyInfo.licenseNumber}</li>}
-            </ul>
-          </div>
+          {/* Real bug found live: with every companyInfo field null (see
+              that file's own note), this column rendered its heading
+              ("Bedrijfsgegevens") with an empty list underneath — a
+              small but real "unfinished-looking" gap. Hiding the whole
+              column when there's nothing real to show reads as clean,
+              not missing. */}
+          {(companyInfo.address ||
+            companyInfo.phone ||
+            companyInfo.email ||
+            companyInfo.kvkNumber ||
+            companyInfo.btwNumber ||
+            companyInfo.licenseNumber) && (
+            <div>
+              <h3 className="font-mono text-xs font-semibold uppercase tracking-wide text-white/50">
+                {t("companyDetailsTitle")}
+              </h3>
+              <ul className="mt-3 space-y-1.5 text-sm">
+                {companyInfo.address && <li>{companyInfo.address}</li>}
+                {companyInfo.phone && (
+                  <li>
+                    <a href={`tel:${companyInfo.phone.replace(/\s/g, "")}`} className="hover:text-white">
+                      {companyInfo.phone}
+                    </a>
+                  </li>
+                )}
+                {companyInfo.email && (
+                  <li>
+                    <a href={`mailto:${companyInfo.email}`} className="hover:text-white">
+                      {companyInfo.email}
+                    </a>
+                  </li>
+                )}
+                {companyInfo.kvkNumber && <li>KvK {companyInfo.kvkNumber}</li>}
+                {companyInfo.btwNumber && <li>BTW {companyInfo.btwNumber}</li>}
+                {companyInfo.licenseNumber && <li>ILT {companyInfo.licenseNumber}</li>}
+              </ul>
+            </div>
+          )}
 
           <div>
             <h3 className="font-mono text-xs font-semibold uppercase tracking-wide text-white/50">
