@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { CarIcon, VanIcon, ArrowRightIcon } from "@/components/ui/icons";
@@ -10,6 +10,7 @@ import {
 import { CHEAPEST_SCHIPHOL_PRICE } from "@/lib/pricing";
 import { vehiclePhoto } from "@/lib/vehiclePhoto";
 import { heroPhoto } from "@/lib/heroPhoto";
+import { comfortPhoto } from "@/lib/comfortPhoto";
 
 /**
  * "Vertrekbord" rebuild — "Meest gekozen" badge on Comfort, and real
@@ -17,19 +18,25 @@ import { heroPhoto } from "@/lib/heroPhoto";
  * (CHEAPEST_SCHIPHOL_PRICE + BUS_SURCHARGE_EUR) — never invented.
  *
  * Real photos, per direct feedback ("zoek taxi auto fotos en gebruik
- * ze"): searched Pexels for a generic black sedan for Comfort, but every
- * clean-looking result had a visible, legible (non-Dutch) license plate
- * or actual company livery — the same honesty bar this project has held
- * to all along (no plates/logos that could misrepresent the vehicle).
- * Comfort stays the icon placeholder for now rather than use a photo
- * that fails that bar. Taxibus reuses heroPhoto.ts's already-vetted,
- * plate-free, generic MPV/van-at-an-airport photo — a legitimate reuse,
- * not a new/unvetted image. vehiclePhoto.ts (the client's own real
- * fleet photo, still null) still overrides both the moment it's set.
+ * ze"): a first pass found every clean-looking Comfort candidate had a
+ * visible, legible license plate or actual company livery — the same
+ * honesty bar this project has held to all along (no plates/logos that
+ * could misrepresent the vehicle) — so Comfort shipped as an icon
+ * placeholder. A later, wider search (comfortPhoto.ts) found a clean
+ * generic black sedan with no plate in frame either way. XL Van reuses
+ * heroPhoto.ts's already-vetted, plate-free, generic MPV/van-at-an-
+ * airport photo — a legitimate reuse, not a new/unvetted image.
+ * vehiclePhoto.ts (the client's own real fleet photo, still null) still
+ * overrides both the moment it's set.
  */
 export async function VehiclesSimple() {
   const t = await getTranslations("Vehicles");
   const tb = await getTranslations("Booking");
+  // Real, pre-existing bug found while touching this file for the new
+  // Comfort photo: the vehicle photo's alt text was hardcoded to
+  // `.alt.nl` regardless of the page's actual locale, so an English
+  // visitor got Dutch alt text on both vehicle images.
+  const locale = (await getLocale()) as "nl" | "en";
 
   const vehicles = [
     {
@@ -38,7 +45,7 @@ export async function VehiclesSimple() {
       capacity: tb("vehiclePersonenautoCapacity", { max: PERSONENAUTO_MAX_PASSENGERS }),
       price: CHEAPEST_SCHIPHOL_PRICE,
       mostChosen: true,
-      photo: null as { url: string; alt: { nl: string; en: string } } | null,
+      photo: comfortPhoto as { url: string; alt: { nl: string; en: string } } | null,
     },
     {
       Icon: VanIcon,
@@ -77,7 +84,7 @@ export async function VehiclesSimple() {
             )}
             <div className="relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-[#17263d] to-ink-2 sm:h-48">
               {displayPhoto ? (
-                <Image src={displayPhoto.url} alt={displayPhoto.alt.nl} fill className="object-cover" />
+                <Image src={displayPhoto.url} alt={displayPhoto.alt[locale]} fill className="object-cover" />
               ) : (
                 <Icon className="h-16 w-16 text-brand sm:h-20 sm:w-20" />
               )}

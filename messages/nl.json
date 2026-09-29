@@ -261,7 +261,7 @@
   "HowItWorks": {
     "eyebrow": "Hoe het werkt",
     "title": "Geen app nodig, geen account.",
-    "subtitle": "Bevestiging per mail én WhatsApp.",
+    "subtitle": "Bevestiging per e-mail. Vragen? App ons gerust.",
     "step1Title": "Vul je rit in",
     "step1Body": "Ophaaladres, bestemming, datum en tijd — direct je vaste prijs.",
     "step2Title": "Bevestig je boeking",
@@ -279,7 +279,7 @@
     "colDeparture": "Vertrek",
     "colDuration": "Reistijd",
     "colPrice": "Vaste prijs",
-    "fixedPrice": "Vanaf {price}",
+    "fixedPrice": "{price}",
     "bookRoute": "Boek deze route →"
   },
   "Reviews": {

@@ -7,25 +7,16 @@
  * already guards on this (`companyInfo.phone && ...`, etc.), so leaving
  * a field null just cleanly hides that one line/button, nothing breaks.
  *
- * Reverted back to null from a temporary "1234567"-style placeholder
- * state: that state was created for one specific, explicit, one-time
- * request ("vul gewoon bij alles 1234567 in, ik wil het alleen zien, ik
- * pas het later aan") to preview the "vertrekbord" homepage locally, on
- * the client's own explicit condition that it would NOT be deployed —
- * but a real production audit found it live on
- * https://amsairportride.nl (phone, WhatsApp, and a literal "Straatnaam
- * 1234567, 1234 AB Schiphol" address), which must have reached
- * production through a later, unrelated "deploy everything" instruction
- * that didn't know this file still held that temporary state. A fake
- * phone number/address on a live taxi-booking site is a genuine trust
- * and functionality problem for real customers, and inventing a
- * plausible-looking replacement would violate the standing "never
- * fabricate business/legal data" rule just as badly — null is the only
- * honest state until the client supplies their real details.
+ * `phone` stays null deliberately, not because it's unknown — the
+ * client's own explicit instruction: "ik wil niet gebeld worden alleen
+ * whatsapp" (I don't want to be called, only WhatsApp). Every phone
+ * link/button site-wide already only renders when `phone` is set, so
+ * leaving it null is what actually enforces "no calls" — WhatsApp is
+ * the one real, live contact channel from here on.
  */
 export const companyInfo = {
   phone: null as string | null,
-  whatsapp: null as string | null, // international format, no spaces, e.g. "31612345678"
+  whatsapp: "31647114488" as string | null, // international format, no spaces
   email: null as string | null,
   address: null as string | null,
   kvkNumber: null as string | null,

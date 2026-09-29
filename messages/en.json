@@ -261,7 +261,7 @@
   "HowItWorks": {
     "eyebrow": "How it works",
     "title": "No app needed, no account.",
-    "subtitle": "Confirmation by email and WhatsApp.",
+    "subtitle": "Confirmation by email. Questions? Message us on WhatsApp.",
     "step1Title": "Enter your ride",
     "step1Body": "Pickup address, destination, date and time — see your fixed price right away.",
     "step2Title": "Confirm your booking",
@@ -279,7 +279,7 @@
     "colDeparture": "Departure",
     "colDuration": "Travel time",
     "colPrice": "Fixed price",
-    "fixedPrice": "From {price}",
+    "fixedPrice": "{price}",
     "bookRoute": "Book route →"
   },
   "Reviews": {
