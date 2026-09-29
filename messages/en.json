@@ -37,11 +37,11 @@
     "floatingCardRoute": "Schiphol → Amsterdam"
   },
   "FlightMonitor": {
-    "label": "How our flight monitoring works — example",
+    "label": "How we account for your flight — example",
     "flightCode": "KL 1234",
     "landingExpected": "LANDING EXPECTED",
     "delay": "+35 MIN DELAY",
-    "adjusted": "PICKUP TIME AUTOMATICALLY ADJUSTED",
+    "adjusted": "PICKUP TIME GETS ADJUSTED",
     "disclaimer": "Example display — enter your own flight number when booking and we'll account for the actual delay."
   },
   "BookingSection": {
@@ -198,6 +198,7 @@
     "submitError": "Something went wrong while booking. Please try again.",
     "requiredField": "This field is required",
     "invalidEmail": "Enter a valid email address",
+    "invalidName": "Enter your full name",
     "invalidPhone": "Enter a valid phone number",
     "orContact": "Prefer to call or message?",
     "callUs": "Call us",

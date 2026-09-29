@@ -35,7 +35,18 @@ export function ContactStep({
         if (canSubmit) onSubmit();
       }}
     >
-      <Field label={t("nameLabel")} htmlFor="name">
+      {/* Real bug found via a customer-journey QA pass: nameValid requires
+          >1 character, but unlike phone/email right below, this field had
+          no `error` prop at all — a customer who typed a short name (or
+          left it half-finished) saw "Boeking bevestigen" silently stay
+          disabled with zero indication why. Same pattern as phone/email:
+          only show the error once the visitor has actually typed
+          something, never on an untouched empty field. */}
+      <Field
+        label={t("nameLabel")}
+        htmlFor="name"
+        error={form.name.length > 0 && !nameValid ? t("invalidName") : undefined}
+      >
         <input
           id="name"
           className={inputClassName}

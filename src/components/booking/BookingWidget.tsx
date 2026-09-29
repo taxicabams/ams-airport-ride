@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { Quote, VehicleType } from "@/lib/pricing";
 import { BUS_SURCHARGE_EUR } from "@/lib/pricing";
@@ -15,6 +15,54 @@ import { ConfirmationCard } from "./ConfirmationCard";
 import { initialBookingForm, type BookingFormState, type BookingResult, type WizardStep } from "./types";
 import { STEP_ORDER } from "./stepOrder";
 
+// Real bug found via a customer-journey QA pass: this whole wizard was
+// pure in-memory React state with no URL/sessionStorage backing at all.
+// A customer who filled in everything (address, date, vehicle, even
+// their full contact details) and then hit their phone's back gesture,
+// refreshed, or the tab was reloaded lost EVERYTHING with zero warning
+// and had to start over from a blank form. Draft-persisting the form
+// (not the step — see the restore logic below) to sessionStorage fixes
+// this: same-tab only (never leaks to other tabs/devices), cleared on
+// tab close (unlike localStorage), and explicitly cleared the moment a
+// booking actually completes (see submitBooking) so a second booking in
+// the same tab never silently inherits the first one's name/phone/
+// address — the exact opposite bug the same QA pass explicitly called
+// out (item 7, "opnieuw boeken mag geen oude data bevatten").
+const DRAFT_KEY = "ams-booking-draft-v1";
+
+function readDraft(): BookingFormState | null {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    // Cheap shape check — a malformed/old-shape draft is worse than no
+    // draft (it could feed garbage into the pricing/booking APIs), so
+    // require the object to at least look like a BookingFormState.
+    if (typeof parsed !== "object" || parsed === null || typeof parsed.pickup !== "string") return null;
+    return parsed as BookingFormState;
+  } catch {
+    return null;
+  }
+}
+
+function writeDraft(form: BookingFormState) {
+  try {
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(form));
+  } catch {
+    // Private browsing / storage disabled / quota exceeded — the wizard
+    // still works perfectly, it just can't survive a refresh. Never
+    // let this throw into the render path.
+  }
+}
+
+function clearDraft() {
+  try {
+    sessionStorage.removeItem(DRAFT_KEY);
+  } catch {
+    // Same as above — nothing to do if storage isn't available.
+  }
+}
+
 /**
  * The whole booking flow lives in this one client component tree
  * (route → details → quote → contact → confirmation), matching the
@@ -28,12 +76,70 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
 }) {
   const t = useTranslations("Booking");
   const locale = useLocale();
+  // Always resume at "route" (never deeper) — the restored form fields
+  // (address, date/time, passengers, vehicle, even contact details)
+  // still get the customer there in a couple of clicks with nothing to
+  // retype, without this component needing to also replay the /api/quote
+  // fetch a resumed "quote"/"contact" step would otherwise need.
   const [step, setStep] = useState<WizardStep>("route");
+  // Real bug found live while testing this exact feature: an earlier
+  // version read sessionStorage right inside this useState's lazy
+  // initializer, branching on `typeof window`. That initializer runs
+  // during BOTH the server render (window is undefined -> empty form)
+  // AND the client's hydration render (window exists -> restored form)
+  // — two different outputs for what React expects to be the same
+  // render, a classic hydration mismatch. The address TEXT still showed
+  // correctly (React patches mismatched text during hydration), but the
+  // *derived* "Volgende" enabled/disabled state stayed stuck reflecting
+  // the server's empty-form calculation — a customer would see their
+  // restored address but Volgende silently refusing to click.
+  // Fix: initialize identically on server and client (never read
+  // storage here), then restore in a useEffect — which by definition
+  // only ever runs client-side, after hydration has already matched, so
+  // the restore becomes a normal, hydration-safe state update instead
+  // of a mismatch. Costs one extra render right after mount; invisible
+  // in practice.
   const [form, setForm] = useState<BookingFormState>({
     ...initialBookingForm,
     pickup: initialPickup,
     destination: initialDestination,
   });
+  // Two things to skip writing back, both real bugs caught while
+  // building this: (1) the very first mount's own untouched default
+  // form — harmless to write, just pointless — and (2) the setForm
+  // the restore effect below triggers, which fires this same [form]
+  // effect a second time on mount with data already identical to what's
+  // in storage. Skipping (2) matters more than it looks: without it, a
+  // race is possible where this effect's own stale `form` closure (the
+  // pre-restore default, still empty) writes AFTER the restore has
+  // already happened, silently clobbering the very draft that was just
+  // read — the customer's restored session would work for this page
+  // view, but a second refresh right after would find nothing.
+  const isFirstRender = useRef(true);
+  const skipNextWrite = useRef(false);
+  useEffect(() => {
+    const draft = readDraft();
+    if (draft) {
+      skipNextWrite.current = true;
+      // Hydrating persisted state from an external store (sessionStorage)
+      // on mount is the one well-known, accepted exception to "don't
+      // setState in an effect" — there's no prop/render-time equivalent
+      // for "read a synchronous browser API once after hydration."
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setForm(draft);
+    }
+  }, []);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (skipNextWrite.current) {
+      skipNextWrite.current = false;
+      return;
+    }
+    writeDraft(form);
+  }, [form]);
   const [quote, setQuote] = useState<Quote | null>(null);
   const [returnQuote, setReturnQuote] = useState<Quote | null>(null);
   const [quoteLoading, setQuoteLoading] = useState(false);
@@ -189,6 +295,10 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
       if (!res.ok) throw new Error("Booking failed");
       const data = await res.json();
       track("booking_completed", { bookingId: data.bookingId });
+      // Clear the draft the instant a booking actually completes — a
+      // second booking started later in the same tab must never inherit
+      // this one's name/phone/address (see this function's own note).
+      clearDraft();
       setResult({
         bookingId: data.bookingId,
         quote: data.quote as Quote,

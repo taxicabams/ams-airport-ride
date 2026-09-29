@@ -37,11 +37,11 @@
     "floatingCardRoute": "Schiphol → Amsterdam"
   },
   "FlightMonitor": {
-    "label": "Zo werkt onze vluchtmonitoring — voorbeeld",
+    "label": "Zo houden we rekening met je vlucht — voorbeeld",
     "flightCode": "KL 1234",
     "landingExpected": "LANDING VERWACHT",
     "delay": "+35 MIN VERTRAGING",
-    "adjusted": "OPHAALTIJD AUTOMATISCH AANGEPAST",
+    "adjusted": "OPHAALTIJD WORDT AANGEPAST",
     "disclaimer": "Voorbeeldweergave — vul je eigen vluchtnummer in bij het boeken, dan houden we rekening met de actuele vertraging."
   },
   "BookingSection": {
@@ -198,6 +198,7 @@
     "submitError": "Er ging iets mis bij het boeken. Probeer het opnieuw.",
     "requiredField": "Dit veld is verplicht",
     "invalidEmail": "Vul een geldig e-mailadres in",
+    "invalidName": "Vul uw volledige naam in",
     "invalidPhone": "Vul een geldig telefoonnummer in",
     "orContact": "Liever bellen of appen?",
     "callUs": "Bel ons",
