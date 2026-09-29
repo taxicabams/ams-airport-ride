@@ -61,7 +61,7 @@ export default async function OpengraphImage({
           {isNl ? "Op tijd. Vaste prijs." : "On time. Fixed price."}
         </div>
         <div style={{ display: "flex", fontSize: 24, marginTop: 16, color: "#b9c4d6" }}>
-          {isNl ? "Vaste prijs vanaf €35 · 24/7 bereikbaar" : "Fixed price from €35 · Available 24/7"}
+          {isNl ? "Vaste prijs vanaf €35 · 24/7 online boekbaar" : "Fixed price from €35 · Bookable online 24/7"}
         </div>
       </div>
     ),

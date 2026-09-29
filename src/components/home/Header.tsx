@@ -15,12 +15,16 @@ import { PhoneIcon } from "@/components/ui/icons";
  * plain server component since the scroll-driven client logic from the
  * previous design is no longer needed.
  *
- * Nav: Prijzen / Onze auto's / Reviews / FAQ, all anchored to their
- * homepage section (this brief's "Routes" nav item would point at the
- * exact same section as "Prijzen" in this single-page structure, so
- * it's folded into one link rather than shown twice). "Zakelijk" was
- * removed entirely per direct feedback ("die zakelijk en op rekening
- * hoef ik ook niet").
+ * Nav: Prijzen / Onze auto's / FAQ, all anchored to their homepage
+ * section (this brief's "Routes" nav item would point at the exact same
+ * section as "Prijzen" in this single-page structure, so it's folded
+ * into one link rather than shown twice). "Zakelijk" was removed
+ * entirely per direct feedback ("die zakelijk en op rekening hoef ik
+ * ook niet"). "Reviews" removed too — a nav link to a section that only
+ * ever said "real reviews coming soon" is exactly the kind of
+ * half-finished, "coming soon" production content the client's own
+ * brief explicitly forbids; the Reviews component/API/DB model stay in
+ * the codebase unchanged so real reviews can be wired back in later.
  */
 export async function Header() {
   const t = await getTranslations("Nav");
@@ -28,7 +32,6 @@ export async function Header() {
   const navItems = [
     { href: "/#populaire-routes", label: t("prices") },
     { href: "/#onze-autos", label: t("ourCars") },
-    { href: "/#reviews", label: t("reviews") },
     { href: "/#faq", label: t("faq") },
   ];
 

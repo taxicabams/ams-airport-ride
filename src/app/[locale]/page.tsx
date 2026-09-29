@@ -6,7 +6,6 @@ import { HowItWorksSimple } from "@/components/home/HowItWorksSimple";
 import { VehiclesSimple } from "@/components/home/VehiclesSimple";
 import { TwoColumnBanner } from "@/components/home/TwoColumnBanner";
 import { RouteList } from "@/components/home/RouteList";
-import { Reviews } from "@/components/home/Reviews";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
 import { FinalCta } from "@/components/home/FinalCta";
 import { buildAlternates } from "@/lib/seo";
@@ -35,12 +34,12 @@ export default async function HomePage({
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://amsairportride.nl";
 
   // Deliberately minimal: only fields that are actually true today.
-  // companyInfo.ts's phone/address/etc. are all preview placeholders
-  // (see that file's own header note) — a LocalBusiness/TaxiService
-  // schema must never invent a telephone/address/aggregateRating just
-  // because the type usually has one, so this still leaves those out
-  // entirely rather than emit the "1234567"-style preview values as
-  // structured data. Revisit once real values replace the placeholders.
+  // companyInfo.ts's phone/address/etc. are all null until the client
+  // supplies real values (see that file's own header note) — a
+  // LocalBusiness/TaxiService schema must never invent a telephone/
+  // address/aggregateRating just because the type usually has one, so
+  // this leaves those out entirely rather than fabricate them. Revisit
+  // once the client supplies real values.
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TaxiService",
@@ -53,6 +52,13 @@ export default async function HomePage({
   // Route price table moved right after the hero per direct feedback
   // ("die tabel met vaste prijzen... gelijk duidelijk bovenaan ergens
   // bij booking vak") — was much further down the page.
+  //
+  // Reviews section removed from the page (not deleted from the
+  // codebase — Reviews.tsx, the Review Prisma model, and /api/reviews
+  // all stay as-is) per the client's own explicit instruction: a
+  // section that can currently only say "real reviews coming soon" is
+  // exactly the "coming soon" / half-finished production content the
+  // brief forbids. Re-add <Reviews /> once real reviews exist.
   return (
     <>
       <script
@@ -65,7 +71,6 @@ export default async function HomePage({
       <HowItWorksSimple />
       <VehiclesSimple />
       <TwoColumnBanner />
-      <Reviews />
       <FaqAccordion />
       <FinalCta />
     </>

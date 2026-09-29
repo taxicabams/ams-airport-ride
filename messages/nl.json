@@ -12,7 +12,6 @@
     "howItWorks": "Hoe het werkt",
     "prices": "Prijzen",
     "ourCars": "Onze auto's",
-    "reviews": "Reviews",
     "contact": "Contact",
     "faq": "FAQ",
     "bookNow": "Boek nu",
@@ -20,9 +19,8 @@
     "closeMenu": "Menu sluiten"
   },
   "TopBar": {
-    "available": "24/7 bereikbaar",
-    "freeCancellation": "Gratis annuleren tot 3 uur van tevoren",
-    "bookingLookup": "Boeking opzoeken"
+    "available": "24/7 online boekbaar",
+    "freeCancellation": "Gratis annuleren tot 3 uur van tevoren"
   },
   "Hero": {
     "eyebrow": "Schiphol taxi",
@@ -197,7 +195,7 @@
     "childSeatLabel": "Kinderzitje nodig",
     "submitButton": "Boeking bevestigen",
     "submitting": "Bezig met boeken…",
-    "submitError": "Er ging iets mis bij het boeken. Probeer het opnieuw of neem telefonisch contact op.",
+    "submitError": "Er ging iets mis bij het boeken. Probeer het opnieuw.",
     "requiredField": "Dit veld is verplicht",
     "invalidEmail": "Vul een geldig e-mailadres in",
     "invalidPhone": "Vul een geldig telefoonnummer in",

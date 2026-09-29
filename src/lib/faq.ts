@@ -65,15 +65,35 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     },
     {
       q: "Kan ik een kinderzitje bestellen?",
-      a: "Ja, geef dit aan bij het boeken via de optie 'Kinderzitje nodig'. Neem voor de exacte kosten contact met ons op.",
+      // Trimmed the second sentence ("contact us for the exact cost") —
+      // it pointed at a channel that doesn't currently exist, and the
+      // cost itself isn't in the pricing engine yet either (checked:
+      // no child-seat price constant anywhere in lib/pricing/), so
+      // promising it "at booking confirmation" would be an equally
+      // unverified claim. Left with only what's true today: the option
+      // exists and works.
+      a: "Ja, geef dit aan bij het boeken via de optie 'Kinderzitje nodig'.",
     },
     {
       q: "Tot wanneer kan ik gratis annuleren?",
-      a: "Neem rechtstreeks contact met ons op voor de exacte voorwaarden rond annuleren — wij helpen u graag verder.",
+      // Real content bug found live: this deflected to "contact us for
+      // the exact terms" instead of just stating the policy — which is
+      // already a confirmed, real value used elsewhere on the site
+      // (topbar, hero). No reason to make the visitor ask twice for an
+      // answer that's already settled.
+      a: "U kunt tot 3 uur voor vertrek kosteloos annuleren.",
     },
     {
       q: "Rijden jullie ook 's nachts?",
-      a: "Ja, wij zijn 24/7 bereikbaar, ook voor vroege vluchten en late aankomsten.",
+      // Real honesty bug found live: this used to claim "wij zijn 24/7
+      // bereikbaar" (we're reachable 24/7) — but companyInfo.ts's phone/
+      // WhatsApp are null until the client supplies real numbers, so
+      // there is currently no live contact channel at all, making that
+      // specific claim false. What's actually, verifiably true: the
+      // online booking form itself has no time restriction, so answer
+      // the real question asked ("can I get a ride then") instead of an
+      // unrelated, currently-false reachability claim.
+      a: "Ja, u kunt via de website op elk moment van de dag of nacht een rit boeken, ook voor vroege vluchten en late aankomsten.",
     },
     {
       q: "Hoe ontvang ik mijn reserveringsbevestiging?",
@@ -127,15 +147,15 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     },
     {
       q: "Can I request a child seat?",
-      a: "Yes, let us know when booking via the 'Child seat needed' option. Contact us directly for the exact cost.",
+      a: "Yes, let us know when booking via the 'Child seat needed' option.",
     },
     {
       q: "Until when can I cancel for free?",
-      a: "Please contact us directly for the exact cancellation terms — we're happy to help.",
+      a: "You can cancel free of charge up to 3 hours before departure.",
     },
     {
       q: "Do you also drive at night?",
-      a: "Yes, we're available 24/7, including for early flights and late arrivals.",
+      a: "Yes, you can book a ride online at any time of day or night, including for early flights and late arrivals.",
     },
     {
       q: "How do I receive my booking confirmation?",

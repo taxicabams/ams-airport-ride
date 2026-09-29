@@ -120,10 +120,19 @@ describe("bookingInputSchema — date must not be in the past", () => {
 });
 
 describe("bookingInputSchema — return trip date/time refine", () => {
+  // Real bug found live (in the test suite, not the app): this block
+  // used to hardcode "2026-09-29" as a stand-in for "some date next
+  // year" — it genuinely was next year when first written, but as real
+  // time caught up to that literal date, isDateNotInPast started
+  // (correctly) rejecting it as "today, but earlier than the current
+  // wall-clock time," flipping two tests from pass to fail with zero
+  // app-code change. Same class of bug as the file's own NEXT_YEAR
+  // helper was already introduced to prevent elsewhere — just missed
+  // here. Fixed the same way: compute relative to real "now".
   const base = {
     pickup: "Schiphol",
     destination: "Amsterdam",
-    date: "2026-09-29",
+    date: NEXT_YEAR,
     time: "14:00",
     passengers: 1,
     luggage: 1,
@@ -132,6 +141,7 @@ describe("bookingInputSchema — return trip date/time refine", () => {
     phone: "+31612345678",
     email: "test@example.com",
   };
+  const NEXT_YEAR_PLUS_ONE_WEEK = new Date(Date.now() + 372 * 86_400_000).toISOString().slice(0, 10);
 
   it("passes without a return trip, regardless of return fields", () => {
     expect(bookingInputSchema.safeParse(base).success).toBe(true);
@@ -141,7 +151,7 @@ describe("bookingInputSchema — return trip date/time refine", () => {
     const result = bookingInputSchema.safeParse({
       ...base,
       returnTrip: true,
-      returnDate: "2026-09-29",
+      returnDate: NEXT_YEAR,
       returnTime: "10:00", // before 14:00 outbound, same day
     });
     expect(result.success).toBe(false);
@@ -151,7 +161,7 @@ describe("bookingInputSchema — return trip date/time refine", () => {
     const result = bookingInputSchema.safeParse({
       ...base,
       returnTrip: true,
-      returnDate: "2026-10-05",
+      returnDate: NEXT_YEAR_PLUS_ONE_WEEK,
       returnTime: "19:00",
     });
     expect(result.success).toBe(true);

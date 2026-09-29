@@ -12,7 +12,6 @@
     "howItWorks": "How it works",
     "prices": "Prices",
     "ourCars": "Our cars",
-    "reviews": "Reviews",
     "contact": "Contact",
     "faq": "FAQ",
     "bookNow": "Book now",
@@ -20,9 +19,8 @@
     "closeMenu": "Close menu"
   },
   "TopBar": {
-    "available": "Available 24/7",
-    "freeCancellation": "Free cancellation up to 3 hours in advance",
-    "bookingLookup": "Find your booking"
+    "available": "Bookable online 24/7",
+    "freeCancellation": "Free cancellation up to 3 hours in advance"
   },
   "Hero": {
     "eyebrow": "Schiphol taxi",
@@ -197,7 +195,7 @@
     "childSeatLabel": "Child seat needed",
     "submitButton": "Confirm booking",
     "submitting": "Booking…",
-    "submitError": "Something went wrong while booking. Please try again or contact us by phone.",
+    "submitError": "Something went wrong while booking. Please try again.",
     "requiredField": "This field is required",
     "invalidEmail": "Enter a valid email address",
     "invalidPhone": "Enter a valid phone number",

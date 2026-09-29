@@ -26,12 +26,12 @@ const CITY_CONTENT: CityContent[] = [
     },
     faq: {
       nl: [
-        { q: "Hoe lang van tevoren moet ik boeken?", a: "Hoe eerder hoe beter, maar een taxi Schiphol Amsterdam kan doorgaans ook nog dezelfde dag geboekt worden — bel of app ons voor last-minute ritten." },
-        { q: "Rijdt u ook 's nachts?", a: "Ja, we zijn 24/7 beschikbaar voor vroege vluchten en late aankomsten op Schiphol." },
+        { q: "Hoe lang van tevoren moet ik boeken?", a: "Hoe eerder hoe beter, maar een taxi Schiphol Amsterdam kan doorgaans ook nog dezelfde dag online geboekt worden." },
+        { q: "Rijdt u ook 's nachts?", a: "Ja, u kunt op elk moment van de dag of nacht een rit boeken, ook voor vroege vluchten en late aankomsten op Schiphol." },
       ],
       en: [
-        { q: "How far in advance should I book?", a: "The sooner the better, but a Schiphol Amsterdam taxi can usually still be booked the same day — call or WhatsApp us for last-minute rides." },
-        { q: "Do you also drive at night?", a: "Yes, we're available 24/7 for early flights and late arrivals at Schiphol." },
+        { q: "How far in advance should I book?", a: "The sooner the better, but a Schiphol Amsterdam taxi can usually still be booked online the same day." },
+        { q: "Do you also drive at night?", a: "Yes, you can book a ride online at any time of day or night, including for early flights and late arrivals at Schiphol." },
       ],
     },
   },
@@ -44,11 +44,11 @@ const CITY_CONTENT: CityContent[] = [
     faq: {
       nl: [
         { q: "Is Amstelveen ver van Schiphol?", a: "Nee, Amstelveen ligt vlak bij Schiphol — de rit duurt doorgaans ongeveer 15 minuten." },
-        { q: "Rijden jullie ook 's avonds laat of 's ochtends vroeg naar Amstelveen?", a: "Ja, wij zijn 24/7 bereikbaar voor ritten van en naar Amstelveen." },
+        { q: "Rijden jullie ook 's avonds laat of 's ochtends vroeg naar Amstelveen?", a: "Ja, u kunt op elk moment van de dag of nacht een rit van en naar Amstelveen boeken via de website." },
       ],
       en: [
         { q: "Is Amstelveen far from Schiphol?", a: "No, Amstelveen is very close to Schiphol — the ride typically takes about 15 minutes." },
-        { q: "Do you also drive late at night or early in the morning to Amstelveen?", a: "Yes, we're available 24/7 for rides to and from Amstelveen." },
+        { q: "Do you also drive late at night or early in the morning to Amstelveen?", a: "Yes, you can book a ride to and from Amstelveen online at any time of day or night." },
       ],
     },
   },
@@ -112,11 +112,11 @@ const CITY_CONTENT: CityContent[] = [
     faq: {
       nl: [
         { q: "Rijdt u ook naar Scheveningen?", a: "Ja, we brengen u ook naar Scheveningen en andere delen van de gemeente Den Haag — vermeld dit gewoon bij het boeken." },
-        { q: "Kan ik vroeg in de ochtend vertrekken?", a: "Ja, we zijn 24/7 beschikbaar, ook voor vroege vluchten vanaf Schiphol." },
+        { q: "Kan ik vroeg in de ochtend vertrekken?", a: "Ja, u kunt op elk moment boeken, ook voor vroege vluchten vanaf Schiphol." },
       ],
       en: [
         { q: "Do you also drive to Scheveningen?", a: "Yes, we also take you to Scheveningen and other parts of The Hague — just mention this when booking." },
-        { q: "Can I depart early in the morning?", a: "Yes, we're available 24/7, including for early flights from Schiphol." },
+        { q: "Can I depart early in the morning?", a: "Yes, you can book at any time, including for early flights from Schiphol." },
       ],
     },
   },
