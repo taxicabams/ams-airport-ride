@@ -69,10 +69,15 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <TopBar />
           <Header />
-          {/* pb-16 clears the fixed StickyMobileCta bar on small screens
+          {/* Clears the fixed StickyMobileCta bar on small screens
               (md:pb-0 once that bar hides itself) so it never overlaps
-              the footer or a page's last content. */}
-          <main className="flex-1 pb-16 md:pb-0">{children}</main>
+              the footer or a page's last content. Widened from pb-16 to
+              pb-24 after measuring the real bar: ~45px of button content
+              plus env(safe-area-inset-bottom) — on a notched iPhone
+              (~34px inset) that's ~79px, already past the old 64px
+              margin. pb-24 (96px) stays safely ahead of that with room
+              for the bar wrapping to two lines on very narrow screens. */}
+          <main className="flex-1 pb-24 md:pb-0">{children}</main>
           <Footer />
           <StickyMobileCta />
           <WhatsAppButton />
