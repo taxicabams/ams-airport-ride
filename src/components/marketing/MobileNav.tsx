@@ -32,7 +32,17 @@ export function MobileNav({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="md:hidden">
+    // Real, reproducible bug found via a customer-journey QA pass: this
+    // wrapper had no `relative`, so the dropdown panel below (`absolute
+    // inset-x-0 top-full`) had no positioned ancestor to anchor to and
+    // fell back to the initial containing block — "top: 100%" of the
+    // *viewport's* height, landing the whole menu near the bottom of
+    // the screen instead of right under the button. The toggle itself
+    // worked every time (icon correctly flipped hamburger/X, confirmed
+    // via aria-expanded), which is exactly why this was easy to miss:
+    // it looked like "the button doesn't respond" when it was actually
+    // opening a menu the visitor just couldn't see.
+    <div className="relative md:hidden">
       <button
         type="button"
         aria-expanded={open}
