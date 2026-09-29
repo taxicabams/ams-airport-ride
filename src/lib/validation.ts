@@ -30,6 +30,7 @@ export const quoteInputSchema = z
     pickup: z.string().trim().min(2).max(200),
     destination: z.string().trim().min(2).max(200),
     vehicleType: z.enum(["PERSONENAUTO", "BUS"]),
+    hasStopover: z.boolean().optional(),
   })
   .merge(latLngSchema);
 
@@ -121,6 +122,12 @@ export const bookingInputSchema = z
     passengers: z.number().int().min(1).max(BUS_MAX_PASSENGERS),
     luggage: z.number().int().min(0).max(BUS_MAX_LUGGAGE),
     vehicleType: z.enum(["PERSONENAUTO", "BUS"]),
+    // Optional stopover — priced server-side via computeQuoteWithRoute's
+    // hasStopover flag (see /api/bookings), stored in `notes` rather than
+    // a dedicated column (no DB migration for this in the current
+    // environment — see the API route's own note).
+    hasStopover: z.boolean().optional().default(false),
+    stopover: z.string().trim().max(200).optional().default(""),
     flightNumber: z.string().trim().max(20).optional().default(""),
     name: z.string().trim().min(2).max(200),
     phone: z.string().trim().min(6).max(50),

@@ -38,6 +38,9 @@ export function ConfirmationCard({ result }: { result: BookingResult }) {
         <dl className="mt-3 space-y-2 text-sm">
           <Row label={t("pickup")} value={form.pickup} />
           <Row label={t("destination")} value={form.destination} />
+          {form.hasStopover && form.stopover && (
+            <Row label={tb("stopoverLabel")} value={form.stopover} />
+          )}
           <Row label={t("dateTime")} value={`${form.date} ${form.time}`} />
           <Row label={t("passengers")} value={String(form.passengers)} />
           <Row label={t("luggage")} value={String(form.luggage)} />

@@ -24,6 +24,18 @@ export type BookingFormState = {
   destinationLat?: number;
   destinationLng?: number;
   destinationMissingHouseNumber?: boolean;
+  // Optional stopover — one extra address the driver stops at along the
+  // way (see lib/pricing/vehicle.ts's STOPOVER_SURCHARGE_EUR). Same
+  // resolved-place shape as pickup/destination above; `hasStopover` is
+  // the single source of truth for whether one applies (not just
+  // "stopover is non-empty"), so toggling it off cleanly drops the
+  // surcharge and the field without needing to also clear the text.
+  hasStopover: boolean;
+  stopover: string;
+  stopoverPlaceId?: string;
+  stopoverLat?: number;
+  stopoverLng?: number;
+  stopoverMissingHouseNumber?: boolean;
   date: string;
   time: string;
   passengers: number;
@@ -51,6 +63,8 @@ export type BookingFormState = {
 export const initialBookingForm: BookingFormState = {
   pickup: "",
   destination: "",
+  hasStopover: false,
+  stopover: "",
   date: "",
   time: "",
   passengers: 1,
