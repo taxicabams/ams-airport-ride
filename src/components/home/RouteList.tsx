@@ -69,13 +69,21 @@ export async function RouteList() {
   const districtRows = EXTRA_LOCATION_IDS.filter((id) => id !== "heemstede").map((id) => extraRow(id, locale));
   const heemstedeRow = extraRow("heemstede", locale);
 
-  // Amsterdam's 5 districts first, then Amstelveen/Haarlem/Heemstede
-  // (the immediate Amsterdam-area towns), then the further-out cities.
+  // Amsterdam's 5 districts first, then the immediate Amsterdam-area
+  // towns (Amstelveen/Haarlem/Heemstede/Hoofddorp/Zaandam — the client's
+  // own named secondary markets, all genuinely close to Schiphol), then
+  // the further-out cities (Utrecht/Rotterdam/Den Haag).
+  const NEARBY_KEYS = [
+    "taxi-schiphol-amstelveen",
+    "taxi-schiphol-haarlem",
+    "taxi-schiphol-hoofddorp",
+    "taxi-schiphol-zaandam",
+  ];
   const rows = [
     ...districtRows,
-    ...pageRows.filter((r) => r.key === "taxi-schiphol-amstelveen" || r.key === "taxi-schiphol-haarlem"),
+    ...pageRows.filter((r) => NEARBY_KEYS.includes(r.key)),
     heemstedeRow,
-    ...pageRows.filter((r) => !["taxi-schiphol-amstelveen", "taxi-schiphol-haarlem"].includes(r.key)),
+    ...pageRows.filter((r) => !NEARBY_KEYS.includes(r.key)),
   ];
 
   return (

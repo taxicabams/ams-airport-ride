@@ -1,5 +1,8 @@
 import { findSchipholPrice, CANONICAL_ROUTE_FACTS } from "./pricing/staticRoutes";
+import { estimateDistanceDuration } from "./pricing/fallback";
 import { LOCATIONS } from "./locations";
+
+const SCHIPHOL_LOCATION = LOCATIONS.find((l) => l.id === "schiphol")!;
 
 /**
  * Content for the hand-authored Schiphol route pages. Deliberately NOT a
@@ -70,6 +73,40 @@ const CITY_CONTENT: CityContent[] = [
     },
   },
   {
+    cityId: "hoofddorp",
+    local: {
+      nl: "Hoofddorp grenst direct aan Schiphol en is de hoofdplaats van de gemeente Haarlemmermeer — met veel internationale bedrijven en kantoren vlakbij de luchthaven. Dankzij de korte afstand is dit een van onze snelste ritten vanaf Schiphol.",
+      en: "Hoofddorp borders Schiphol directly and is the main town of the Haarlemmermeer municipality, home to many international companies and offices close to the airport. Thanks to the short distance, this is one of our fastest rides from Schiphol.",
+    },
+    faq: {
+      nl: [
+        { q: "Hoe ver is Hoofddorp van Schiphol?", a: "Heel dichtbij — Hoofddorp grenst aan Schiphol, de rit duurt doorgaans maar een paar minuten." },
+        { q: "Kan ik ook naar een kantoor in Hoofddorp?", a: "Ja, wij brengen u naar elk adres in Hoofddorp, zowel zakelijk als privé." },
+      ],
+      en: [
+        { q: "How far is Hoofddorp from Schiphol?", a: "Very close — Hoofddorp borders Schiphol, so the ride usually only takes a few minutes." },
+        { q: "Can you also take me to an office in Hoofddorp?", a: "Yes, we take you to any address in Hoofddorp, for business or personal trips." },
+      ],
+    },
+  },
+  {
+    cityId: "zaandam",
+    local: {
+      nl: "Zaandam, onderdeel van de gemeente Zaanstad, is bekend van de kleurrijke Zaanse huisjes van het Inntel Hotel en ligt vlak bij de Zaanse Schans met zijn molens. De rit vanaf Schiphol loopt via de ring van Amsterdam.",
+      en: "Zaandam, part of the Zaanstad municipality, is known for the colourful stacked-house design of the Inntel Hotel and sits right next to the Zaanse Schans windmills. The ride from Schiphol runs via the Amsterdam ring road.",
+    },
+    faq: {
+      nl: [
+        { q: "Rijdt u ook naar de Zaanse Schans?", a: "Ja, geef dit gewoon als bestemming op bij het boeken." },
+        { q: "Hoe lang duurt de rit naar Zaandam vanaf Schiphol?", a: "Reken op ongeveer een half uur, afhankelijk van het verkeer op de ring van Amsterdam." },
+      ],
+      en: [
+        { q: "Do you also drive to the Zaanse Schans?", a: "Yes, just enter it as your destination when booking." },
+        { q: "How long does the ride to Zaandam from Schiphol take?", a: "Expect around half an hour, depending on traffic on the Amsterdam ring road." },
+      ],
+    },
+  },
+  {
     cityId: "utrecht",
     local: {
       nl: "Utrecht ligt centraal in Nederland en is populair bij zowel toeristen als zakelijke reizigers rond Utrecht Centraal en de Uithof/Utrecht Science Park. Reken op ongeveer 45-55 minuten reistijd vanaf Schiphol, afhankelijk van het verkeer op de A2.",
@@ -89,8 +126,8 @@ const CITY_CONTENT: CityContent[] = [
   {
     cityId: "rotterdam",
     local: {
-      nl: "Rotterdam is de verste van onze zes hoofdroutes vanaf Schiphol, populair bij zakelijke reizigers naar de Erasmus Universiteit, het havengebied en het centrum. Reken op ongeveer 55 minuten reistijd via de A4/A13.",
-      en: "Rotterdam is the furthest of our six main routes from Schiphol, popular with business travellers heading to Erasmus University, the port area, and the city centre. Expect roughly 55 minutes of travel time via the A4/A13.",
+      nl: "Rotterdam is de verste van onze hoofdroutes vanaf Schiphol, populair bij zakelijke reizigers naar de Erasmus Universiteit, het havengebied en het centrum. Reken op ongeveer 55 minuten reistijd via de A4/A13.",
+      en: "Rotterdam is the furthest of our main routes from Schiphol, popular with business travellers heading to Erasmus University, the port area, and the city centre. Expect roughly 55 minutes of travel time via the A4/A13.",
     },
     faq: {
       nl: [
@@ -141,10 +178,16 @@ function cityLabel(cityId: string, locale: Locale): string {
 export const ROUTE_PAGES: RoutePage[] = CITY_CONTENT.flatMap((content) => {
   // Price comes from the shared Schiphol price list (so it's always the
   // same number the booking widget would quote); distance/duration come
-  // from CANONICAL_ROUTE_FACTS, the small researched dataset kept just
-  // for these 6 hand-authored pages — see staticRoutes.ts.
+  // from CANONICAL_ROUTE_FACTS, the small hand-researched dataset kept
+  // for the original 6 pages — see staticRoutes.ts. Cities added later
+  // (Hoofddorp, Zaandam) fall back to the same real, coordinate-based
+  // haversine formula RouteList.tsx already uses for the same reason
+  // (no hand-research done yet), rather than leaving this crash on a
+  // missing lookup or inventing a number.
   const basePrice = findSchipholPrice(content.cityId)!;
-  const { distanceKm, durationMin } = CANONICAL_ROUTE_FACTS[content.cityId];
+  const cityLocation = LOCATIONS.find((l) => l.id === content.cityId);
+  const { distanceKm, durationMin } =
+    CANONICAL_ROUTE_FACTS[content.cityId] ?? estimateDistanceDuration(SCHIPHOL_LOCATION, cityLocation);
 
   return [
     {

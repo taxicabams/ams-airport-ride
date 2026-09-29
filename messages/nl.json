@@ -104,10 +104,10 @@
     "sedanCapacity": "1–{max} passagiers",
     "sedanBody": "Comfortabel voor individuele reizigers, stellen en kleine groepen.",
     "sedanCta": "Kies Comfort →",
-    "busTitle": "Taxibus",
+    "busTitle": "XL Van",
     "busCapacity": "Tot {max} passagiers",
     "busBody": "Meer ruimte voor grotere groepen en extra bagage.",
-    "busCta": "Kies Taxibus →"
+    "busCta": "Kies XL Van →"
   },
   "SchipholSteps": {
     "title": "Aankomst op Schiphol",
@@ -158,7 +158,7 @@
     "increaseLuggage": "Aantal koffers verhogen",
     "vehicleLabel": "Voertuig",
     "vehiclePersonenauto": "Comfort",
-    "vehicleBus": "Van",
+    "vehicleBus": "XL Van",
     "vehiclePersonenautoCapacity": "1–{max} passagiers",
     "vehicleBusCapacity": "5–{max} passagiers",
     "vehicleAutoSwitchNote": "Voor dit aantal passagiers en koffers is Van nodig — we hebben dit voertuig alvast voor u geselecteerd.",
@@ -292,7 +292,7 @@
     "title": "Veelgestelde vragen"
   },
   "Footer": {
-    "tagline": "Schiphol & Amsterdam luchthavenvervoer. Directe vervoerder, geen tussenpartij.",
+    "tagline": "Schiphol & Amsterdam taxivervoer. Vaste prijs, eenvoudig boeken.",
     "rights": "Alle rechten voorbehouden.",
     "aboutLink": "Over ons",
     "howItWorksLink": "Hoe het werkt",

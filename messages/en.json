@@ -104,10 +104,10 @@
     "sedanCapacity": "1–{max} passengers",
     "sedanBody": "Comfortable for individuals, couples and small groups.",
     "sedanCta": "Choose Comfort →",
-    "busTitle": "Taxibus",
+    "busTitle": "XL Van",
     "busCapacity": "Up to {max} passengers",
     "busBody": "More space for larger groups and extra luggage.",
-    "busCta": "Choose Taxibus →"
+    "busCta": "Choose XL Van →"
   },
   "SchipholSteps": {
     "title": "Arriving at Schiphol",
@@ -158,7 +158,7 @@
     "increaseLuggage": "Increase number of bags",
     "vehicleLabel": "Vehicle",
     "vehiclePersonenauto": "Comfort",
-    "vehicleBus": "Van",
+    "vehicleBus": "XL Van",
     "vehiclePersonenautoCapacity": "1–{max} passengers",
     "vehicleBusCapacity": "5–{max} passengers",
     "vehicleAutoSwitchNote": "For this number of passengers and bags you need Van — we've already selected it for you.",
@@ -292,7 +292,7 @@
     "title": "Frequently asked questions"
   },
   "Footer": {
-    "tagline": "Schiphol & Amsterdam airport transfers. Direct carrier, no middleman.",
+    "tagline": "Schiphol & Amsterdam taxi transfers. Fixed price, easy booking.",
     "rights": "All rights reserved.",
     "aboutLink": "About us",
     "howItWorksLink": "How it works",
