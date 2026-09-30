@@ -36,7 +36,24 @@ export async function Header() {
   ];
 
   return (
-    <header className="border-b border-white/10 bg-ink text-ink-foreground">
+    // pt-[env(safe-area-inset-top)]: a real mobile screenshot (client-
+    // reported "booking op mobiel gaat nog steeds fout") showed the
+    // phone's own status bar (clock/signal/battery) visually overlapping
+    // this header's logo/tagline text — this component has no fixed/
+    // sticky positioning, so in a normal browser tab that should be
+    // impossible (the browser always reserves its own chrome above the
+    // page). It's a known behavior in some in-app/Custom-Tab browser
+    // contexts (e.g. a link opened from WhatsApp, our own primary
+    // contact channel) that render edge-to-edge and expect the PAGE to
+    // pad for the status bar itself. TopBar.tsx already handles its own
+    // case (it's `hidden` below md, so Header is the true first visible
+    // element on mobile) — this fix is the top-safe-area counterpart to
+    // the bottom-safe-area padding already used on StickyMobileCta.tsx/
+    // CookieConsentBanner.tsx/layout.tsx's own pb-24 comment. env()
+    // resolves to 0 in a normal browser tab, so this is a no-op there —
+    // it only does anything in exactly the edge-to-edge case the
+    // screenshot showed.
+    <header className="border-b border-white/10 bg-ink pt-[env(safe-area-inset-top,0px)] text-ink-foreground">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link href="/" className="shrink-0">
           <Logo variant="dark" tagline="SCHIPHOL · AMSTERDAM · 24/7" />

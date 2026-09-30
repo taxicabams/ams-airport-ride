@@ -22,7 +22,10 @@ export default async function AdsLandingPageEn() {
 
   return (
     <>
-      <header className="border-b border-border bg-surface">
+      {/* pt-[env(safe-area-inset-top)]: same fix as Header.tsx (see that
+          file's comment) — a separate root layout, needs it
+          independently. */}
+      <header className="border-b border-border bg-surface pt-[env(safe-area-inset-top,0px)]">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <Link href="/en">
             <Logo variant="light" />

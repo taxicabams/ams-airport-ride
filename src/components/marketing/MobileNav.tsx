@@ -69,7 +69,7 @@ export function MobileNav({
         // component sits in the surrounding flex/grid layout. z-50 is
         // deliberately above everything else on the page (StickyMobileCta
         // and WhatsAppButton both use z-30).
-        <div className="fixed inset-0 z-50 flex flex-col bg-ink text-ink-foreground">
+        <div className="fixed inset-0 z-50 flex flex-col bg-ink pt-[env(safe-area-inset-top,0px)] text-ink-foreground">
           <div className="flex items-center justify-end px-4 py-3 sm:px-6">
             <button
               type="button"
