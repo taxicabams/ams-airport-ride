@@ -59,14 +59,6 @@
     "item3Title": "Lokaal luchthavenvervoer",
     "item3Body": "Wij richten ons op ritten van en naar Schiphol en bestemmingen rond Amsterdam."
   },
-  "PopularRoute": {
-    "title": "Populaire route",
-    "route": "Amsterdam ↔ Schiphol",
-    "price": "Vanaf €45",
-    "note": "Vaste prijs vooraf.",
-    "cta": "Bereken mijn prijs →",
-    "disclaimer": "De exacte prijs wordt berekend op basis van je ophaaladres en bestemming."
-  },
   "TwoColumnBanner": {
     "amsterdamTitle": "Taxi in Amsterdam",
     "amsterdamBody": "Van Amsterdam-West tot Centrum en andere stadsdelen. Bereken eenvoudig je ritprijs op basis van afstand en reistijd.",

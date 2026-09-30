@@ -59,14 +59,6 @@
     "item3Title": "Local airport transfer",
     "item3Body": "We focus on rides to and from Schiphol and destinations around Amsterdam."
   },
-  "PopularRoute": {
-    "title": "Popular route",
-    "route": "Amsterdam ↔ Schiphol",
-    "price": "From €45",
-    "note": "Fixed price upfront.",
-    "cta": "Calculate my price →",
-    "disclaimer": "Your exact price is calculated based on your pickup address and destination."
-  },
   "TwoColumnBanner": {
     "amsterdamTitle": "Taxi in Amsterdam",
     "amsterdamBody": "From Amsterdam West to the city centre and every other district. Calculate your ride price based on distance and travel time.",
