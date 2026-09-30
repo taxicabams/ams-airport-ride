@@ -157,6 +157,125 @@ const CITY_CONTENT: CityContent[] = [
       ],
     },
   },
+  {
+    cityId: "aalsmeer",
+    local: {
+      nl: "Aalsmeer ligt vlak naast Schiphol en is wereldwijd bekend van de bloemenveiling van Royal FloraHolland, een van de grootste veilingcomplexen ter wereld. Door de korte afstand is dit een van de snelste ritten vanaf de luchthaven, ideaal voor zowel zakelijke bezoekers aan de veiling als reizigers die in Aalsmeer wonen.",
+      en: "Aalsmeer sits right next to Schiphol and is known worldwide for the Royal FloraHolland flower auction, one of the largest auction complexes in the world. Thanks to the short distance, this is one of the fastest rides from the airport, ideal for both business visitors to the auction and residents of Aalsmeer.",
+    },
+    faq: {
+      nl: [
+        { q: "Hoe ver is Aalsmeer van Schiphol?", a: "Heel dichtbij — de rit duurt doorgaans maar zo'n 15-20 minuten." },
+        { q: "Kan ik ook naar de bloemenveiling geboekt worden?", a: "Ja, geef het exacte adres van uw bestemming in Aalsmeer op bij het boeken." },
+      ],
+      en: [
+        { q: "How far is Aalsmeer from Schiphol?", a: "Very close — the ride usually only takes about 15-20 minutes." },
+        { q: "Can you also take me to the flower auction?", a: "Yes, just enter the exact address of your destination in Aalsmeer when booking." },
+      ],
+    },
+  },
+  {
+    cityId: "diemen",
+    local: {
+      nl: "Diemen ligt tussen Schiphol en Amsterdam-Zuidoost in, vlak bij bedrijventerrein Verrijn Stuartweg en op korte afstand van de Amsterdam ArenA. Een populaire route voor zowel forenzen als bezoekers van evenementen in de buurt.",
+      en: "Diemen sits between Schiphol and Amsterdam Southeast, close to the Verrijn Stuartweg business park and a short distance from the Amsterdam ArenA. A popular route for both commuters and visitors attending events nearby.",
+    },
+    faq: {
+      nl: [
+        { q: "Rijdt u ook naar een evenement in de Amsterdam ArenA?", a: "Ja, vermeld dit gewoon als bestemming bij het boeken, ook als het een adres vlak bij de ArenA is." },
+        { q: "Hoe lang duurt de rit vanaf Schiphol naar Diemen?", a: "Doorgaans rond de 20-25 minuten, afhankelijk van het verkeer op de ring." },
+      ],
+      en: [
+        { q: "Do you also drive to an event at the Amsterdam ArenA?", a: "Yes, just enter it as your destination when booking, even for an address close to the ArenA." },
+        { q: "How long does the ride from Schiphol to Diemen take?", a: "Usually around 20-25 minutes, depending on traffic on the ring road." },
+      ],
+    },
+  },
+  {
+    cityId: "uithoorn",
+    local: {
+      nl: "Uithoorn ligt aan de Amstel, ten zuiden van Amstelveen, en is onder meer bekend van de glastuinbouw rond De Kwakel. De rit vanaf Schiphol loopt via Amstelveen en duurt doorgaans zo'n 20-25 minuten.",
+      en: "Uithoorn sits on the Amstel river, south of Amstelveen, and is known among other things for the greenhouse horticulture around De Kwakel. The ride from Schiphol runs via Amstelveen and usually takes about 20-25 minutes.",
+    },
+    faq: {
+      nl: [
+        { q: "Komt de chauffeur ook naar De Kwakel?", a: "Ja, we rijden naar elk adres binnen de gemeente Uithoorn, inclusief De Kwakel." },
+        { q: "Is de prijs naar Uithoorn vast?", a: "Ja, u ziet de vaste prijs vooraf, ongeacht het verkeer onderweg." },
+      ],
+      en: [
+        { q: "Do you also drive to De Kwakel?", a: "Yes, we drive to any address within the Uithoorn municipality, including De Kwakel." },
+        { q: "Is the price to Uithoorn fixed?", a: "Yes, you see the fixed price upfront, regardless of traffic along the way." },
+      ],
+    },
+  },
+  {
+    cityId: "leiden",
+    local: {
+      nl: "Leiden is een populaire universiteitsstad met een historische binnenstad vol grachten, dicht bij de Bollenstreek en Keukenhof. De rit vanaf Schiphol loopt via de A4 en duurt doorgaans ongeveer 30-35 minuten.",
+      en: "Leiden is a popular university city with a historic canal-lined centre, close to the Bollenstreek bulb region and Keukenhof. The ride from Schiphol runs via the A4 and usually takes around 30-35 minutes.",
+    },
+    faq: {
+      nl: [
+        { q: "Kan de chauffeur mij afzetten in de binnenstad van Leiden?", a: "Ja, we brengen u tot voor de deur, ook in de historische binnenstad." },
+        { q: "Rijdt u ook naar Keukenhof?", a: "Ja, geef dit gewoon als bestemming op bij het boeken." },
+      ],
+      en: [
+        { q: "Can the driver drop me off in Leiden's city centre?", a: "Yes, we drop you off right at the door, including in the historic centre." },
+        { q: "Do you also drive to Keukenhof?", a: "Yes, just enter it as your destination when booking." },
+      ],
+    },
+  },
+  {
+    cityId: "almere-stad",
+    local: {
+      nl: "Almere Stad, het centrum van de jongste grote stad van Nederland, groeit snel als woon- en werkplek in de regio Amsterdam. De rit vanaf Schiphol loopt via de A1/A6 over het IJmeer en duurt doorgaans ongeveer 40-45 minuten.",
+      en: "Almere Stad, the centre of the Netherlands' youngest major city, is a fast-growing place to live and work in the greater Amsterdam region. The ride from Schiphol runs via the A1/A6 over the IJmeer and usually takes around 40-45 minutes.",
+    },
+    faq: {
+      nl: [
+        { q: "Hoe lang duurt de rit van Schiphol naar Almere?", a: "Reken op ongeveer 40-45 minuten, afhankelijk van het verkeer." },
+        { q: "Rijdt u ook naar andere delen van Almere, zoals Almere Buiten?", a: "Ja, geef het exacte adres op bij het boeken, ongeacht in welk deel van Almere het ligt." },
+      ],
+      en: [
+        { q: "How long does the ride from Schiphol to Almere take?", a: "Expect around 40-45 minutes, depending on traffic." },
+        { q: "Do you also drive to other parts of Almere, such as Almere Buiten?", a: "Yes, just enter the exact address when booking, wherever in Almere it is." },
+      ],
+    },
+  },
+  {
+    cityId: "hilversum",
+    local: {
+      nl: "Hilversum, bekend als mediastad met onder meer het hoofdkantoor van de publieke omroep, ligt centraal in het Gooi. De rit vanaf Schiphol loopt via de A9/A1 en duurt doorgaans ongeveer 35-40 minuten.",
+      en: "Hilversum, known as the Netherlands' media city and home to the national public broadcaster's headquarters, sits centrally in the Gooi region. The ride from Schiphol runs via the A9/A1 and usually takes around 35-40 minutes.",
+    },
+    faq: {
+      nl: [
+        { q: "Rijdt u ook naar de mediabedrijven in Hilversum?", a: "Ja, we brengen u naar elk zakelijk of privéadres in Hilversum." },
+        { q: "Hoe lang van tevoren moet ik boeken voor Hilversum?", a: "Hoe eerder hoe beter, maar een rit naar Hilversum kan doorgaans ook dezelfde dag nog geboekt worden." },
+      ],
+      en: [
+        { q: "Do you also drive to the media companies in Hilversum?", a: "Yes, we take you to any business or personal address in Hilversum." },
+        { q: "How far in advance should I book for Hilversum?", a: "The sooner the better, but a ride to Hilversum can usually still be booked the same day." },
+      ],
+    },
+  },
+  {
+    cityId: "amersfoort",
+    local: {
+      nl: "Amersfoort combineert een historische binnenstad rond de Koppelpoort met een groeiend aantal kantoren en bedrijven, centraal gelegen in Nederland. De rit vanaf Schiphol duurt doorgaans ongeveer 50-55 minuten via de A1.",
+      en: "Amersfoort combines a historic centre around the Koppelpoort gate with a growing number of offices and companies, centrally located in the Netherlands. The ride from Schiphol usually takes around 50-55 minutes via the A1.",
+    },
+    faq: {
+      nl: [
+        { q: "Is Amersfoort ver van Schiphol?", a: "Het ligt centraal in Nederland — reken op ongeveer 50-55 minuten reistijd." },
+        { q: "Kan ik ook 's avonds laat naar Amersfoort boeken?", a: "Ja, u kunt op elk moment van de dag of nacht een rit boeken." },
+      ],
+      en: [
+        { q: "Is Amersfoort far from Schiphol?", a: "It sits centrally in the Netherlands — expect roughly 50-55 minutes of travel time." },
+        { q: "Can I also book a ride to Amersfoort late in the evening?", a: "Yes, you can book a ride at any time of day or night." },
+      ],
+    },
+  },
 ];
 
 export type RoutePage = {
