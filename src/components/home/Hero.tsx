@@ -63,8 +63,28 @@ export async function Hero() {
         {/* Not id="boeken" here too — BookingWidget's own root already
             has that id (a real duplicate-id bug otherwise: two elements
             sharing one id is invalid HTML and makes "#boeken" anchor
-            behavior/getElementById ambiguous). */}
-        <div className="order-1 scroll-mt-24 lg:order-2">
+            behavior/getElementById ambiguous).
+
+            min-w-0 is the real fix for a bug the client found live with
+            a real phone screenshot: at QuoteStep (booking step 3), a
+            long destination address ("Euclideslaan 201, 3584 BS
+            Utrecht, Netherlands") pushed the page's dark full-bleed
+            background sections narrower than the real viewport,
+            revealing a strip of the page's own cream background on the
+            right. Classic CSS grid gotcha: a grid item's default
+            min-width is `auto`, not `0` — meaning it refuses to shrink
+            below its content's natural (min-content) size even when
+            that content has `overflow-hidden`/`truncate` on it.
+            QuoteStep's route line (`<p className="truncate">{pickup} →
+            {destination}</p>`) uses `white-space: nowrap` under the
+            hood, whose min-content width is its FULL unwrapped text
+            width — with a long address, that's wide enough to inflate
+            this grid item (and therefore this whole grid row) past the
+            viewport, before `truncate` ever gets a chance to clip
+            anything. min-w-0 tells the grid track sizing algorithm this
+            item may shrink below that content-driven minimum, which is
+            what actually lets the descendant `truncate` do its job. */}
+        <div className="order-1 min-w-0 scroll-mt-24 lg:order-2">
           <p className="mb-3 inline-flex items-center gap-2 rounded-[10px] bg-brand px-4 py-2 font-mono text-base font-bold text-brand-foreground sm:text-lg">
             {t("heroPrice", { price: CHEAPEST_SCHIPHOL_PRICE })}
           </p>
