@@ -298,8 +298,7 @@
     "servicePrivateRides": "Private rides",
     "routesTitle": "Routes",
     "infoTitle": "Information",
-    "legalTitle": "Legal",
-    "companyDetailsTitle": "Company details"
+    "legalTitle": "Legal"
   },
   "FinalCtaSimple": {
     "title": "Flight booked?",
@@ -320,5 +319,12 @@
     "body": "This page doesn't exist (anymore). Go back to the homepage, or calculate your fixed price right away.",
     "homeLink": "← Back to home",
     "bookLink": "Calculate my fare →"
+  },
+  "ErrorPage": {
+    "title": "Something went wrong",
+    "body": "This page couldn't load. Try again, or go back to the homepage. Prefer to reach us directly? Send us a WhatsApp message.",
+    "retryButton": "Try again",
+    "homeLink": "← Back to home",
+    "whatsappLink": "WhatsApp us"
   }
 }

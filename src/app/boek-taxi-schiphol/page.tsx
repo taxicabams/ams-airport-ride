@@ -95,7 +95,6 @@ export default async function AdsLandingPage() {
           <Link href="/privacy" className="hover:text-foreground">
             Privacybeleid
           </Link>
-          {companyInfo.kvkNumber && <span>KvK {companyInfo.kvkNumber}</span>}
         </div>
       </footer>
     </>

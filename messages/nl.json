@@ -298,8 +298,7 @@
     "servicePrivateRides": "Privéritten",
     "routesTitle": "Routes",
     "infoTitle": "Informatie",
-    "legalTitle": "Juridisch",
-    "companyDetailsTitle": "Bedrijfsgegevens"
+    "legalTitle": "Juridisch"
   },
   "FinalCtaSimple": {
     "title": "Vlucht geboekt?",
@@ -320,5 +319,12 @@
     "body": "Deze pagina bestaat niet (meer). Ga terug naar de homepage of bereken direct uw vaste prijs.",
     "homeLink": "← Terug naar home",
     "bookLink": "Bereken mijn ritprijs →"
+  },
+  "ErrorPage": {
+    "title": "Er ging iets mis",
+    "body": "Deze pagina kon niet geladen worden. Probeer het opnieuw, of ga terug naar de homepage. Liever direct contact? Stuur ons een WhatsApp-bericht.",
+    "retryButton": "Probeer opnieuw",
+    "homeLink": "← Terug naar home",
+    "whatsappLink": "WhatsApp ons"
   }
 }

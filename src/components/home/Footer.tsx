@@ -1,16 +1,15 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { companyInfo } from "@/lib/companyInfo";
 import { Logo } from "@/components/ui/Logo";
 import { ROUTE_PAGES, routePageCopy } from "@/lib/routes-data";
 import { getLocale } from "next-intl/server";
 
 /**
- * "Vertrekbord" rebuild — 4 columns per the brief's exact spec:
- * company details (address/KvK/BTW/ILT), services, routes, info. All
- * company-detail values come from companyInfo.ts, which the client
- * asked to fill with obvious "1234567"-style preview placeholders — see
- * that file's header comment; nothing here is invented independently.
+ * "Vertrekbord" rebuild — 3 columns: services, routes, info. Originally
+ * had a 4th "Bedrijfsgegevens" (company details) column for address/
+ * KvK/BTW/ILT-taxivergunning; removed outright (not just hidden) per
+ * the client's explicit instruction — see the grid comment below and
+ * companyInfo.ts's header for the full reasoning.
  */
 export async function Footer() {
   const t = await getTranslations("Footer");
@@ -41,46 +40,17 @@ export async function Footer() {
         </Link>
         <p className="mt-3 max-w-xs text-sm">{t("tagline")}</p>
 
-        <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Real bug found live: with every companyInfo field null (see
-              that file's own note), this column rendered its heading
-              ("Bedrijfsgegevens") with an empty list underneath — a
-              small but real "unfinished-looking" gap. Hiding the whole
-              column when there's nothing real to show reads as clean,
-              not missing. */}
-          {(companyInfo.address ||
-            companyInfo.phone ||
-            companyInfo.email ||
-            companyInfo.kvkNumber ||
-            companyInfo.btwNumber ||
-            companyInfo.licenseNumber) && (
-            <div>
-              <h3 className="font-mono text-xs font-semibold uppercase tracking-wide text-white/50">
-                {t("companyDetailsTitle")}
-              </h3>
-              <ul className="mt-3 space-y-1.5 text-sm">
-                {companyInfo.address && <li>{companyInfo.address}</li>}
-                {companyInfo.phone && (
-                  <li>
-                    <a href={`tel:${companyInfo.phone.replace(/\s/g, "")}`} className="hover:text-white">
-                      {companyInfo.phone}
-                    </a>
-                  </li>
-                )}
-                {companyInfo.email && (
-                  <li>
-                    <a href={`mailto:${companyInfo.email}`} className="hover:text-white">
-                      {companyInfo.email}
-                    </a>
-                  </li>
-                )}
-                {companyInfo.kvkNumber && <li>KvK {companyInfo.kvkNumber}</li>}
-                {companyInfo.btwNumber && <li>BTW {companyInfo.btwNumber}</li>}
-                {companyInfo.licenseNumber && <li>ILT {companyInfo.licenseNumber}</li>}
-              </ul>
-            </div>
-          )}
-
+        {/* The "Bedrijfsgegevens" (company details) column — address/
+            KvK/BTW/ILT-taxivergunning — was removed outright per the
+            client's explicit instruction: "beste niks over vergunningen
+            op bedrijfsgegevens etc, alles gewoon amsairportride" (best
+            nothing about permits/company details, just everything as
+            AMS Airport Ride). Not hidden-when-empty anymore (that was
+            the previous, now superseded, fix for the same visual gap) —
+            those fields no longer exist in companyInfo.ts at all, so
+            there's nothing to ever conditionally show here. 3 real
+            columns now, grid adjusted accordingly. */}
+        <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           <div>
             <h3 className="font-mono text-xs font-semibold uppercase tracking-wide text-white/50">
               {t("servicesTitle")}
