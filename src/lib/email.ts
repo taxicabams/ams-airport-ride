@@ -139,7 +139,6 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
           payment:
             "Vaste prijs vooraf — geen taxameter, geen verrassingen achteraf. Betaal eenvoudig na de rit rechtstreeks aan de chauffeur met PIN of contant. Een bon is beschikbaar in de taxi.",
           schiphol: "Waar vindt u uw chauffeur?",
-          notes: "Opmerkingen",
           footer: "Dit is een automatisch gegenereerde boekingsbevestiging van AMS Airport Ride.",
         }
       : {
@@ -155,7 +154,6 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
           payment:
             "Fixed price upfront — no meter, no surprises afterwards. Pay easily after your ride directly to the driver by card or cash. A receipt is available in the taxi.",
           schiphol: "Where will you find your driver?",
-          notes: "Notes",
           footer: "This is an automated booking confirmation from AMS Airport Ride.",
         };
 
@@ -217,21 +215,10 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
 
     ${
       isAirport
-        ? `<div style="border:1px solid ${BRAND_NAVY}22;background-color:${BRAND_NAVY}0d;border-radius:8px;padding:16px 20px;margin-bottom:20px;">
+        ? `<div style="border:1px solid ${BRAND_NAVY}22;background-color:${BRAND_NAVY}0d;border-radius:8px;padding:16px 20px;">
             <p style="margin:0 0 6px;font-weight:600;color:${BRAND_NAVY};font-size:14px;">${t.schiphol}</p>
             <p style="margin:0;color:${TEXT};font-size:13px;">${escapeHtml(getSchipholMeetingPointText(locale))}</p>
           </div>`
-        : ""
-    }
-
-    ${
-      // Covers both a customer-typed note and a stopover address — the
-      // API route folds a stopover into this same `notes` field before
-      // storing (no dedicated column, see /api/bookings's own note), so
-      // this one block surfaces both without the email needing to know
-      // which one it is.
-      booking.notes
-        ? `<p style="margin:0;padding:12px 16px;background-color:${MUTED_BG};border-radius:8px;color:${TEXT};font-size:13px;"><strong>${t.notes}:</strong> ${escapeHtml(booking.notes)}</p>`
         : ""
     }
   `;

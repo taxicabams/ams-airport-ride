@@ -10,7 +10,6 @@ export type CoordQuoteInput = {
   pickupLng?: number;
   destinationLat?: number;
   destinationLng?: number;
-  hasStopover?: boolean;
 };
 
 /**
@@ -32,7 +31,6 @@ export async function computeQuoteWithRoute(input: CoordQuoteInput): Promise<Quo
     pickup: input.pickup,
     destination: input.destination,
     vehicleType: input.vehicleType,
-    hasStopover: input.hasStopover,
   };
 
   const { pickupLat, pickupLng, destinationLat, destinationLng } = input;

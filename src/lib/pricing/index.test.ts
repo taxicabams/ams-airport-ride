@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { calculateQuote } from "./index";
-import { BUS_SURCHARGE_EUR, STOPOVER_SURCHARGE_EUR } from "./vehicle";
+import { BUS_SURCHARGE_EUR } from "./vehicle";
 import { PRICES_APPROVED_BY_CLIENT } from "./staticRoutes";
 import {
   PRIVATE_RIDE_START_FEE_EUR,
@@ -224,49 +224,6 @@ describe("calculateQuote — Google Routes override (Phase 2B)", () => {
     // But the *displayed* distance/duration do reflect the real route:
     expect(quote.distanceKm).toBe(999);
     expect(quote.distanceSource).toBe("google");
-  });
-});
-
-describe("calculateQuote — stopover surcharge", () => {
-  it("adds the flat stopover surcharge to the total when hasStopover is true", () => {
-    const base = calculateQuote({
-      pickup: "Schiphol",
-      destination: "Centrum",
-      vehicleType: "PERSONENAUTO",
-    });
-    const withStopover = calculateQuote({
-      pickup: "Schiphol",
-      destination: "Centrum",
-      vehicleType: "PERSONENAUTO",
-      hasStopover: true,
-    });
-    expect(withStopover.basePrice).toBe(base.basePrice); // base fare itself never changes
-    expect(withStopover.surcharges).toEqual([{ label: "Tussenstop", amount: STOPOVER_SURCHARGE_EUR }]);
-    expect(withStopover.totalPrice).toBe(base.totalPrice + STOPOVER_SURCHARGE_EUR);
-  });
-
-  it("charges the stopover surcharge on top of the vehicle surcharge, not instead of it", () => {
-    const quote = calculateQuote({
-      pickup: "Schiphol",
-      destination: "Centrum",
-      vehicleType: "BUS",
-      hasStopover: true,
-    });
-    expect(quote.vehicleSurcharge).toBe(BUS_SURCHARGE_EUR);
-    expect(quote.surcharges).toEqual([{ label: "Tussenstop", amount: STOPOVER_SURCHARGE_EUR }]);
-    expect(quote.totalPrice).toBe(quote.basePrice + BUS_SURCHARGE_EUR + STOPOVER_SURCHARGE_EUR);
-  });
-
-  it("omits the stopover surcharge entirely when hasStopover is false or absent", () => {
-    const withoutField = calculateQuote({ pickup: "Schiphol", destination: "Centrum", vehicleType: "PERSONENAUTO" });
-    const explicitFalse = calculateQuote({
-      pickup: "Schiphol",
-      destination: "Centrum",
-      vehicleType: "PERSONENAUTO",
-      hasStopover: false,
-    });
-    expect(withoutField.surcharges).toEqual([]);
-    expect(explicitFalse.surcharges).toEqual([]);
   });
 });
 

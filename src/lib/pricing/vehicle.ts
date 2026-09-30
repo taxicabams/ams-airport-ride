@@ -9,24 +9,6 @@ export type VehicleType = "PERSONENAUTO" | "BUS";
 export const BUS_SURCHARGE_EUR = 15;
 
 /**
- * Flat stopover surcharge — one extra address the driver stops at along
- * the way (client request: "doe ook tussenstop maar bedenk hoe ik dat
- * kan fiksen in me prijs"). A flat add-on, not a real per-route distance
- * recalculation: the app has no live multi-waypoint routing integration
- * (Google Routes is only ever called with one origin/destination pair —
- * see /api/quote), so pretending to compute the exact extra km for an
- * arbitrary stopover would mean inventing a number, not calculating one.
- * A flat, always-the-same, told-upfront surcharge keeps the site's
- * "vaste prijs vooraf" promise honest for this case too — same pattern
- * as BUS_SURCHARGE_EUR above.
- *
- * ⚠️ NOT YET CLIENT-APPROVED — same status as SCHIPHOL_PRICES: a
- * reasonable starting number, not a confirmed final price. Flag this
- * file if this number is discussed before the client has signed off.
- */
-export const STOPOVER_SURCHARGE_EUR = 10;
-
-/**
  * Capacity configuration — every number the booking flow's capacity
  * logic depends on lives here, so retuning it later (e.g. once the
  * client confirms real vehicle specs) is a one-file edit.

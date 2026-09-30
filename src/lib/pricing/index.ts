@@ -2,7 +2,7 @@ import { matchLocation } from "../locations";
 import { detectRideType, type RideType } from "../rideType";
 import { findStaticRoute } from "./staticRoutes";
 import { estimateFallback, estimateDistanceDuration } from "./fallback";
-import { vehicleSurchargeFor, STOPOVER_SURCHARGE_EUR, type VehicleType } from "./vehicle";
+import { vehicleSurchargeFor, type VehicleType } from "./vehicle";
 
 export type QuoteInput = {
   pickup: string;
@@ -18,8 +18,6 @@ export type QuoteInput = {
    * *fallback formula's* input distance benefit from the real number.
    */
   routeOverride?: { distanceKm: number; durationMin: number };
-  /** One extra stopover along the way — see vehicle.ts's STOPOVER_SURCHARGE_EUR note. */
-  hasStopover?: boolean;
 };
 
 export type Surcharge = { label: string; amount: number };
@@ -68,12 +66,8 @@ export function calculateQuote(input: QuoteInput): Quote {
 
   // v1 has no time-of-day/day-of-week surcharges (deliberately, per the
   // client's spec) — the array exists so one can be added later without
-  // changing the Quote shape or any caller. The stopover surcharge is
-  // the first real use of it.
+  // changing the Quote shape or any caller.
   const surcharges: Surcharge[] = [];
-  if (input.hasStopover) {
-    surcharges.push({ label: "Tussenstop", amount: STOPOVER_SURCHARGE_EUR });
-  }
 
   const vehicleSurcharge = vehicleSurchargeFor(input.vehicleType);
   const totalPrice =
@@ -95,7 +89,6 @@ export function calculateQuote(input: QuoteInput): Quote {
 export type { VehicleType } from "./vehicle";
 export {
   BUS_SURCHARGE_EUR,
-  STOPOVER_SURCHARGE_EUR,
   PERSONENAUTO_MAX_PASSENGERS,
   PERSONENAUTO_MAX_LUGGAGE,
   BUS_MAX_PASSENGERS,

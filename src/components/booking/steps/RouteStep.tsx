@@ -6,7 +6,6 @@ import { AddressField } from "@/components/ui/AddressField";
 import { inputClassName } from "@/components/ui/Field";
 import { PlaneIcon, ArrowRightIcon, SwapIcon } from "@/components/ui/icons";
 import type { ResolvedPlace } from "@/lib/places";
-import { STOPOVER_SURCHARGE_EUR } from "@/lib/pricing";
 import type { BookingFormState } from "../types";
 
 // Real, correct Schiphol coordinates — the exact same values already
@@ -70,10 +69,9 @@ export function RouteStep({
 }) {
   const t = useTranslations("Booking");
   const locale = useLocale() as "nl" | "en";
-  const [touched, setTouched] = useState<{ pickup?: boolean; destination?: boolean; stopover?: boolean }>({});
+  const [touched, setTouched] = useState<{ pickup?: boolean; destination?: boolean }>({});
   const [pickupHouseNumber, setPickupHouseNumber] = useState("");
   const [destinationHouseNumber, setDestinationHouseNumber] = useState("");
-  const [stopoverHouseNumber, setStopoverHouseNumber] = useState("");
   // Real bug found live: committing the house number into form state on
   // every keystroke (so after typing just "1" of "12") immediately set
   // pickupMissingHouseNumber to false — which hid this very input
@@ -86,7 +84,6 @@ export function RouteStep({
   // typed freely before anything is considered "resolved."
   const [pickupHouseNumberActive, setPickupHouseNumberActive] = useState(false);
   const [destinationHouseNumberActive, setDestinationHouseNumberActive] = useState(false);
-  const [stopoverHouseNumberActive, setStopoverHouseNumberActive] = useState(false);
   const [rideMode, setRideMode] = useState<RideMode>(() => {
     if (form.pickup.toLowerCase().includes("schiphol")) return "fromSchiphol";
     if (form.destination.toLowerCase().includes("schiphol")) return "toSchiphol";
@@ -98,17 +95,8 @@ export function RouteStep({
   const destinationResolved = Boolean(form.destinationPlaceId);
   const pickupNeedsHouseNumber = pickupResolved && form.pickupMissingHouseNumber === true;
   const destinationNeedsHouseNumber = destinationResolved && form.destinationMissingHouseNumber === true;
-  const stopoverResolved = Boolean(form.stopoverPlaceId);
-  const stopoverNeedsHouseNumber = stopoverResolved && form.stopoverMissingHouseNumber === true;
-  // A stopover only has to block Next while it's actually turned on —
-  // toggling it off (or never turning it on) never blocks the flow.
-  const stopoverBlocking = form.hasStopover && (!stopoverResolved || stopoverNeedsHouseNumber);
   const canContinue =
-    pickupResolved &&
-    destinationResolved &&
-    !pickupNeedsHouseNumber &&
-    !destinationNeedsHouseNumber &&
-    !stopoverBlocking;
+    pickupResolved && destinationResolved && !pickupNeedsHouseNumber && !destinationNeedsHouseNumber;
 
   // Keeps form state in sync with whichever side should be locked to
   // Schiphol for the current tab — including on mount for the default
@@ -174,22 +162,6 @@ export function RouteStep({
     }
   }
 
-  function resolveStopover(place: ResolvedPlace | null) {
-    onChange({
-      stopoverPlaceId: place?.placeId,
-      stopoverLat: place?.lat,
-      stopoverLng: place?.lng,
-      stopoverMissingHouseNumber: place?.missingHouseNumber ?? false,
-    });
-    if (place?.missingHouseNumber) {
-      setTouched((s) => ({ ...s, stopover: true }));
-      setStopoverHouseNumberActive(true);
-    } else {
-      setStopoverHouseNumber("");
-      setStopoverHouseNumberActive(false);
-    }
-  }
-
   // Applied from the separate "Huisnummer" field below (see
   // insertHouseNumber's own note) — never from editing the address text
   // itself, which is still Google-autocomplete-only. Only commits on
@@ -211,37 +183,6 @@ export function RouteStep({
       destinationMissingHouseNumber: false,
     });
     setDestinationHouseNumberActive(false);
-  }
-
-  function commitStopoverHouseNumber() {
-    if (stopoverHouseNumber.trim().length === 0) return;
-    onChange({
-      stopover: insertHouseNumber(form.stopover, stopoverHouseNumber.trim()),
-      stopoverMissingHouseNumber: false,
-    });
-    setStopoverHouseNumberActive(false);
-  }
-
-  // Turning the stopover off clears its resolved state entirely (not
-  // just hiding the field) — an old stopover address must never keep
-  // silently adding its surcharge once the customer has unchecked it.
-  function toggleStopover(enabled: boolean) {
-    onChange({
-      hasStopover: enabled,
-      ...(enabled
-        ? {}
-        : {
-            stopover: "",
-            stopoverPlaceId: undefined,
-            stopoverLat: undefined,
-            stopoverLng: undefined,
-            stopoverMissingHouseNumber: undefined,
-          }),
-    });
-    if (!enabled) {
-      setStopoverHouseNumber("");
-      setStopoverHouseNumberActive(false);
-    }
   }
 
   // Real, working swap — not shown for the two Schiphol-locked tabs
@@ -305,14 +246,6 @@ export function RouteStep({
       ? destinationNeedsHouseNumber
         ? t("addressHouseNumberRequired")
         : !destinationResolved
-          ? t("addressSelectRequired")
-          : undefined
-      : undefined;
-  const stopoverError =
-    touched.stopover && form.stopover.trim().length > 0
-      ? stopoverNeedsHouseNumber
-        ? t("addressHouseNumberRequired")
-        : !stopoverResolved
           ? t("addressSelectRequired")
           : undefined
       : undefined;
@@ -467,65 +400,6 @@ export function RouteStep({
           </div>
         )}
       </div>
-
-      {/* Optional stopover — client request: "doe ook tussenstop maar
-          bedenk hoe ik dat kan fiksen in me prijs." Priced as a flat
-          surcharge (STOPOVER_SURCHARGE_EUR, see lib/pricing/vehicle.ts)
-          rather than a real extra-distance calculation — the app has no
-          live multi-waypoint routing integration, so a flat, told-
-          upfront amount is what keeps "vaste prijs vooraf" honest here
-          too. Off by default; turning it on requires a fully resolved
-          address here too, same rule as pickup/destination. */}
-      <label className="flex items-center gap-2 text-sm font-medium text-foreground">
-        <input
-          type="checkbox"
-          className="h-4 w-4 rounded border-border text-brand-text focus:ring-brand/40"
-          checked={form.hasStopover}
-          onChange={(e) => toggleStopover(e.target.checked)}
-        />
-        {t("stopoverToggleLabel", { surcharge: STOPOVER_SURCHARGE_EUR })}
-      </label>
-
-      {form.hasStopover && (
-        <div onBlur={() => setTouched((s) => ({ ...s, stopover: true }))}>
-          <AddressField
-            id="stopover"
-            label={t("stopoverLabel")}
-            placeholder={t("stopoverPlaceholder")}
-            value={form.stopover}
-            onChange={(value) => onChange({ stopover: value })}
-            onResolve={resolveStopover}
-            locale={locale}
-            error={stopoverNeedsHouseNumber ? undefined : stopoverError}
-            loadingLabel={t("addressLoading")}
-            noResultsLabel={t("addressNoResults")}
-            notConfiguredLabel={t("addressNotConfigured")}
-            unavailableLabel={t("addressUnavailable")}
-          />
-          {stopoverHouseNumberActive && (
-            <div className="mt-1.5">
-              <label htmlFor="stopover-housenumber" className="text-sm font-medium text-foreground">
-                {t("houseNumberLabel")}
-              </label>
-              <input
-                id="stopover-housenumber"
-                className={inputClassName}
-                placeholder={t("houseNumberPlaceholder")}
-                value={stopoverHouseNumber}
-                autoFocus
-                onChange={(e) => setStopoverHouseNumber(e.target.value)}
-                onBlur={commitStopoverHouseNumber}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    commitStopoverHouseNumber();
-                  }
-                }}
-              />
-            </div>
-          )}
-        </div>
-      )}
 
       <button
         type="button"

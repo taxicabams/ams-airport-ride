@@ -46,11 +46,6 @@ export async function POST(request: Request) {
       pickupLng: input.pickupLng,
       destinationLat: input.destinationLat,
       destinationLng: input.destinationLng,
-      // Applied once, to the outbound leg only — matches BookingWidget's
-      // own client-side preview/quote calls exactly (see that file's
-      // note), so the price the customer saw and the price actually
-      // charged here can never disagree over which leg carries it.
-      hasStopover: input.hasStopover,
     });
 
     // A return leg is priced by calling the exact same engine a second
@@ -70,21 +65,6 @@ export async function POST(request: Request) {
       : null;
 
     const totalPrice = quote.totalPrice + (returnQuote?.totalPrice ?? 0);
-
-    // The Booking table has no dedicated stopover column — adding one
-    // needs a database migration, which this environment's sandbox
-    // blocks running against the live production database without the
-    // client's own direct action (see the session's own notes on this).
-    // Folding the stopover address into the existing free-text `notes`
-    // field instead is a deliberate, safe workaround: real, visible
-    // operational information for the driver with zero schema change
-    // and zero migration risk. Prepended (not appended) so it's the
-    // first thing a driver reading the booking notices, and kept out of
-    // the stored `notes` fully when there's no stopover, so an existing
-    // booking's notes are byte-for-byte unchanged.
-    const notesWithStopover = input.hasStopover && input.stopover
-      ? `Tussenstop: ${input.stopover}${input.notes ? `\n\n${input.notes}` : ""}`
-      : input.notes;
 
     const localeHeader = request.headers.get("x-locale");
     const locale = routing.locales.includes(localeHeader as never)
@@ -126,7 +106,7 @@ export async function POST(request: Request) {
         returnPickup: input.returnTrip ? input.returnPickup || input.destination : null,
         returnDestination: input.returnTrip ? input.returnDestination || input.pickup : null,
         childSeat: input.childSeat,
-        notes: notesWithStopover || null,
+        notes: input.notes || null,
         customerName: input.name,
         customerPhone: input.phone,
         customerEmail: input.email,

@@ -174,7 +174,6 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
     destinationLat?: number;
     destinationLng?: number;
     vehicleType: VehicleType;
-    hasStopover?: boolean;
   }): Promise<Quote> {
     const res = await fetch("/api/quote", {
       method: "POST",
@@ -208,7 +207,6 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
         destinationLat: form.destinationLat,
         destinationLng: form.destinationLng,
         vehicleType: "PERSONENAUTO",
-        hasStopover: form.hasStopover,
       });
       setCarQuote(preview);
     } catch {
@@ -242,21 +240,13 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
           destinationLat: form.destinationLat,
           destinationLng: form.destinationLng,
           vehicleType: "PERSONENAUTO",
-          hasStopover: form.hasStopover,
         }));
-      // Real bug caught while adding the stopover surcharge: this Bus
-      // override recomputed totalPrice from just basePrice +
-      // BUS_SURCHARGE_EUR, silently dropping any entry already in
-      // carBase.surcharges (until now, always empty — the stopover
-      // surcharge is the first real one). Folding surcharges back in
-      // here is what keeps a Bus + stopover booking's total correct.
-      const carBaseSurchargeTotal = carBase.surcharges.reduce((sum, s) => sum + s.amount, 0);
       const outbound: Quote =
         form.vehicleType === "BUS"
           ? {
               ...carBase,
               vehicleSurcharge: BUS_SURCHARGE_EUR,
-              totalPrice: carBase.basePrice + BUS_SURCHARGE_EUR + carBaseSurchargeTotal,
+              totalPrice: carBase.basePrice + BUS_SURCHARGE_EUR,
             }
           : carBase;
       setQuote(outbound);
