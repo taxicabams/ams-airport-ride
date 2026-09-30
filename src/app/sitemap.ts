@@ -12,6 +12,11 @@ const STATIC_PATHS = [
   "/veelgestelde-vragen",
   "/privacy",
   "/voorwaarden",
+  // Real gap found live during the final release audit: /cookies was
+  // added (src/app/[locale]/cookies/page.tsx) but this list is
+  // hardcoded, not auto-discovered from the filesystem — it silently
+  // stayed out of the sitemap until added here explicitly.
+  "/cookies",
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
