@@ -8,15 +8,35 @@ import { companyInfo } from "@/lib/companyInfo";
 type NavItem = { href: string; label: string };
 
 /**
- * Header.tsx has no mobile nav at all today — the desktop links are just
- * `hidden md:flex`, so a phone visitor gets logo + book button and
- * nothing else. This is the missing mobile equivalent: a small slide-down
- * panel under the sticky header, closing on a link click or a second tap
- * of the toggle. Kept as its own client component so Header itself stays
- * a server component — only this toggle needs interactivity.
+ * Rebuilt from scratch after two real, related bugs in the previous
+ * dropdown-panel design (client report: "die knop rechts in de hoek...
+ * werkt niet, ik heb het al meerdere keren gevraagd" — reported multiple
+ * times):
  *
- * The tap-to-call row only renders once companyInfo.phone is real — see
- * companyInfo.ts's null-until-real convention.
+ * 1. The panel used `absolute inset-x-0 top-full` with no positioned
+ *    ancestor, so it fell back to the document's initial containing
+ *    block and rendered ~800px down the page, off-screen — fixed once
+ *    by adding `relative` to this component's own wrapper div.
+ * 2. That fix introduced a second, subtler bug: this wrapper is a flex
+ *    *item* inside Header's icon-row (`<div className="flex items-center
+ *    gap-3">`), so it sizes to its own content — just the ~44px toggle
+ *    button — not the page width. Making it `relative` made it the
+ *    *nearest* positioned ancestor, so `inset-x-0` resolved against
+ *    that ~44px box instead of the full header: the panel rendered
+ *    correctly positioned vertically, but squeezed into a narrow
+ *    column on the right, not full-width. This is why the toggle kept
+ *    "not working" even after the first fix.
+ *
+ * Both bugs share one root cause: an `absolute` panel's position and
+ * width both depend on which ancestor happens to be positioned,
+ * something that quietly changes as the surrounding layout evolves.
+ * `position: fixed` sidesteps the whole class of bug — it's always
+ * relative to the viewport, never to whatever positioned ancestor a
+ * flex/grid refactor happens to leave nearest. This is now a real
+ * full-screen overlay (its own close button inside, not dependent on
+ * the header's toggle remaining reachable underneath it) — the standard,
+ * unambiguous mobile-menu pattern every ancestor-position bug above was
+ * really just a fragile attempt to avoid building.
  */
 export function MobileNav({
   items,
@@ -32,36 +52,41 @@ export function MobileNav({
   const [open, setOpen] = useState(false);
 
   return (
-    // Real, reproducible bug found via a customer-journey QA pass: this
-    // wrapper had no `relative`, so the dropdown panel below (`absolute
-    // inset-x-0 top-full`) had no positioned ancestor to anchor to and
-    // fell back to the initial containing block — "top: 100%" of the
-    // *viewport's* height, landing the whole menu near the bottom of
-    // the screen instead of right under the button. The toggle itself
-    // worked every time (icon correctly flipped hamburger/X, confirmed
-    // via aria-expanded), which is exactly why this was easy to miss:
-    // it looked like "the button doesn't respond" when it was actually
-    // opening a menu the visitor just couldn't see.
-    <div className="relative md:hidden">
+    <div className="md:hidden">
       <button
         type="button"
         aria-expanded={open}
         aria-label={open ? closeLabel : openLabel}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => setOpen(true)}
         className="flex h-11 w-11 items-center justify-center rounded-full text-white transition hover:bg-white/10"
       >
-        {open ? <CloseIcon /> : <MenuIcon />}
+        <MenuIcon />
       </button>
 
       {open && (
-        <div className="absolute inset-x-0 top-full border-b border-border bg-surface shadow-elevated">
-          <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3 sm:px-6">
+        // Fixed to the viewport, full-screen, solid background — always
+        // correctly sized and positioned regardless of where this
+        // component sits in the surrounding flex/grid layout. z-50 is
+        // deliberately above everything else on the page (StickyMobileCta
+        // and WhatsAppButton both use z-30).
+        <div className="fixed inset-0 z-50 flex flex-col bg-ink text-ink-foreground">
+          <div className="flex items-center justify-end px-4 py-3 sm:px-6">
+            <button
+              type="button"
+              aria-label={closeLabel}
+              onClick={() => setOpen(false)}
+              className="flex h-11 w-11 items-center justify-center rounded-full transition hover:bg-white/10"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+          <nav className="flex flex-1 flex-col justify-center gap-2 px-6 pb-16">
             {items.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-base font-medium text-foreground/90 transition hover:bg-muted-background"
+                className="rounded-lg px-3 py-3.5 text-xl font-semibold transition hover:bg-white/5"
               >
                 {item.label}
               </Link>
@@ -69,16 +94,16 @@ export function MobileNav({
             {companyInfo.phone && (
               <a
                 href={`tel:${companyInfo.phone}`}
-                className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-base font-medium text-foreground/90 transition hover:bg-muted-background"
+                className="flex items-center gap-2 rounded-lg px-3 py-3.5 text-xl font-semibold transition hover:bg-white/5"
               >
-                <PhoneIcon className="h-4 w-4" />
+                <PhoneIcon className="h-5 w-5" />
                 {companyInfo.phone}
               </a>
             )}
             <Link
               href="/#boeken"
               onClick={() => setOpen(false)}
-              className="mt-2 rounded-full bg-accent px-4 py-3 text-center text-sm font-semibold text-accent-foreground shadow-sm transition hover:brightness-95"
+              className="mt-4 rounded-full bg-accent px-4 py-4 text-center text-lg font-semibold text-accent-foreground shadow-sm transition hover:brightness-95"
             >
               {bookLabel}
             </Link>
