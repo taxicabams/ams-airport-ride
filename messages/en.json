@@ -290,6 +290,8 @@
     "howItWorksLink": "How it works",
     "termsLink": "Terms and Conditions",
     "privacyLink": "Privacy Policy",
+    "cookiesLink": "Cookies",
+    "cookieSettingsLink": "Cookie settings",
     "cancellationLink": "Cancellation Policy",
     "servicesTitle": "Services",
     "serviceAmsterdam": "Amsterdam Taxi",
@@ -326,5 +328,14 @@
     "retryButton": "Try again",
     "homeLink": "← Back to home",
     "whatsappLink": "WhatsApp us"
+  },
+  "Cookies": {
+    "bannerTitle": "Cookie preferences",
+    "bannerBody": "We only use strictly necessary cookies to make the site work. Once we activate analytics/ad measurement, we'll explicitly ask for consent here before anything loads.",
+    "bannerLink": "Learn more",
+    "accept": "Accept",
+    "reject": "Reject",
+    "nothingToConfigure": "There is currently no non-essential tracking active to configure — only strictly necessary cookies. See our cookie policy for details.",
+    "close": "Close"
   }
 }

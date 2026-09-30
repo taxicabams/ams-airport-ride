@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/ui/Logo";
+import { CookieSettingsLink } from "@/components/marketing/CookieSettingsLink";
 import { ROUTE_PAGES, routePageCopy } from "@/lib/routes-data";
 import { getLocale } from "next-intl/server";
 
@@ -30,6 +31,7 @@ export async function Footer() {
     { href: "/contact", label: "Contact" },
     { href: "/voorwaarden", label: t("termsLink") },
     { href: "/privacy", label: t("privacyLink") },
+    { href: "/cookies", label: t("cookiesLink") },
   ];
 
   return (
@@ -96,6 +98,15 @@ export async function Footer() {
                   </Link>
                 </li>
               ))}
+              {/* Only meaningful once GA4/GTM is actually configured
+                  (CookieConsentBanner.tsx renders nothing before that) —
+                  kept in the footer unconditionally anyway since a
+                  visitor who already said yes/no needs a stable, always-
+                  findable way to change their mind, not one that
+                  disappears along with the banner itself. */}
+              <li>
+                <CookieSettingsLink label={t("cookieSettingsLink")} />
+              </li>
             </ul>
           </div>
         </div>

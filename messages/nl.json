@@ -290,6 +290,8 @@
     "howItWorksLink": "Hoe het werkt",
     "termsLink": "Algemene voorwaarden",
     "privacyLink": "Privacybeleid",
+    "cookiesLink": "Cookies",
+    "cookieSettingsLink": "Cookie-instellingen",
     "cancellationLink": "Annuleringsbeleid",
     "servicesTitle": "Diensten",
     "serviceAmsterdam": "Taxi Amsterdam",
@@ -326,5 +328,14 @@
     "retryButton": "Probeer opnieuw",
     "homeLink": "← Terug naar home",
     "whatsappLink": "WhatsApp ons"
+  },
+  "Cookies": {
+    "bannerTitle": "Cookievoorkeuren",
+    "bannerBody": "Wij gebruiken alleen noodzakelijke cookies om de website te laten werken. Zodra we analytics/advertentiemeting activeren, vragen we hier expliciet toestemming voor voordat er iets wordt geladen.",
+    "bannerLink": "Meer info",
+    "accept": "Accepteren",
+    "reject": "Weigeren",
+    "nothingToConfigure": "Er is op dit moment geen niet-noodzakelijke tracking actief om in te stellen — alleen strikt noodzakelijke cookies. Zie ons cookiebeleid voor details.",
+    "close": "Sluiten"
   }
 }

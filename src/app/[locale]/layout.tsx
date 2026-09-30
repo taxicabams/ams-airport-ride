@@ -10,6 +10,7 @@ import { Footer } from "@/components/home/Footer";
 import { StickyMobileCta } from "@/components/marketing/StickyMobileCta";
 import { WhatsAppButton } from "@/components/marketing/WhatsAppButton";
 import { Analytics } from "@/components/marketing/Analytics";
+import { CookieConsentBanner } from "@/components/marketing/CookieConsentBanner";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -81,6 +82,7 @@ export default async function LocaleLayout({
           <Footer />
           <StickyMobileCta />
           <WhatsAppButton />
+          <CookieConsentBanner />
         </NextIntlClientProvider>
       </body>
     </html>

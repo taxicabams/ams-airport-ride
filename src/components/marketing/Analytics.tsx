@@ -1,4 +1,5 @@
 import Script from "next/script";
+import { getConsent } from "@/lib/cookieConsent.server";
 
 /**
  * Loads GA4 and/or GTM — but only once a real-looking ID is actually
@@ -8,14 +9,25 @@ import Script from "next/script";
  * explain away later. Real IDs always start with "G-" (GA4) or "GTM-"
  * (Tag Manager) — checked here so a stray typo/placeholder value can
  * never accidentally start firing real analytics requests.
+ *
+ * Second gate, added during the final privacy/cookie audit: even once a
+ * real ID IS configured, this now also requires the visitor to have
+ * actually clicked "accept" on CookieConsentBanner.tsx — `getConsent()`
+ * reads the same first-party cookie the banner writes. Not yet decided,
+ * or explicitly rejected, are treated identically (nothing loads) —
+ * there is no default-on path. Async/Server Component so this decision
+ * is made per-request, before any HTML reaches the browser, rather than
+ * a client-side flash of a script tag that then gets torn back out.
  */
 const ga4Id = process.env.NEXT_PUBLIC_GA4_ID;
 const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 const hasGa4 = Boolean(ga4Id && ga4Id.startsWith("G-"));
 const hasGtm = Boolean(gtmId && gtmId.startsWith("GTM-"));
 
-export function Analytics() {
+export async function Analytics() {
   if (!hasGa4 && !hasGtm) return null;
+  const consent = await getConsent();
+  if (consent !== "accepted") return null;
 
   return (
     <>
