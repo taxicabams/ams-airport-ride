@@ -312,7 +312,8 @@
     "label": "Your Schiphol taxi",
     "cta": "Book now",
     "call": "Call",
-    "whatsapp": "WhatsApp"
+    "whatsapp": "WhatsApp",
+    "prices": "Prices"
   },
   "NotFound": {
     "title": "Page not found",

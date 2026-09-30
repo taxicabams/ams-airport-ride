@@ -90,7 +90,17 @@ export function QuoteStep({
         <p className="text-sm font-semibold uppercase tracking-wide text-muted">
           {t("priceHeading")}
         </p>
-        <p className="mt-2 text-6xl font-bold tracking-tight text-brand-text sm:text-7xl">
+        {/* Client reported the price step "suddenly becomes very big" —
+            tested this step thoroughly (single trip, return trip, both
+            on the real production site) and found no technical/
+            rendering bug: everything measures and lays out correctly.
+            What's real here is the design itself — text-6xl is 60px on
+            mobile, a dramatic jump right after three form-sized steps.
+            Moderated to text-5xl (48px) on mobile while keeping the
+            larger, more dramatic sm:text-7xl for tablet/desktop, where
+            there's room for it — still clearly the single most
+            prominent element on the step, just less jarring on a phone. */}
+        <p className="mt-2 text-5xl font-bold tracking-tight text-brand-text sm:text-7xl">
           €{grandTotal}
         </p>
         <p className="mt-3 truncate text-base font-medium text-foreground/90">

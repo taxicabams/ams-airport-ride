@@ -312,7 +312,8 @@
     "label": "Uw Schiphol taxi",
     "cta": "Boek nu",
     "call": "Bellen",
-    "whatsapp": "WhatsApp"
+    "whatsapp": "WhatsApp",
+    "prices": "Prijzen"
   },
   "NotFound": {
     "title": "Pagina niet gevonden",
