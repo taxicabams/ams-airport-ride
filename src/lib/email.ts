@@ -122,8 +122,40 @@ function detailRow(label: string, value: string): string {
   </tr>`;
 }
 
+// Stacked PICKUP -> DESTINATION block per the brand brief. Takes an
+// optional `label` (e.g. "Heenreis" / "Retourreis") so the same markup
+// renders both the outbound and, for a return booking, the return leg —
+// previously this was inlined once in customerEmailBody with no way to
+// render a second trip, which is the direct cause of the return-trip
+// bug documented below.
+function tripCard(pickup: string, destination: string, pickupLabel: string, destinationLabel: string, legLabel?: string): string {
+  return `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${MUTED_BG};border-radius:10px;margin-bottom:12px;">
+      ${legLabel ? `<tr><td style="padding:12px 18px 0;"><div style="color:${BRAND_BLUE};font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">${escapeHtml(legLabel)}</div></td></tr>` : ""}
+      <tr>
+        <td style="padding:${legLabel ? "8px" : "16px"} 18px 12px;">
+          <div style="color:${MUTED};font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">${pickupLabel}</div>
+          <div style="color:${TEXT};font-size:14px;font-weight:600;margin-top:2px;">${escapeHtml(pickup)}</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0 18px;">
+          <div style="color:${BRAND_BLUE};font-size:13px;">↓</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0 18px 16px;">
+          <div style="color:${MUTED};font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">${destinationLabel}</div>
+          <div style="color:${TEXT};font-size:14px;font-weight:600;margin-top:2px;">${escapeHtml(destination)}</div>
+        </td>
+      </tr>
+    </table>
+  `;
+}
+
 function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
   const isAirport = booking.rideType === "AIRPORT_TRANSFER";
+  const isReturn = booking.returnTrip && booking.returnPickup && booking.returnDestination;
   const t =
     locale === "nl"
       ? {
@@ -134,11 +166,15 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
           destination: "Bestemming",
           when: "Datum en tijd",
           priceLabel: "Vaste prijs",
+          totalLabel: "Totaalprijs",
+          outboundLabel: "Heenreis",
+          returnLabel: "Retourreis",
           flight: "Vluchtnummer",
           paymentTitle: "Betaling",
           payment:
             "Vaste prijs vooraf — geen taxameter, geen verrassingen achteraf. Betaal eenvoudig na de rit rechtstreeks aan de chauffeur met PIN of contant. Een bon is beschikbaar in de taxi.",
           schiphol: "Waar vindt u uw chauffeur?",
+          schipholNote: isReturn ? " (geldt voor het ophalen op Schiphol — niet voor de terugreis)" : "",
           footer: "Dit is een automatisch gegenereerde boekingsbevestiging van AMS Airport Ride.",
         }
       : {
@@ -149,45 +185,55 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
           destination: "Destination",
           when: "Date and time",
           priceLabel: "Fixed price",
+          totalLabel: "Total price",
+          outboundLabel: "Outbound trip",
+          returnLabel: "Return trip",
           flight: "Flight number",
           paymentTitle: "Payment",
           payment:
             "Fixed price upfront — no meter, no surprises afterwards. Pay easily after your ride directly to the driver by card or cash. A receipt is available in the taxi.",
           schiphol: "Where will you find your driver?",
+          schipholNote: isReturn ? " (applies to pickup at Schiphol — not to the return trip)" : "",
           footer: "This is an automated booking confirmation from AMS Airport Ride.",
         };
 
-  // The extra detail rows (date/time, flight number) below the
-  // pickup/destination block, same two-column layout as before.
-  const extraRows = [detailRow(t.when, `${booking.date} ${booking.time}`)];
+  // Outbound trip: date/time row, plus flight number when this leg is
+  // the airport pickup — unchanged from before.
+  const outboundRows = [detailRow(t.when, `${booking.date} ${booking.time}`)];
   if (isAirport && booking.flightNumber) {
-    extraRows.push(detailRow(t.flight, booking.flightNumber));
+    outboundRows.push(detailRow(t.flight, booking.flightNumber));
   }
 
-  // Stacked PICKUP -> DESTINATION block per the brand brief, instead of
-  // two plain rows in the same table as date/time/flight — every field
-  // is still the same real booking.* value, nothing renamed.
-  const tripCard = `
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${MUTED_BG};border-radius:10px;margin-bottom:16px;">
-      <tr>
-        <td style="padding:16px 18px 12px;">
-          <div style="color:${MUTED};font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">${t.pickup}</div>
-          <div style="color:${TEXT};font-size:14px;font-weight:600;margin-top:2px;">${escapeHtml(booking.pickupAddress)}</div>
-        </td>
-      </tr>
-      <tr>
-        <td style="padding:0 18px;">
-          <div style="color:${BRAND_BLUE};font-size:13px;">↓</div>
-        </td>
-      </tr>
-      <tr>
-        <td style="padding:0 18px 16px;">
-          <div style="color:${MUTED};font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">${t.destination}</div>
-          <div style="color:${TEXT};font-size:14px;font-weight:600;margin-top:2px;">${escapeHtml(booking.destination)}</div>
-        </td>
-      </tr>
-    </table>
-  `;
+  // Real bug found in this audit: a return booking's confirmation email
+  // never mentioned the return leg at all (no return date/time/route)
+  // and showed `booking.price` — the OUTBOUND price only — as if it were
+  // the full amount, silently omitting `booking.returnPrice`. A customer
+  // who booked a return trip got an email quoting a lower price than
+  // they'll actually be charged, with no record of their return ride's
+  // date/time. Fixed by rendering a second trip card + date row for the
+  // return leg (only when returnTrip is true and the addresses are
+  // actually present — same guard route.ts uses), and by always using
+  // `booking.totalPrice` (price + returnPrice, or just price when there
+  // is no return leg — see route.ts's computation) as the one number
+  // shown as "the price", with a two-line breakdown above it whenever
+  // there are two legs to break down.
+  const returnSection = isReturn
+    ? `
+      ${tripCard(booking.returnPickup!, booking.returnDestination!, t.pickup, t.destination, t.returnLabel)}
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
+        ${detailRow(t.when, `${booking.returnDate ?? "—"} ${booking.returnTime ?? ""}`.trim())}
+      </table>
+    `
+    : "";
+
+  const priceBreakdown = isReturn
+    ? `
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
+        ${detailRow(t.outboundLabel, formatPrice(booking.price))}
+        ${detailRow(t.returnLabel, formatPrice(booking.returnPrice ?? 0))}
+      </table>
+    `
+    : "";
 
   const body = `
     <h1 style="margin:0 0 4px;font-size:20px;color:${BRAND_NAVY};">${t.title}</h1>
@@ -195,17 +241,21 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
 
     <p style="margin:0 0 16px;color:${MUTED};font-size:14px;">${t.ref}: <span style="font-family:monospace;font-weight:700;color:${BRAND_NAVY};">${escapeHtml(bookingReference(booking))}</span></p>
 
-    ${tripCard}
+    ${tripCard(booking.pickupAddress, booking.destination, t.pickup, t.destination, isReturn ? t.outboundLabel : undefined)}
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
-      ${extraRows.join("\n")}
+      ${outboundRows.join("\n")}
     </table>
+
+    ${returnSection}
+
+    ${priceBreakdown}
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${MUTED_BG};border-radius:10px;margin-bottom:20px;">
       <tr>
         <td style="padding:16px 20px;text-align:center;">
-          <div style="color:${MUTED};font-size:12px;text-transform:uppercase;letter-spacing:0.03em;">${t.priceLabel}</div>
-          <div style="color:${BRAND_BLUE};font-size:28px;font-weight:700;margin-top:4px;">${formatPrice(booking.price)}</div>
+          <div style="color:${MUTED};font-size:12px;text-transform:uppercase;letter-spacing:0.03em;">${isReturn ? t.totalLabel : t.priceLabel}</div>
+          <div style="color:${BRAND_BLUE};font-size:28px;font-weight:700;margin-top:4px;">${formatPrice(booking.totalPrice)}</div>
         </td>
       </tr>
     </table>
@@ -216,7 +266,7 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
     ${
       isAirport
         ? `<div style="border:1px solid ${BRAND_NAVY}22;background-color:${BRAND_NAVY}0d;border-radius:8px;padding:16px 20px;">
-            <p style="margin:0 0 6px;font-weight:600;color:${BRAND_NAVY};font-size:14px;">${t.schiphol}</p>
+            <p style="margin:0 0 6px;font-weight:600;color:${BRAND_NAVY};font-size:14px;">${t.schiphol}${t.schipholNote}</p>
             <p style="margin:0;color:${TEXT};font-size:13px;">${escapeHtml(getSchipholMeetingPointText(locale))}</p>
           </div>`
         : ""
@@ -231,6 +281,7 @@ function internalNotificationBody(booking: Booking, locale: "nl" | "en"): string
   // but now names the customer's language explicitly — useful context
   // for calling/texting the customer back in the right language.
   const customerLanguage = locale === "nl" ? "Nederlands" : "Engels";
+  const isReturn = booking.returnTrip && booking.returnPickup && booking.returnDestination;
   const rows = [
     detailRow("Klant", `${booking.customerName} (${customerLanguage})`),
     detailRow("Telefoon", booking.customerPhone),
@@ -240,12 +291,32 @@ function internalNotificationBody(booking: Booking, locale: "nl" | "en"): string
     detailRow("Wanneer", `${booking.date} ${booking.time}`),
     detailRow("Passagiers / bagage", `${booking.passengers} / ${booking.luggage}`),
     detailRow("Voertuig", booking.vehicleType === "BUS" ? "Van" : "Comfort"),
-    detailRow("Prijs", `${formatPrice(booking.price)} (${booking.priceSource})`),
   ];
   if (booking.flightNumber) rows.push(detailRow("Vluchtnummer", booking.flightNumber));
 
+  // Same real bug as the customer email (see that function's note): the
+  // driver-facing internal notification also silently dropped the
+  // return leg entirely and showed only the outbound price. Fixed the
+  // same way — an explicit return-trip row block plus the correct
+  // grand total.
+  if (isReturn) {
+    rows.push(detailRow("Retour van", booking.returnPickup!));
+    rows.push(detailRow("Retour naar", booking.returnDestination!));
+    rows.push(detailRow("Retour wanneer", `${booking.returnDate ?? "—"} ${booking.returnTime ?? ""}`.trim()));
+    rows.push(detailRow("Prijs heenreis", `${formatPrice(booking.price)} (${booking.priceSource})`));
+    rows.push(
+      detailRow(
+        "Prijs retour",
+        `${formatPrice(booking.returnPrice ?? 0)} (${booking.priceSource})`
+      )
+    );
+    rows.push(detailRow("Totaalprijs", formatPrice(booking.totalPrice)));
+  } else {
+    rows.push(detailRow("Prijs", `${formatPrice(booking.totalPrice)} (${booking.priceSource})`));
+  }
+
   const body = `
-    <h1 style="margin:0 0 16px;font-size:18px;color:${BRAND_NAVY};">Nieuwe boeking — ${booking.rideType === "AIRPORT_TRANSFER" ? "Schiphol" : "Privérit"}</h1>
+    <h1 style="margin:0 0 16px;font-size:18px;color:${BRAND_NAVY};">Nieuwe boeking — ${booking.rideType === "AIRPORT_TRANSFER" ? "Schiphol" : "Privérit"}${isReturn ? " (retour)" : ""}</h1>
     <p style="margin:0 0 16px;color:${MUTED};font-size:12px;">Boekingsnummer: <span style="font-family:monospace;color:${TEXT};">${escapeHtml(bookingReference(booking))}</span></p>
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
@@ -300,7 +371,7 @@ export async function sendBookingEmails(booking: Booking, locale: "nl" | "en") {
       await resend.emails.send({
         from,
         to: companyEmail,
-        subject: `Nieuwe boeking: ${booking.pickupAddress} → ${booking.destination}`,
+        subject: `Nieuwe boeking${booking.returnTrip ? " (retour)" : ""}: ${booking.pickupAddress} → ${booking.destination}`,
         html: internalNotificationBody(booking, locale),
       });
     }
