@@ -9,8 +9,8 @@ import {
 } from "@/lib/pricing/vehicle";
 import { CHEAPEST_SCHIPHOL_PRICE } from "@/lib/pricing";
 import { vehiclePhoto } from "@/lib/vehiclePhoto";
-import { heroPhoto } from "@/lib/heroPhoto";
 import { comfortPhoto } from "@/lib/comfortPhoto";
+import { xlVanPhoto } from "@/lib/xlVanPhoto";
 
 /**
  * "Vertrekbord" rebuild — badge on Comfort, and real "vanaf €X" prices
@@ -35,11 +35,20 @@ import { comfortPhoto } from "@/lib/comfortPhoto";
  * honesty bar this project has held to all along (no plates/logos that
  * could misrepresent the vehicle) — so Comfort shipped as an icon
  * placeholder. A later, wider search (comfortPhoto.ts) found a clean
- * generic black sedan with no plate in frame either way. XL Van reuses
- * heroPhoto.ts's already-vetted, plate-free, generic MPV/van-at-an-
- * airport photo — a legitimate reuse, not a new/unvetted image.
- * vehiclePhoto.ts (the client's own real fleet photo, still null) still
- * overrides both the moment it's set.
+ * generic black sedan with no plate in frame either way.
+ *
+ * XL Van's photo went through two rounds: it first reused heroPhoto.ts
+ * (a dark van on an actual airport service road, headlights on, real
+ * aircraft visible) — client feedback, repeated: that read as an
+ * industrial/ground-service vehicle, not a passenger taxi, "echt raar"
+ * next to Comfort's clean street photo. Replaced with xlVanPhoto.ts — a
+ * genuinely clean, pure side-profile passenger minibus at an airport
+ * terminal, same no-plate/no-branding honesty bar, found after an
+ * extensive multi-session search specifically for a black van/minibus
+ * came up empty (every clean black candidate had a visible plate, wrong
+ * angle, or visible branding — see git history). vehiclePhoto.ts (the
+ * client's own real fleet photo, still null) overrides both the moment
+ * it's set.
  */
 export async function VehiclesSimple() {
   const t = await getTranslations("Vehicles");
@@ -65,7 +74,7 @@ export async function VehiclesSimple() {
       capacity: tb("vehicleBusCapacity", { max: BUS_MAX_PASSENGERS }),
       price: CHEAPEST_SCHIPHOL_PRICE + BUS_SURCHARGE_EUR,
       mostChosen: false,
-      photo: heroPhoto,
+      photo: xlVanPhoto,
     },
   ];
 
