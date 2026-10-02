@@ -58,9 +58,15 @@ export async function RouteList() {
   // Keep the existing hand-authored, full-content route pages for the
   // other real destinations (Amstelveen, Haarlem, Utrecht, Rotterdam,
   // Den Haag) — only the generic single "Amsterdam" row is dropped,
-  // superseded by its 5 real districts above.
+  // superseded by its 5 real districts above. Zandvoort is also
+  // excluded: this whole table is explicitly labeled "Vaste prijs"
+  // (see messages/*.json's Routes.colPrice/subtitle) and Zandvoort's
+  // route.basePrice is a distance-based estimate, not a curated fixed
+  // price (routes-data.ts's isEstimate) — it still has its own real,
+  // reachable route page (for search/ads traffic), just not a row in a
+  // table that promises "fixed" for every price shown.
   const pageRows = ROUTE_PAGES.filter(
-    (r) => r.direction === "from-schiphol" && r.cityId !== "amsterdam"
+    (r) => r.direction === "from-schiphol" && r.cityId !== "amsterdam" && !r.isEstimate
   ).map((route) => {
     const { city } = routePageCopy(route, locale);
     return { key: route.slug, city, durationMin: route.durationMin, price: route.basePrice, href: `/${route.slug}` };

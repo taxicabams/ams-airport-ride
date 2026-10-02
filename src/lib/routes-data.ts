@@ -1,5 +1,5 @@
 import { findSchipholPrice, CANONICAL_ROUTE_FACTS } from "./pricing/staticRoutes";
-import { estimateDistanceDuration } from "./pricing/fallback";
+import { estimateDistanceDuration, estimateFallback } from "./pricing/fallback";
 import { LOCATIONS } from "./locations";
 
 const SCHIPHOL_LOCATION = LOCATIONS.find((l) => l.id === "schiphol")!;
@@ -310,6 +310,23 @@ const CITY_CONTENT: CityContent[] = [
       ],
     },
   },
+  {
+    cityId: "zandvoort",
+    local: {
+      nl: "Zandvoort is vooral bekend van het strand en het Circuit Zandvoort (Dutch Grand Prix). Zandvoort heeft geen eigen, vooraf vastgestelde Schiphol-prijs zoals de andere steden op deze pagina — de prijs hieronder is een richtprijs op basis van de reisafstand. Uw exacte, definitieve prijs ziet u altijd direct bij het invullen van uw adres in de boekingswidget, vóór het boeken.",
+      en: "Zandvoort is best known for its beach and the Circuit Zandvoort (Dutch Grand Prix). Unlike the other cities on this page, Zandvoort doesn't have its own pre-set Schiphol price yet — the price below is an estimate based on travel distance. Your exact, final price always appears as soon as you enter your address in the booking widget, before you book.",
+    },
+    faq: {
+      nl: [
+        { q: "Is de prijs naar Zandvoort een vaste prijs?", a: "De prijs hierboven is een richtprijs op basis van afstand. Vul uw adres in bij het boeken en u ziet direct uw exacte, definitieve prijs — vóór u bevestigt." },
+        { q: "Rijdt u ook naar het Circuit Zandvoort tijdens de Dutch Grand Prix?", a: "Ja, geef het circuit of uw exacte adres op als bestemming. Houd bij drukke evenementdagen rekening met extra reistijd." },
+      ],
+      en: [
+        { q: "Is the price to Zandvoort a fixed price?", a: "The price above is a distance-based estimate. Enter your address when booking and you'll see your exact, final price immediately — before you confirm." },
+        { q: "Do you also drive to Circuit Zandvoort during the Dutch Grand Prix?", a: "Yes, enter the circuit or your exact address as your destination. Allow extra travel time on busy event days." },
+      ],
+    },
+  },
 ];
 
 export type RoutePage = {
@@ -319,6 +336,11 @@ export type RoutePage = {
   cityId: string;
   direction: "from-schiphol" | "to-schiphol";
   basePrice: number;
+  /** True when basePrice is a distance-based estimate (estimateFallback),
+   * not one of the curated fixed Schiphol prices — the route page and
+   * its JSON-LD must say "richtprijs"/"estimate", never "vaste prijs",
+   * when this is true. See the ROUTE_PAGES builder below. */
+  isEstimate: boolean;
   distanceKm: number;
   durationMin: number;
   content: CityContent;
@@ -337,10 +359,20 @@ export const ROUTE_PAGES: RoutePage[] = CITY_CONTENT.flatMap((content) => {
   // haversine formula RouteList.tsx already uses for the same reason
   // (no hand-research done yet), rather than leaving this crash on a
   // missing lookup or inventing a number.
-  const basePrice = findSchipholPrice(content.cityId)!;
+  //
+  // A city with no curated price at all (Zandvoort) falls back to
+  // estimateFallback — the exact same formula the live booking widget
+  // already uses today for any address that isn't one of the curated
+  // routes. This is never a fabricated number, but it IS only an
+  // estimate (Google Routes may return a slightly different real
+  // distance once an exact address is typed) — isEstimate flags this so
+  // the page template never calls it a "vaste prijs".
+  const staticPrice = findSchipholPrice(content.cityId);
   const cityLocation = LOCATIONS.find((l) => l.id === content.cityId);
   const { distanceKm, durationMin } =
     CANONICAL_ROUTE_FACTS[content.cityId] ?? estimateDistanceDuration(SCHIPHOL_LOCATION, cityLocation);
+  const basePrice = staticPrice ?? estimateFallback(distanceKm, "AIRPORT_TRANSFER", durationMin);
+  const isEstimate = staticPrice === undefined;
 
   return [
     {
@@ -350,6 +382,7 @@ export const ROUTE_PAGES: RoutePage[] = CITY_CONTENT.flatMap((content) => {
       cityId: content.cityId,
       direction: "from-schiphol" as const,
       basePrice,
+      isEstimate,
       distanceKm,
       durationMin,
       content,
@@ -360,6 +393,7 @@ export const ROUTE_PAGES: RoutePage[] = CITY_CONTENT.flatMap((content) => {
       destinationId: "schiphol",
       cityId: content.cityId,
       direction: "to-schiphol" as const,
+      isEstimate,
       basePrice,
       distanceKm,
       durationMin,
@@ -375,23 +409,35 @@ export function getRoutePage(slug: string): RoutePage | undefined {
 export function routePageCopy(route: RoutePage, locale: Locale) {
   const city = cityLabel(route.cityId, locale);
   const fromSchiphol = route.direction === "from-schiphol";
+  // Zandvoort (currently the only isEstimate route — see routes-data.ts's
+  // ROUTE_PAGES builder) has no curated fixed price, so title/description/
+  // intro all branch here rather than claim "vaste prijs"/"fixed price"
+  // for a number that's genuinely just a distance-based estimate.
+  const priceWord = { nl: route.isEstimate ? "richtprijs" : "vaste prijs", en: route.isEstimate ? "estimated price" : "fixed price" };
 
   const title =
     locale === "nl"
       ? fromSchiphol
-        ? `Taxi Schiphol naar ${city} — vaste prijs`
-        : `Taxi ${city} naar Schiphol — vaste prijs`
+        ? `Taxi Schiphol naar ${city} — ${priceWord.nl}`
+        : `Taxi ${city} naar Schiphol — ${priceWord.nl}`
       : fromSchiphol
-        ? `Schiphol Taxi to ${city} — Fixed Price`
-        : `Taxi ${city} to Schiphol — Fixed Price`;
+        ? `Schiphol Taxi to ${city} — ${priceWord.en === "fixed price" ? "Fixed Price" : "Estimated Price"}`
+        : `Taxi ${city} to Schiphol — ${priceWord.en === "fixed price" ? "Fixed Price" : "Estimated Price"}`;
 
   const description =
     locale === "nl"
-      ? `Boek uw taxi ${fromSchiphol ? `van Schiphol naar ${city}` : `van ${city} naar Schiphol`} met een vaste prijs van €${route.basePrice}. Rijtijd ca. ${route.durationMin} minuten. Betaal na de rit.`
-      : `Book your taxi ${fromSchiphol ? `from Schiphol to ${city}` : `from ${city} to Schiphol`} with a fixed price of €${route.basePrice}. Travel time approx. ${route.durationMin} minutes. Pay after your ride.`;
+      ? `Boek uw taxi ${fromSchiphol ? `van Schiphol naar ${city}` : `van ${city} naar Schiphol`} — ${priceWord.nl} van €${route.basePrice}. Rijtijd ca. ${route.durationMin} minuten. Betaal na de rit.`
+      : `Book your taxi ${fromSchiphol ? `from Schiphol to ${city}` : `from ${city} to Schiphol`} — ${priceWord.en} of €${route.basePrice}. Travel time approx. ${route.durationMin} minutes. Pay after your ride.`;
 
-  const intro =
-    locale === "nl"
+  const intro = route.isEstimate
+    ? locale === "nl"
+      ? fromSchiphol
+        ? `Op weg naar ${city} vanaf Schiphol? AMS Airport Ride rijdt ook hiernaartoe. Omdat ${city} nog geen eigen vaste Schiphol-prijs heeft, tonen we hieronder een richtprijs van €${route.basePrice} op basis van de afstand — uw exacte prijs ziet u direct bij het invullen van uw adres, vóór u boekt.`
+        : `Op weg naar Schiphol vanuit ${city}? AMS Airport Ride rijdt ook hiernaartoe. Omdat ${city} nog geen eigen vaste Schiphol-prijs heeft, tonen we hieronder een richtprijs van €${route.basePrice} op basis van de afstand — uw exacte prijs ziet u direct bij het invullen van uw adres, vóór u boekt.`
+      : fromSchiphol
+        ? `Heading to ${city} from Schiphol? AMS Airport Ride drives there too. Since ${city} doesn't have its own fixed Schiphol price yet, we show an estimated price of €${route.basePrice} below, based on distance — your exact price appears as soon as you enter your address, before you book.`
+        : `Heading to Schiphol from ${city}? AMS Airport Ride drives there too. Since ${city} doesn't have its own fixed Schiphol price yet, we show an estimated price of €${route.basePrice} below, based on distance — your exact price appears as soon as you enter your address, before you book.`
+    : locale === "nl"
       ? fromSchiphol
         ? `Zoekt u een betrouwbare taxi van Schiphol naar ${city}? Met AMS Airport Ride weet u vooraf precies wat u betaalt: €${route.basePrice} vast, voor een rit van ongeveer ${route.distanceKm} km en ${route.durationMin} minuten. Uw chauffeur staat klaar zodra u door de douane bent.`
         : `Op weg naar Schiphol vanuit ${city}? Boek uw taxi ${city} Schiphol met een vaste prijs van €${route.basePrice} — geen meterprijs, geen verrassingen. Wij houden rekening met uw vertrektijd zodat u ruim op tijd bij de incheckbalie bent.`

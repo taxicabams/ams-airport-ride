@@ -80,7 +80,15 @@ export default async function RoutePage({
         name: title,
         areaServed: "NL",
         provider: { "@type": "LocalBusiness", name: "AMS Airport Ride" },
-        offers: { "@type": "Offer", price: route.basePrice, priceCurrency: "EUR" },
+        // Schema.org Offer implies a price you'd honor — only emit it for
+        // a genuinely curated fixed price. An isEstimate route (currently
+        // just Zandvoort, see routes-data.ts) never gets this: Google
+        // showing an "Offer" price in a search snippet that can differ
+        // from what the booking widget quotes would be a real, visible
+        // broken promise, not just imprecise copy.
+        ...(route.isEstimate
+          ? {}
+          : { offers: { "@type": "Offer", price: route.basePrice, priceCurrency: "EUR" } }),
       },
       {
         "@type": "FAQPage",
@@ -133,7 +141,9 @@ export default async function RoutePage({
           <dl className="mt-6 grid grid-cols-3 gap-4 rounded-xl border border-border p-4 text-center">
             <div>
               <dt className="text-xs text-muted">
-                {l === "nl" ? "Vaste prijs" : "Fixed price"}
+                {route.isEstimate
+                  ? l === "nl" ? "Richtprijs" : "Estimated price"
+                  : l === "nl" ? "Vaste prijs" : "Fixed price"}
               </dt>
               <dd className="mt-1 text-xl font-bold text-brand-text">€{route.basePrice}</dd>
             </div>
@@ -150,6 +160,19 @@ export default async function RoutePage({
               </dd>
             </div>
           </dl>
+          {route.isEstimate && (
+            // This city has no curated fixed Schiphol price (see
+            // routes-data.ts's isEstimate note) — the box above already
+            // says "Richtprijs"/"Estimated price", not "Vaste prijs", but
+            // a one-line explanation right under it makes sure nobody
+            // reads the number as a guarantee before they've even
+            // entered their real address.
+            <p className="mt-2 text-center text-xs text-muted">
+              {l === "nl"
+                ? "Richtprijs op basis van afstand — uw exacte prijs ziet u direct bij het invullen van uw adres hiernaast."
+                : "Distance-based estimate — your exact price appears as soon as you enter your address."}
+            </p>
+          )}
 
           <p className="mt-6 text-foreground/90">{localCopy}</p>
 

@@ -86,6 +86,7 @@ export const LOCATIONS: Location[] = [
   { id: "haarlem", label: { nl: "Haarlem", en: "Haarlem" }, aliases: ["haarlem"], lat: 52.3874, lng: 4.6462, isAirport: false },
   { id: "heemstede", label: { nl: "Heemstede", en: "Heemstede" }, aliases: ["heemstede"], lat: 52.3480, lng: 4.6280, isAirport: false },
   { id: "bloemendaal", label: { nl: "Bloemendaal", en: "Bloemendaal" }, aliases: ["bloemendaal"], lat: 52.3980, lng: 4.6260, isAirport: false },
+  { id: "zandvoort", label: { nl: "Zandvoort", en: "Zandvoort" }, aliases: ["zandvoort", "zandvoort aan zee"], lat: 52.3725, lng: 4.5325, isAirport: false },
   { id: "aerdenhout", label: { nl: "Aerdenhout", en: "Aerdenhout" }, aliases: ["aerdenhout"], lat: 52.3660, lng: 4.6030, isAirport: false },
   { id: "velsen", label: { nl: "Velsen", en: "Velsen" }, aliases: ["velsen"], lat: 52.4600, lng: 4.6570, isAirport: false },
   { id: "ijmuiden", label: { nl: "IJmuiden", en: "IJmuiden" }, aliases: ["ijmuiden"], lat: 52.4600, lng: 4.6110, isAirport: false },
