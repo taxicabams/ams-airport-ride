@@ -13,9 +13,21 @@ import { heroPhoto } from "@/lib/heroPhoto";
 import { comfortPhoto } from "@/lib/comfortPhoto";
 
 /**
- * "Vertrekbord" rebuild — "Meest gekozen" badge on Comfort, and real
- * "vanaf €X" prices computed from the actual pricing engine
- * (CHEAPEST_SCHIPHOL_PRICE + BUS_SURCHARGE_EUR) — never invented.
+ * "Vertrekbord" rebuild — badge on Comfort, and real "vanaf €X" prices
+ * computed from the actual pricing engine (CHEAPEST_SCHIPHOL_PRICE +
+ * BUS_SURCHARGE_EUR) — never invented.
+ *
+ * Real issue found during a pricing/marketing review: the badge used to
+ * read "Meest gekozen" (most chosen) — a factual claim about OTHER
+ * customers' behavior — while `mostChosen: true` below is simply
+ * hardcoded, never derived from real booking volume. That's exactly the
+ * class of unverifiable operational claim this project has avoided
+ * everywhere else (reviews, "24/7 bereikbaar", KvK, etc.) — it just
+ * read as an ordinary design pattern so it slipped through earlier.
+ * Changed the label to "Aanbevolen" (Recommended) — an honest editorial
+ * opinion (Comfort fits the common 1-4 passenger case), not a claim
+ * about what other people did. Same visual/conversion value, nothing
+ * fabricated.
  *
  * Real photos, per direct feedback ("zoek taxi auto fotos en gebruik
  * ze"): a first pass found every clean-looking Comfort candidate had a

@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { BookingWidget } from "@/components/booking/BookingWidget";
 import { TrustBar } from "@/components/home/TrustBar";
+import { ComparisonSection } from "@/components/marketing/ComparisonSection";
 import { TrackedLink } from "@/components/marketing/TrackedLink";
 import { Logo } from "@/components/ui/Logo";
 import { PhoneIcon } from "@/components/ui/icons";
@@ -69,6 +70,8 @@ export default async function AdsLandingPage() {
         </div>
 
         <TrustBar />
+
+        <ComparisonSection locale="nl" />
 
         <section className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
           <h2 className="text-center font-heading text-2xl font-extrabold tracking-tight text-foreground">

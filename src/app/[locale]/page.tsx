@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { HeroBooking } from "@/components/home/HeroBooking";
 import { TrustBar } from "@/components/home/TrustBar";
+import { ComparisonSection } from "@/components/marketing/ComparisonSection";
 import { HowItWorksSimple } from "@/components/home/HowItWorksSimple";
 import { VehiclesSimple } from "@/components/home/VehiclesSimple";
 import { TwoColumnBanner } from "@/components/home/TwoColumnBanner";
@@ -68,6 +69,7 @@ export default async function HomePage({
       <HeroBooking />
       <RouteList />
       <TrustBar />
+      <ComparisonSection locale={locale as "nl" | "en"} />
       <HowItWorksSimple />
       <VehiclesSimple />
       <TwoColumnBanner />

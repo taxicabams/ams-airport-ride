@@ -10,6 +10,7 @@ export function QuoteStep({
   pickup,
   destination,
   vehicleType,
+  passengers,
   loading,
   error,
   onRetry,
@@ -21,6 +22,7 @@ export function QuoteStep({
   pickup: string;
   destination: string;
   vehicleType: VehicleType;
+  passengers: number;
   loading: boolean;
   error?: string | null;
   onRetry: () => void;
@@ -79,6 +81,16 @@ export function QuoteStep({
       ? t("vehicleSummaryBus", { max: BUS_MAX_PASSENGERS })
       : t("vehicleSummarySedan", { max: PERSONENAUTO_MAX_PASSENGERS });
 
+  // Real, honest pricing-psychology addition (client asked for ways to
+  // make the price more attractive without inventing anything): simple
+  // arithmetic on the real total, not a separate/invented number. Only
+  // shown for 2+ passengers — dividing a solo ride by 1 says nothing new.
+  // Rounded to the nearest euro and prefixed with "~" since the exact
+  // split can include cents and this site's whole-euro convention
+  // (see prisma/schema.prisma) never shows them — the "~" keeps the
+  // rounding itself honest rather than implying false precision.
+  const pricePerPerson = passengers > 1 ? Math.round(grandTotal / passengers) : null;
+
   return (
     <div className="flex flex-col gap-4">
       {/* The price-reveal screen: this is deliberately the single largest,
@@ -106,6 +118,11 @@ export function QuoteStep({
         <p className="mt-2 text-4xl font-bold tracking-tight text-brand-text sm:text-7xl">
           €{grandTotal}
         </p>
+        {pricePerPerson !== null && (
+          <p className="mt-1 text-sm text-muted">
+            {t("pricePerPerson", { price: pricePerPerson, count: passengers })}
+          </p>
+        )}
         <p className="mt-3 truncate text-base font-medium text-foreground/90">
           {pickup} → {destination}
         </p>

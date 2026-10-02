@@ -90,7 +90,7 @@
   "Vehicles": {
     "eyebrow": "Our cars",
     "title": "Comfortable rides for every trip",
-    "mostChosen": "Most chosen",
+    "mostChosen": "Recommended",
     "fromPrice": "from €{price}",
     "sedanTitle": "Comfort",
     "sedanCapacity": "1–{max} passengers",
@@ -165,6 +165,7 @@
     "quoteError": "Couldn't calculate the price. Please try again or adjust your details.",
     "retryButton": "Try again",
     "priceHeading": "Your ride price",
+    "pricePerPerson": "that's ~€{price} per person for {count} travelers",
     "priceBasisFixed": "Fixed price upfront",
     "priceBasisEstimate": "Price based on distance and travel time",
     "vehicleSummarySedan": "Comfort · 1–{max} passengers",

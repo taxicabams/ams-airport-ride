@@ -90,7 +90,7 @@
   "Vehicles": {
     "eyebrow": "Onze auto's",
     "title": "Comfortabel onderweg, voor elke rit",
-    "mostChosen": "Meest gekozen",
+    "mostChosen": "Aanbevolen",
     "fromPrice": "vanaf €{price}",
     "sedanTitle": "Comfort",
     "sedanCapacity": "1–{max} passagiers",
@@ -165,6 +165,7 @@
     "quoteError": "Kon de prijs niet berekenen. Probeer het opnieuw of pas uw gegevens aan.",
     "retryButton": "Opnieuw proberen",
     "priceHeading": "Jouw ritprijs",
+    "pricePerPerson": "dat is ~€{price} per persoon bij {count} reizigers",
     "priceBasisFixed": "Vaste prijs vooraf",
     "priceBasisEstimate": "Prijs gebaseerd op afstand en reistijd",
     "vehicleSummarySedan": "Comfort · 1–{max} passagiers",
