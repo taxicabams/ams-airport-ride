@@ -276,6 +276,40 @@ const CITY_CONTENT: CityContent[] = [
       ],
     },
   },
+  {
+    cityId: "de-aker-badhoevedorp",
+    local: {
+      nl: "Badhoevedorp en de Amsterdamse wijk De Aker liggen direct naast Schiphol, gescheiden door slechts de A4/A9. Dankzij deze korte afstand is dit een van onze snelste ritten vanaf de luchthaven.",
+      en: "Badhoevedorp and the Amsterdam De Aker neighbourhood sit right next to Schiphol, separated only by the A4/A9 motorway. Thanks to this short distance, this is one of our fastest rides from the airport.",
+    },
+    faq: {
+      nl: [
+        { q: "Hoe ver is Badhoevedorp van Schiphol?", a: "Heel dichtbij — Badhoevedorp grenst praktisch aan Schiphol, de rit duurt doorgaans maar een paar minuten." },
+        { q: "Rijdt u ook naar De Aker?", a: "Ja, wij brengen u naar elk adres in De Aker en Badhoevedorp, zowel zakelijk als privé." },
+      ],
+      en: [
+        { q: "How far is Badhoevedorp from Schiphol?", a: "Very close — Badhoevedorp practically borders Schiphol, so the ride usually only takes a few minutes." },
+        { q: "Do you also drive to De Aker?", a: "Yes, we take you to any address in De Aker and Badhoevedorp, for business or personal trips." },
+      ],
+    },
+  },
+  {
+    cityId: "heemstede",
+    local: {
+      nl: "Heemstede grenst direct aan Haarlem en combineert een rustige, groene woonomgeving met een eigen compact centrum. De rit vanaf Schiphol loopt via de A9/A5, net als naar Haarlem.",
+      en: "Heemstede borders Haarlem directly and combines a quiet, green residential area with its own compact town centre. The ride from Schiphol runs via the A9/A5, similar to the route to Haarlem.",
+    },
+    faq: {
+      nl: [
+        { q: "Is Heemstede ver van Schiphol?", a: "Nee, Heemstede ligt vlak bij Haarlem — de rit vanaf Schiphol is vergelijkbaar met die naar Haarlem." },
+        { q: "Kan ik ook naar een adres net buiten het centrum van Heemstede?", a: "Ja, wij brengen u naar elk adres in Heemstede, ook buiten het centrum." },
+      ],
+      en: [
+        { q: "Is Heemstede far from Schiphol?", a: "No, Heemstede sits right next to Haarlem — the ride from Schiphol is similar to the one to Haarlem." },
+        { q: "Can you also take me to an address just outside Heemstede's centre?", a: "Yes, we take you to any address in Heemstede, including outside the town centre." },
+      ],
+    },
+  },
 ];
 
 export type RoutePage = {
