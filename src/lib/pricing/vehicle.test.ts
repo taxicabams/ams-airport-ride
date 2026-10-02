@@ -33,10 +33,20 @@ describe("recommendedVehicle — capacity logic", () => {
 });
 
 describe("bookingInputSchema — capacity above the Bus maximum is not allowed", () => {
+  // A hardcoded future date here previously broke on its own once real
+  // time caught up to it (bookingInputSchema correctly rejects past
+  // dates — see validation.ts's isDateNotInPast) — this test isn't
+  // about date validation at all, just passenger-count limits, so it
+  // shouldn't be coupled to a specific calendar date. Same NEXT_YEAR
+  // pattern already established in validation.test.ts after it hit this
+  // exact class of bug first — computed fresh each run, never in the
+  // past.
+  const NEXT_YEAR = new Date(Date.now() + 365 * 86_400_000).toISOString().slice(0, 10);
+
   const base = {
     pickup: "Schiphol",
     destination: "Amsterdam",
-    date: "2026-10-01",
+    date: NEXT_YEAR,
     time: "14:00",
     vehicleType: "BUS" as const,
     name: "Test Persoon",

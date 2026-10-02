@@ -57,8 +57,19 @@ export function StickyMobileCta() {
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <div className="grid grid-cols-3 gap-px bg-white/10">
+        {/* target="_blank": real bug found live — tapping this while
+            already mid-booking (step 2/3/4 of the widget) navigated the
+            CURRENT tab away to the price table, yanking the customer
+            off their in-progress booking. The form state itself wasn't
+            actually lost (BookingWidget's own state survives the scroll
+            back via "Boek nu"), but the jump away felt broken/confusing
+            — exactly the "knoppen raar" the client reported. Opening in
+            a new tab instead means checking prices never disturbs
+            whatever the customer is doing in this tab, regardless of
+            which step they're on. */}
         <Link
           href="/#populaire-routes"
+          target="_blank"
           className="flex min-h-[44px] flex-col items-center justify-center gap-0.5 bg-ink-2 py-2 text-[11px] font-semibold text-white"
         >
           <PriceTagIcon className="h-4 w-4" />

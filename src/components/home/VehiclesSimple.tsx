@@ -84,7 +84,23 @@ export async function VehiclesSimple() {
             )}
             <div className="relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-[#17263d] to-ink-2 sm:h-48">
               {displayPhoto ? (
-                <Image src={displayPhoto.url} alt={displayPhoto.alt[locale]} fill className="object-cover" />
+                // Real performance bug found live: `fill` with no `sizes`
+                // made Next.js assume this image could be full-viewport
+                // width at every breakpoint, so it requested the largest
+                // configured size (w=3840 — checked via the network
+                // panel) for a card that's never wider than ~420px (this
+                // section is max-w-4xl / 896px, 2 columns, gap-6 — see
+                // the grid above). That's a multi-megabyte image for a
+                // card a few hundred pixels wide, on every single
+                // homepage visit. sizes below matches the real rendered
+                // width at each breakpoint instead of guessing 100vw.
+                <Image
+                  src={displayPhoto.url}
+                  alt={displayPhoto.alt[locale]}
+                  fill
+                  sizes="(min-width: 640px) 420px, 100vw"
+                  className="object-cover"
+                />
               ) : (
                 <Icon className="h-16 w-16 text-brand sm:h-20 sm:w-20" />
               )}
