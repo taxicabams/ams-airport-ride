@@ -221,6 +221,8 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
           schiphol: "Waar vindt u uw chauffeur?",
           pickupTitle: "Uw chauffeur komt naar u toe",
           pickupBody: "Zorg dat u op het opgegeven ophaaladres klaarstaat rond de afgesproken tijd.",
+          childSeatLabel: "Kinderzitje",
+          childSeatValue: "Ja, aangevraagd",
           whatsappCta: "App ons",
           contactTitle: "Vragen over uw rit?",
           contactBody: "Neem gerust contact op via WhatsApp — ook als u uw boeking nog wilt wijzigen.",
@@ -244,6 +246,8 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
           schiphol: "Where will you find your driver?",
           pickupTitle: "Your driver will come to you",
           pickupBody: "Please be ready at the pickup address you provided around the agreed time.",
+          childSeatLabel: "Child seat",
+          childSeatValue: "Yes, requested",
           whatsappCta: "Message us",
           contactTitle: "Questions about your ride?",
           contactBody: "Feel free to reach out on WhatsApp — also if you'd like to change your booking.",
@@ -276,6 +280,14 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
   const outboundRows = [detailRow(t.when, `${booking.date} ${booking.time}`)];
   if (outboundIsSchipholPickup && booking.flightNumber) {
     outboundRows.push(detailRow(t.flight, booking.flightNumber));
+  }
+  // Real gap found in this audit: "Kinderzitje nodig" (ContactStep.tsx)
+  // was saved to the database but never shown back to the customer
+  // anywhere — no confirmation that their request was actually
+  // registered. Shown once on the outbound block (a seat request isn't
+  // leg-specific), only when actually requested.
+  if (booking.childSeat) {
+    outboundRows.push(detailRow(t.childSeatLabel, t.childSeatValue));
   }
 
   // Real bug found in this audit: a return booking's confirmation email
@@ -361,6 +373,14 @@ function internalNotificationBody(booking: Booking, locale: "nl" | "en"): string
     detailRow("Voertuig", booking.vehicleType === "BUS" ? "Van" : "Comfort"),
   ];
   if (booking.flightNumber) rows.push(detailRow("Vluchtnummer", booking.flightNumber));
+  // Real gap found in this audit: the customer-facing "Kinderzitje
+  // nodig" checkbox (ContactStep.tsx) writes `childSeat` to the
+  // database, but nothing downstream ever showed it again — not this
+  // notification, not the customer's own confirmation (see
+  // ConfirmationCard.tsx's own fix), nowhere. The driver had no way of
+  // knowing a child seat was requested short of opening the database.
+  // Only shown when true — a checkbox nobody ticked needs no row.
+  if (booking.childSeat) rows.push(detailRow("Kinderzitje", "Ja, nodig"));
 
   // Same real bug as the customer email (see that function's note): the
   // driver-facing internal notification also silently dropped the

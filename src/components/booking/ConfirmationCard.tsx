@@ -53,6 +53,15 @@ export function ConfirmationCard({ result }: { result: BookingResult }) {
           {isAirport && form.flightNumber && (
             <Row label={t("flightNumber")} value={form.flightNumber} />
           )}
+          {/* Real gap found in this audit: "Kinderzitje nodig" was saved
+              to the database but never shown back anywhere afterwards —
+              not here, not in either email (see email.ts's own fix) —
+              so a customer had no confirmation their request actually
+              registered. Reuses the same checkbox label (tb) the
+              booking form itself already shows. */}
+          {form.childSeat && (
+            <Row label={tb("childSeatLabel")} value={locale === "nl" ? "Ja" : "Yes"} />
+          )}
           <Row label={returnQuote ? tb("outboundTripLabel") : t("price")} value={`€${quote.totalPrice}`} strong={!returnQuote} />
         </dl>
       </div>

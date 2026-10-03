@@ -208,3 +208,36 @@ describe("sendBookingEmails — direction-specific Schiphol pickup text", () => 
     expect(customerHtml).not.toContain("Waar vindt u uw chauffeur?");
   });
 });
+
+describe("sendBookingEmails — child seat", () => {
+  // Real gap found in a production audit: the customer-facing "Kinderzitje
+  // nodig" checkbox wrote `childSeat` to the database, but nothing
+  // downstream (customer email, internal notification, or the on-screen
+  // confirmation) ever showed it again — the driver had no way of
+  // knowing a child seat was requested short of opening the database.
+  it("shows a child seat row in both emails when requested", async () => {
+    const { sendBookingEmails } = await import("./email");
+    const booking = makeBooking({ childSeat: true });
+
+    await sendBookingEmails(booking, "nl");
+
+    const customerHtml = sendMock.mock.calls[0][0].html as string;
+    expect(customerHtml).toContain("Kinderzitje");
+
+    const internalHtml = sendMock.mock.calls[1][0].html as string;
+    expect(internalHtml).toContain("Kinderzitje");
+  });
+
+  it("shows no child seat row in either email when not requested", async () => {
+    const { sendBookingEmails } = await import("./email");
+    const booking = makeBooking({ childSeat: false });
+
+    await sendBookingEmails(booking, "nl");
+
+    const customerHtml = sendMock.mock.calls[0][0].html as string;
+    expect(customerHtml).not.toContain("Kinderzitje");
+
+    const internalHtml = sendMock.mock.calls[1][0].html as string;
+    expect(internalHtml).not.toContain("Kinderzitje");
+  });
+});
