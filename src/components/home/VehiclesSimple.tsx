@@ -1,57 +1,63 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { CarIcon, VanIcon, ArrowRightIcon } from "@/components/ui/icons";
 import {
   PERSONENAUTO_MAX_PASSENGERS,
+  PERSONENAUTO_MAX_LUGGAGE,
   BUS_MAX_PASSENGERS,
+  BUS_MAX_LUGGAGE,
   BUS_SURCHARGE_EUR,
 } from "@/lib/pricing/vehicle";
 import { CHEAPEST_SCHIPHOL_PRICE } from "@/lib/pricing";
 
 /**
- * "Vertrekbord" rebuild — badge on Comfort, and real "vanaf €X" prices
- * computed from the actual pricing engine (CHEAPEST_SCHIPHOL_PRICE +
- * BUS_SURCHARGE_EUR) — never invented.
+ * Second redesign of this section's vehicle cards (see git history for
+ * the first: a stock-photo pass, then a hand-drawn-icon-on-gradient
+ * pass). Direct feedback on the icon version: still reads as a generic
+ * placeholder ("dat getekende autotje") — the same underlying problem
+ * as the photos, just one level more abstract.
  *
- * Real issue found during a pricing/marketing review: the badge used to
- * read "Meest gekozen" (most chosen) — a factual claim about OTHER
- * customers' behavior — while `mostChosen: true` below is simply
- * hardcoded, never derived from real booking volume. Changed the label
- * to "Aanbevolen" (Recommended) — an honest editorial opinion, not a
- * claim about what other people did.
+ * Researched how competitors solve this (SchipholRide's own vehicle
+ * section, live on schipholride.nl): they use NO image or icon at all —
+ * a bold color-block card naming the vehicle CLASS plus a real example
+ * model ("Volkswagen Passat of soortgelijk"), capacity, luggage and
+ * price, nothing else. That sidesteps the whole "does this picture
+ * honestly represent the car" problem a photo or icon both have, while
+ * actually giving the customer more real information than either did.
  *
- * Stock photos removed entirely, per direct feedback: two separate
- * sourced photos (comfortPhoto.ts, xlVanPhoto.ts — see git history)
- * still read as "nep" (fake/staged) even after an honesty pass on each
- * (no plates, no livery, genuinely matching vehicle class). A generic
- * stock photo claiming to show "your car" apparently reads as
- * inauthentic regardless of how carefully it's vetted — a real,
- * different problem than the honesty checks this project ran before,
- * and not one more careful photo-hunting was going to fix. Replaced
- * with a deliberately-designed icon treatment (glow + dot-grid texture
- * behind the existing hand-drawn Car/Van silhouettes) instead of
- * falling back to the old flat placeholder look. vehiclePhoto.ts (the
- * client's own real fleet photo, still null) is kept as a dormant
- * override for if/when a real fleet photo ever exists — see that
- * file's own note — but is never a stock substitute.
+ * Applied here with AMS Airport Ride's own colors (ink navy + amber),
+ * never SchipholRide's orange/cream — same "inspiration, not a copy"
+ * rule this project has followed for every competitor-research pass.
+ * The example-model line is only as specific as what's actually true:
+ * client-confirmed the XL Van is genuinely (almost always) a Mercedes
+ * V-Class, so that's named directly. Comfort's real vehicle varies too
+ * much to name a brand (confirmed with the client) — "Comfortabele
+ * sedan of vergelijkbaar" describes the body type instead, same honesty
+ * bar, just less specific because the underlying fact is less specific.
  */
 export async function VehiclesSimple() {
   const t = await getTranslations("Vehicles");
-  const tb = await getTranslations("Booking");
 
   const vehicles = [
     {
-      Icon: CarIcon,
       title: t("sedanTitle"),
-      capacity: tb("vehiclePersonenautoCapacity", { max: PERSONENAUTO_MAX_PASSENGERS }),
+      model: t("sedanModel"),
+      specs: t("specsLine", {
+        passengers: `1–${PERSONENAUTO_MAX_PASSENGERS}`,
+        luggage: PERSONENAUTO_MAX_LUGGAGE,
+      }),
       price: CHEAPEST_SCHIPHOL_PRICE,
+      cta: t("sedanCta"),
       mostChosen: true,
     },
     {
-      Icon: VanIcon,
       title: t("busTitle"),
-      capacity: tb("vehicleBusCapacity", { max: BUS_MAX_PASSENGERS }),
+      model: t("busModel"),
+      specs: t("specsLine", {
+        passengers: `5–${BUS_MAX_PASSENGERS}`,
+        luggage: BUS_MAX_LUGGAGE,
+      }),
       price: CHEAPEST_SCHIPHOL_PRICE + BUS_SURCHARGE_EUR,
+      cta: t("busCta"),
       mostChosen: false,
     },
   ];
@@ -68,44 +74,35 @@ export async function VehiclesSimple() {
       </div>
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2">
-        {vehicles.map(({ Icon, title, capacity, price, mostChosen }) => (
+        {vehicles.map(({ title, model, specs, price, cta, mostChosen }) => (
           <Link
             key={title}
             href="/#boeken"
-            className="group relative overflow-hidden rounded-[18px] border border-border bg-surface shadow-card transition duration-200 hover:-translate-y-1 hover:shadow-elevated"
+            className="group relative flex flex-col overflow-hidden rounded-[18px] bg-ink p-6 text-ink-foreground shadow-card transition duration-200 hover:-translate-y-1 hover:shadow-elevated"
           >
             {mostChosen && (
-              <span className="absolute left-4 top-4 z-10 rounded-[10px] bg-brand px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-wide text-brand-foreground">
+              <span className="absolute right-6 top-6 rounded-[10px] bg-brand px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-wide text-brand-foreground">
                 {t("mostChosen")}
               </span>
             )}
-            {/* Deliberately no photo — see this file's header note. A
-                dot-grid texture + a soft brand-colored glow behind the
-                existing hand-drawn Car/Van silhouette, both pure CSS, no
-                image request at all (so the earlier "oversized photo"
-                performance bug this card once had structurally can't
-                recur here). */}
-            <div className="relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-[#17263d] to-ink-2 sm:h-48">
-              <div
-                className="absolute inset-0 opacity-[0.12]"
-                style={{
-                  backgroundImage: "radial-gradient(circle, #ffffff 1px, transparent 1px)",
-                  backgroundSize: "18px 18px",
-                }}
-              />
-              <div className="absolute h-28 w-28 rounded-full bg-brand/25 blur-2xl sm:h-32 sm:w-32" />
-              <Icon className="relative h-16 w-16 text-brand sm:h-20 sm:w-20" />
-            </div>
-            <div className="flex items-center justify-between gap-4 p-5">
+            <span className="text-2xl font-extrabold tracking-tight sm:text-3xl">{title}</span>
+            <span className="mt-1 text-sm text-ink-foreground-muted">{model}</span>
+
+            <span className="mt-5 border-t border-white/10 pt-5 font-mono text-sm text-ink-foreground-muted">
+              {specs}
+            </span>
+
+            <span className="mt-5 flex items-end justify-between gap-4">
               <span>
-                <span className="block text-lg font-bold text-foreground">{title}</span>
-                <span className="block text-sm text-muted">{capacity}</span>
-                <span className="mt-1 block font-mono text-sm font-semibold text-brand-text">
-                  {t("fromPrice", { price })}
+                <span className="block font-mono text-[11px] uppercase tracking-wide text-ink-foreground-muted">
+                  {t("fromLabel")}
                 </span>
+                <span className="block font-mono text-3xl font-bold text-brand">€{price}</span>
               </span>
-              <ArrowRightIcon className="h-4 w-4 shrink-0 text-muted transition duration-200 group-hover:translate-x-1 group-hover:text-brand-text" />
-            </div>
+              <span className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink transition duration-200 group-hover:bg-brand group-hover:text-brand-foreground">
+                {cta}
+              </span>
+            </span>
           </Link>
         ))}
       </div>

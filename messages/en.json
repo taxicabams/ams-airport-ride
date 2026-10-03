@@ -99,7 +99,11 @@
     "busTitle": "XL Van",
     "busCapacity": "Up to {max} passengers",
     "busBody": "More space for larger groups and extra luggage.",
-    "busCta": "Choose XL Van →"
+    "busCta": "Choose XL Van →",
+    "sedanModel": "Comfortable sedan or similar",
+    "busModel": "Mercedes V-Class or similar",
+    "specsLine": "{passengers} · {luggage} bags",
+    "fromLabel": "From"
   },
   "SchipholSteps": {
     "title": "Arriving at Schiphol",

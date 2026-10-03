@@ -99,7 +99,11 @@
     "busTitle": "XL Van",
     "busCapacity": "Tot {max} passagiers",
     "busBody": "Meer ruimte voor grotere groepen en extra bagage.",
-    "busCta": "Kies XL Van →"
+    "busCta": "Kies XL Van →",
+    "sedanModel": "Comfortabele sedan of vergelijkbaar",
+    "busModel": "Mercedes V-Klasse of vergelijkbaar",
+    "specsLine": "{passengers} · {luggage} koffers",
+    "fromLabel": "Vanaf"
   },
   "SchipholSteps": {
     "title": "Aankomst op Schiphol",
