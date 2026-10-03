@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { CONSENT_COOKIE_NAME, type ConsentValue } from "@/lib/cookieConsent";
+import { CONSENT_COOKIE_NAME, CONSENT_CHANGED_EVENT, readConsentCookie, type ConsentValue } from "@/lib/cookieConsent";
 
 // Same "real-looking ID" check Analytics.tsx uses — kept in sync
 // deliberately (see that file) so the banner and the actual script-
@@ -18,12 +18,6 @@ const hasTrackingConfigured = Boolean(
 
 /** Name matches the event CookieSettingsLink.tsx dispatches. */
 const REOPEN_EVENT = "ams:open-cookie-settings";
-
-function readConsentCookie(): ConsentValue | null {
-  const match = document.cookie.match(new RegExp(`(?:^|; )${CONSENT_COOKIE_NAME}=([^;]*)`));
-  const value = match ? decodeURIComponent(match[1]) : null;
-  return value === "accepted" || value === "rejected" ? value : null;
-}
 
 /**
  * Cookie consent banner — deliberately renders NOTHING at all when
@@ -77,9 +71,12 @@ export function CookieConsentBanner() {
     // anyway (see next.config.mjs's Strict-Transport-Security header).
     document.cookie = `${CONSENT_COOKIE_NAME}=${value}; path=/; max-age=31536000; SameSite=Lax`;
     setVisible(false);
-    // Analytics.tsx is a Server Component reading this cookie — refresh
-    // re-renders it server-side with the new value instead of requiring
-    // a full page reload.
+    // Analytics.tsx (a Client Component — see its own note on why) picks
+    // this up immediately via this event, no navigation needed. router
+    // .refresh() stays too: it's cheap and keeps any other server-
+    // rendered consent-dependent UI in sync, even though Analytics no
+    // longer needs it specifically.
+    window.dispatchEvent(new Event(CONSENT_CHANGED_EVENT));
     router.refresh();
   }
 

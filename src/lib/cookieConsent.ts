@@ -19,3 +19,24 @@
  */
 export const CONSENT_COOKIE_NAME = "ams_consent";
 export type ConsentValue = "accepted" | "rejected";
+
+/**
+ * Fired on `window` right after CookieConsentBanner.tsx writes a new
+ * decision to the cookie — Analytics.tsx (now a Client Component, see
+ * its own note on why) listens for this to re-check consent immediately
+ * without waiting for a full navigation/refresh.
+ */
+export const CONSENT_CHANGED_EVENT = "ams:consent-changed";
+
+/**
+ * Reads the consent cookie directly via `document.cookie` — browser-only
+ * (throws nothing, just returns null, if called during SSR where
+ * `document` doesn't exist yet). Shared by CookieConsentBanner.tsx and
+ * Analytics.tsx so both parse the exact same cookie the exact same way.
+ */
+export function readConsentCookie(): ConsentValue | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp(`(?:^|; )${CONSENT_COOKIE_NAME}=([^;]*)`));
+  const value = match ? decodeURIComponent(match[1]) : null;
+  return value === "accepted" || value === "rejected" ? value : null;
+}
