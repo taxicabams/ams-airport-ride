@@ -13,9 +13,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  // "of een zakelijke aanvraag"/"or a business enquiry" removed — the
+  // client's explicit instruction is a pure B2C focus, no B2B framing
+  // anywhere on the site, even in a one-line meta description.
   const base = locale === "nl"
-    ? { title: "Contact", description: "Neem contact op met AMS Airport Ride voor vragen over uw boeking of een zakelijke aanvraag." }
-    : { title: "Contact", description: "Get in touch with AMS Airport Ride for questions about your booking or a business enquiry." };
+    ? { title: "Contact", description: "Neem contact op met AMS Airport Ride voor vragen over uw boeking." }
+    : { title: "Contact", description: "Get in touch with AMS Airport Ride for questions about your booking." };
   return { ...base, alternates: buildAlternates(locale as AppLocale, "/contact") };
 }
 

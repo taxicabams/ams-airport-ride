@@ -327,6 +327,129 @@ const CITY_CONTENT: CityContent[] = [
       ],
     },
   },
+  // Nieuw-Vennep + the Bollenstreek cluster (Lisse/Hillegom/Sassenheim/
+  // Voorhout/Noordwijk/Noordwijkerhout): none have a curated fixed
+  // Schiphol price yet, so all 7 use the same isEstimate pattern as
+  // Zandvoort above — never a fabricated "vaste prijs".
+  {
+    cityId: "nieuw-vennep",
+    local: {
+      nl: "Nieuw-Vennep is na Hoofddorp de grootste kern van de gemeente Haarlemmermeer en ligt vlak bij Schiphol. Nieuw-Vennep heeft nog geen eigen, vooraf vastgestelde Schiphol-prijs — de prijs hieronder is een richtprijs op basis van de reisafstand. Uw exacte, definitieve prijs ziet u altijd direct bij het invullen van uw adres, vóór het boeken.",
+      en: "Nieuw-Vennep is the second-largest town in the Haarlemmermeer municipality and sits close to Schiphol. It doesn't have its own pre-set Schiphol price yet — the price below is an estimate based on travel distance. Your exact, final price always appears as soon as you enter your address, before you book.",
+    },
+    faq: {
+      nl: [
+        { q: "Is de prijs naar Nieuw-Vennep een vaste prijs?", a: "De prijs hierboven is een richtprijs op basis van afstand. Vul uw adres in bij het boeken en u ziet direct uw exacte, definitieve prijs — vóór u bevestigt." },
+        { q: "Hoe ver is Nieuw-Vennep van Schiphol?", a: "Dichtbij — Nieuw-Vennep ligt net als Hoofddorp in de gemeente Haarlemmermeer, vlak bij de luchthaven." },
+      ],
+      en: [
+        { q: "Is the price to Nieuw-Vennep a fixed price?", a: "The price above is a distance-based estimate. Enter your address when booking and you'll see your exact, final price immediately — before you confirm." },
+        { q: "How far is Nieuw-Vennep from Schiphol?", a: "Close by — like Hoofddorp, Nieuw-Vennep is part of the Haarlemmermeer municipality, right next to the airport." },
+      ],
+    },
+  },
+  {
+    cityId: "lisse",
+    local: {
+      nl: "Lisse is het hart van de Bollenstreek en bekend van de Keukenhof. Lisse heeft nog geen eigen, vooraf vastgestelde Schiphol-prijs — de prijs hieronder is een richtprijs op basis van de reisafstand. Uw exacte, definitieve prijs ziet u altijd direct bij het invullen van uw adres, vóór het boeken.",
+      en: "Lisse is the heart of the Dutch Bulb Region and home to the Keukenhof gardens. It doesn't have its own pre-set Schiphol price yet — the price below is an estimate based on travel distance. Your exact, final price always appears as soon as you enter your address, before you book.",
+    },
+    faq: {
+      nl: [
+        { q: "Is de prijs naar Lisse een vaste prijs?", a: "De prijs hierboven is een richtprijs op basis van afstand. Vul uw adres in bij het boeken en u ziet direct uw exacte, definitieve prijs — vóór u bevestigt." },
+        { q: "Rijdt u ook naar de Keukenhof?", a: "Ja, geef de Keukenhof of uw exacte adres in Lisse op als bestemming. Houd tijdens het Keukenhof-seizoen rekening met extra drukte op de weg." },
+      ],
+      en: [
+        { q: "Is the price to Lisse a fixed price?", a: "The price above is a distance-based estimate. Enter your address when booking and you'll see your exact, final price immediately — before you confirm." },
+        { q: "Do you also drive to the Keukenhof?", a: "Yes, enter the Keukenhof or your exact address in Lisse as your destination. Allow extra time for traffic during the Keukenhof season." },
+      ],
+    },
+  },
+  {
+    cityId: "hillegom",
+    local: {
+      nl: "Hillegom grenst direct aan Lisse en ligt midden in de Bollenstreek. Hillegom heeft nog geen eigen, vooraf vastgestelde Schiphol-prijs — de prijs hieronder is een richtprijs op basis van de reisafstand. Uw exacte, definitieve prijs ziet u altijd direct bij het invullen van uw adres, vóór het boeken.",
+      en: "Hillegom borders Lisse directly and sits in the middle of the Dutch Bulb Region. It doesn't have its own pre-set Schiphol price yet — the price below is an estimate based on travel distance. Your exact, final price always appears as soon as you enter your address, before you book.",
+    },
+    faq: {
+      nl: [
+        { q: "Is de prijs naar Hillegom een vaste prijs?", a: "De prijs hierboven is een richtprijs op basis van afstand. Vul uw adres in bij het boeken en u ziet direct uw exacte, definitieve prijs — vóór u bevestigt." },
+        { q: "Hoe ver is Hillegom van Schiphol?", a: "Hillegom ligt in de Bollenstreek, iets verder dan Hoofddorp of Haarlem — reken op een langere rit dan naar die plaatsen." },
+      ],
+      en: [
+        { q: "Is the price to Hillegom a fixed price?", a: "The price above is a distance-based estimate. Enter your address when booking and you'll see your exact, final price immediately — before you confirm." },
+        { q: "How far is Hillegom from Schiphol?", a: "Hillegom sits in the Bulb Region, a bit further than Hoofddorp or Haarlem — expect a longer ride than to those towns." },
+      ],
+    },
+  },
+  {
+    cityId: "sassenheim",
+    local: {
+      nl: "Sassenheim maakt deel uit van de gemeente Teylingen, samen met Voorhout en Warmond. Sassenheim heeft nog geen eigen, vooraf vastgestelde Schiphol-prijs — de prijs hieronder is een richtprijs op basis van de reisafstand. Uw exacte, definitieve prijs ziet u altijd direct bij het invullen van uw adres, vóór het boeken.",
+      en: "Sassenheim is part of the Teylingen municipality, together with Voorhout and Warmond. It doesn't have its own pre-set Schiphol price yet — the price below is an estimate based on travel distance. Your exact, final price always appears as soon as you enter your address, before you book.",
+    },
+    faq: {
+      nl: [
+        { q: "Is de prijs naar Sassenheim een vaste prijs?", a: "De prijs hierboven is een richtprijs op basis van afstand. Vul uw adres in bij het boeken en u ziet direct uw exacte, definitieve prijs — vóór u bevestigt." },
+        { q: "Rijdt u ook naar Warmond of Voorhout?", a: "Ja, geef uw exacte adres op als bestemming — wij rijden in de hele gemeente Teylingen." },
+      ],
+      en: [
+        { q: "Is the price to Sassenheim a fixed price?", a: "The price above is a distance-based estimate. Enter your address when booking and you'll see your exact, final price immediately — before you confirm." },
+        { q: "Do you also drive to Warmond or Voorhout?", a: "Yes, enter your exact address as your destination — we drive throughout the Teylingen municipality." },
+      ],
+    },
+  },
+  {
+    cityId: "voorhout",
+    local: {
+      nl: "Voorhout ligt in de gemeente Teylingen, tussen Sassenheim en Leiden in. Voorhout heeft nog geen eigen, vooraf vastgestelde Schiphol-prijs — de prijs hieronder is een richtprijs op basis van de reisafstand. Uw exacte, definitieve prijs ziet u altijd direct bij het invullen van uw adres, vóór het boeken.",
+      en: "Voorhout sits in the Teylingen municipality, between Sassenheim and Leiden. It doesn't have its own pre-set Schiphol price yet — the price below is an estimate based on travel distance. Your exact, final price always appears as soon as you enter your address, before you book.",
+    },
+    faq: {
+      nl: [
+        { q: "Is de prijs naar Voorhout een vaste prijs?", a: "De prijs hierboven is een richtprijs op basis van afstand. Vul uw adres in bij het boeken en u ziet direct uw exacte, definitieve prijs — vóór u bevestigt." },
+        { q: "Hoe ver is Voorhout van Schiphol?", a: "Voorhout ligt tussen de Bollenstreek en Leiden in — reken op een vergelijkbare reistijd als naar Leiden." },
+      ],
+      en: [
+        { q: "Is the price to Voorhout a fixed price?", a: "The price above is a distance-based estimate. Enter your address when booking and you'll see your exact, final price immediately — before you confirm." },
+        { q: "How far is Voorhout from Schiphol?", a: "Voorhout sits between the Bulb Region and Leiden — expect a travel time similar to Leiden." },
+      ],
+    },
+  },
+  {
+    cityId: "noordwijk",
+    local: {
+      nl: "Noordwijk is een geliefde kustplaats met een breed strand, zo'n 40 minuten van Schiphol. Noordwijk heeft nog geen eigen, vooraf vastgestelde Schiphol-prijs — de prijs hieronder is een richtprijs op basis van de reisafstand. Uw exacte, definitieve prijs ziet u altijd direct bij het invullen van uw adres, vóór het boeken.",
+      en: "Noordwijk is a popular seaside resort with a wide beach, around 40 minutes from Schiphol. It doesn't have its own pre-set Schiphol price yet — the price below is an estimate based on travel distance. Your exact, final price always appears as soon as you enter your address, before you book.",
+    },
+    faq: {
+      nl: [
+        { q: "Is de prijs naar Noordwijk een vaste prijs?", a: "De prijs hierboven is een richtprijs op basis van afstand. Vul uw adres in bij het boeken en u ziet direct uw exacte, definitieve prijs — vóór u bevestigt." },
+        { q: "Rijdt u ook naar hotels in Noordwijk aan Zee?", a: "Ja, wij brengen u naar elk hotel of adres in Noordwijk, inclusief Noordwijk aan Zee." },
+      ],
+      en: [
+        { q: "Is the price to Noordwijk a fixed price?", a: "The price above is a distance-based estimate. Enter your address when booking and you'll see your exact, final price immediately — before you confirm." },
+        { q: "Do you also drive to hotels in Noordwijk aan Zee?", a: "Yes, we take you to any hotel or address in Noordwijk, including Noordwijk aan Zee." },
+      ],
+    },
+  },
+  {
+    cityId: "noordwijkerhout",
+    local: {
+      nl: "Noordwijkerhout ligt tussen Noordwijk en Lisse, midden in de Bollenstreek. Noordwijkerhout heeft nog geen eigen, vooraf vastgestelde Schiphol-prijs — de prijs hieronder is een richtprijs op basis van de reisafstand. Uw exacte, definitieve prijs ziet u altijd direct bij het invullen van uw adres, vóór het boeken.",
+      en: "Noordwijkerhout sits between Noordwijk and Lisse, in the middle of the Dutch Bulb Region. It doesn't have its own pre-set Schiphol price yet — the price below is an estimate based on travel distance. Your exact, final price always appears as soon as you enter your address, before you book.",
+    },
+    faq: {
+      nl: [
+        { q: "Is de prijs naar Noordwijkerhout een vaste prijs?", a: "De prijs hierboven is een richtprijs op basis van afstand. Vul uw adres in bij het boeken en u ziet direct uw exacte, definitieve prijs — vóór u bevestigt." },
+        { q: "Rijdt u ook naar congrescentra in Noordwijkerhout?", a: "Ja, wij brengen u naar elk zakelijk of privéadres in Noordwijkerhout." },
+      ],
+      en: [
+        { q: "Is the price to Noordwijkerhout a fixed price?", a: "The price above is a distance-based estimate. Enter your address when booking and you'll see your exact, final price immediately — before you confirm." },
+        { q: "Do you also drive to conference venues in Noordwijkerhout?", a: "Yes, we take you to any business or personal address in Noordwijkerhout." },
+      ],
+    },
+  },
 ];
 
 export type RoutePage = {

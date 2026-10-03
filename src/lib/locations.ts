@@ -87,6 +87,26 @@ export const LOCATIONS: Location[] = [
   { id: "heemstede", label: { nl: "Heemstede", en: "Heemstede" }, aliases: ["heemstede"], lat: 52.3480, lng: 4.6280, isAirport: false },
   { id: "bloemendaal", label: { nl: "Bloemendaal", en: "Bloemendaal" }, aliases: ["bloemendaal"], lat: 52.3980, lng: 4.6260, isAirport: false },
   { id: "zandvoort", label: { nl: "Zandvoort", en: "Zandvoort" }, aliases: ["zandvoort", "zandvoort aan zee"], lat: 52.3725, lng: 4.5325, isAirport: false },
+  // Nieuw-Vennep + Bollenstreek towns, added together: previously
+  // entirely missing from this table, so a real customer typing any of
+  // these got the generic UNKNOWN_LOCATION_ASSUMED_KM=25 fallback
+  // regardless of actual distance (Noordwijk is genuinely ~35-40km from
+  // Schiphol — a flat 25km assumption would have undercharged that ride
+  // significantly). Coordinates sourced from Wikipedia's own infobox
+  // figures for each town, same precision level as every other entry in
+  // this file.
+  { id: "nieuw-vennep", label: { nl: "Nieuw-Vennep", en: "Nieuw-Vennep" }, aliases: ["nieuw-vennep", "nieuw vennep"], lat: 52.2644, lng: 4.6347, isAirport: false },
+  { id: "lisse", label: { nl: "Lisse", en: "Lisse" }, aliases: ["lisse"], lat: 52.2500, lng: 4.5500, isAirport: false },
+  { id: "hillegom", label: { nl: "Hillegom", en: "Hillegom" }, aliases: ["hillegom"], lat: 52.2830, lng: 4.5830, isAirport: false },
+  { id: "sassenheim", label: { nl: "Sassenheim", en: "Sassenheim" }, aliases: ["sassenheim"], lat: 52.2258, lng: 4.5225, isAirport: false },
+  { id: "voorhout", label: { nl: "Voorhout", en: "Voorhout" }, aliases: ["voorhout"], lat: 52.2231, lng: 4.4864, isAirport: false },
+  { id: "noordwijk", label: { nl: "Noordwijk", en: "Noordwijk" }, aliases: ["noordwijk", "noordwijk aan zee"], lat: 52.2330, lng: 4.4500, isAirport: false },
+  { id: "noordwijkerhout", label: { nl: "Noordwijkerhout", en: "Noordwijkerhout" }, aliases: ["noordwijkerhout"], lat: 52.2670, lng: 4.5000, isAirport: false },
+  { id: "oegstgeest", label: { nl: "Oegstgeest", en: "Oegstgeest" }, aliases: ["oegstgeest"], lat: 52.1830, lng: 4.4670, isAirport: false },
+  { id: "leiderdorp", label: { nl: "Leiderdorp", en: "Leiderdorp" }, aliases: ["leiderdorp"], lat: 52.1670, lng: 4.5330, isAirport: false },
+  { id: "voorschoten", label: { nl: "Voorschoten", en: "Voorschoten" }, aliases: ["voorschoten"], lat: 52.1330, lng: 4.4500, isAirport: false },
+  { id: "wassenaar", label: { nl: "Wassenaar", en: "Wassenaar" }, aliases: ["wassenaar"], lat: 52.1500, lng: 4.4000, isAirport: false },
+  { id: "leidschendam", label: { nl: "Leidschendam", en: "Leidschendam" }, aliases: ["leidschendam"], lat: 52.0830, lng: 4.4000, isAirport: false },
   { id: "aerdenhout", label: { nl: "Aerdenhout", en: "Aerdenhout" }, aliases: ["aerdenhout"], lat: 52.3660, lng: 4.6030, isAirport: false },
   { id: "velsen", label: { nl: "Velsen", en: "Velsen" }, aliases: ["velsen"], lat: 52.4600, lng: 4.6570, isAirport: false },
   { id: "ijmuiden", label: { nl: "IJmuiden", en: "IJmuiden" }, aliases: ["ijmuiden"], lat: 52.4600, lng: 4.6110, isAirport: false },
