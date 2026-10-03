@@ -145,3 +145,66 @@ describe("sendBookingEmails — return trip", () => {
     expect(customerHtml).toContain("Return trip");
   });
 });
+
+describe("sendBookingEmails — direction-specific Schiphol pickup text", () => {
+  // Real bug found in a production audit: the Schiphol meeting-point
+  // block used to be tied to the overall `rideType` flag (true whenever
+  // EITHER leg touches Schiphol), always attached to the OUTBOUND leg.
+  // That's wrong whenever the outbound leg is actually a DEPARTURE (the
+  // driver comes to the customer) and the Schiphol ARRIVAL is the
+  // return leg instead — exactly this test's booking. Locks in the
+  // per-leg isSchipholPickup fix in email.ts.
+  it("shows the Schiphol meeting-point block on the return leg, not the outbound leg, when outbound is a departure", async () => {
+    const { sendBookingEmails } = await import("./email");
+    const booking = makeBooking({
+      pickupAddress: "Amsterdam Centraal, Stationsplein, Amsterdam", // outbound: home -> Schiphol (departure)
+      destination: "Schiphol Airport",
+      price: 50,
+      returnPrice: 50,
+      totalPrice: 100,
+      returnTrip: true,
+      returnDate: "2026-10-20",
+      returnTime: "09:00",
+      returnPickup: "Schiphol Airport", // return: Schiphol -> home (arrival)
+      returnDestination: "Amsterdam Centraal, Stationsplein, Amsterdam",
+    });
+
+    await sendBookingEmails(booking, "nl");
+
+    const customerHtml = sendMock.mock.calls[0][0].html as string;
+    // The outbound (departure) leg must get the "driver comes to you"
+    // copy, never the Schiphol meeting-point text.
+    expect(customerHtml).toContain("Uw chauffeur komt naar u toe");
+    // The return (arrival) leg must get the real Schiphol meeting-point
+    // text, since that's the leg that's actually a Schiphol pickup.
+    expect(customerHtml).toContain("Waar vindt u uw chauffeur?");
+    // Exactly one Schiphol meeting-point block, not two or zero.
+    expect(customerHtml.match(/Waar vindt u uw chauffeur\?/g)).toHaveLength(1);
+    expect(customerHtml.match(/Uw chauffeur komt naar u toe/g)).toHaveLength(1);
+  });
+
+  it("shows the Schiphol meeting-point block for a plain one-way Schiphol arrival", async () => {
+    const { sendBookingEmails } = await import("./email");
+    const booking = makeBooking(); // default: pickup = Schiphol Airport, no return
+
+    await sendBookingEmails(booking, "nl");
+
+    const customerHtml = sendMock.mock.calls[0][0].html as string;
+    expect(customerHtml).toContain("Waar vindt u uw chauffeur?");
+    expect(customerHtml).not.toContain("Uw chauffeur komt naar u toe");
+  });
+
+  it("shows the 'driver comes to you' block, not the Schiphol block, for a plain one-way departure", async () => {
+    const { sendBookingEmails } = await import("./email");
+    const booking = makeBooking({
+      pickupAddress: "Utrecht Centraal",
+      destination: "Schiphol Airport",
+    });
+
+    await sendBookingEmails(booking, "nl");
+
+    const customerHtml = sendMock.mock.calls[0][0].html as string;
+    expect(customerHtml).toContain("Uw chauffeur komt naar u toe");
+    expect(customerHtml).not.toContain("Waar vindt u uw chauffeur?");
+  });
+});

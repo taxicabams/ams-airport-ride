@@ -3,6 +3,9 @@
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getSchipholMeetingPointText } from "@/lib/schipholMeetingPoint";
+import { companyInfo } from "@/lib/companyInfo";
+import { TrackedLink } from "@/components/marketing/TrackedLink";
+import { WhatsAppIcon } from "@/components/ui/icons";
 import type { BookingResult } from "./types";
 
 export function ConfirmationCard({ result }: { result: BookingResult }) {
@@ -88,6 +91,33 @@ export function ConfirmationCard({ result }: { result: BookingResult }) {
           <p className="mt-1 text-sm text-foreground/80">
             {getSchipholMeetingPointText(locale)}
           </p>
+        </div>
+      )}
+
+      {/* Real gap found in this audit: the Schiphol text above
+          explicitly says "bel of app dan het nummer dat u in uw
+          boekingsbevestiging ontvangt" (call or message the number in
+          your booking confirmation) — but no number ever actually
+          appeared anywhere on this screen (or in the email, see
+          email.ts's own fix). A stranded customer at Schiphol had
+          nothing to call/app. "contactTitle" already existed as a
+          translation key but was never wired to anything — this is
+          that missing piece, shown for every booking (not just
+          Schiphol ones: a private ride's driver is reached the same
+          way). */}
+      {companyInfo.whatsapp && (
+        <div className="rounded-xl border border-border p-4">
+          <p className="text-sm font-semibold text-foreground">{t("contactTitle")}</p>
+          <TrackedLink
+            event="whatsapp_clicked"
+            href={`https://wa.me/${companyInfo.whatsapp}?text=${encodeURIComponent(tb("whatsappPrefill"))}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-flex items-center gap-2 rounded-full bg-success px-4 py-2 text-sm font-semibold text-white transition hover:brightness-95"
+          >
+            <WhatsAppIcon className="h-4 w-4" />
+            {tb("whatsappUs")}
+          </TrackedLink>
         </div>
       )}
 

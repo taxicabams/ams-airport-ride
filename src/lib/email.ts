@@ -2,6 +2,29 @@ import { Resend } from "resend";
 import type { Booking } from "@/generated/prisma/client";
 import { getSchipholMeetingPointText } from "./schipholMeetingPoint";
 import { bookingReference } from "./bookingReference";
+import { companyInfo } from "./companyInfo";
+import { matchLocation } from "./locations";
+
+/**
+ * Real logic bug found in this audit: `booking.rideType` is
+ * "AIRPORT_TRANSFER" whenever EITHER side of the (outbound) trip is
+ * Schiphol — it doesn't say which side. The email used that one flag to
+ * decide whether to show the Schiphol meeting-point block at all, so a
+ * customer booking FROM their own address TO Schiphol (a departure —
+ * the driver comes to THEM, there's no meeting point to find) saw the
+ * exact same "meestal bij het Meeting Point op Schiphol Plaza" text as
+ * someone actually landing and needing to find their driver — nonsense
+ * for a departure. Worse, for a return booking where the two legs go in
+ * opposite directions (e.g. home→Schiphol outbound, Schiphol→home
+ * return), the block was always attached to the OUTBOUND leg
+ * regardless of which leg was actually the airport arrival.
+ *
+ * Fixed by checking PICKUP specifically, per leg, independently — not
+ * the overall rideType.
+ */
+function isSchipholPickup(address: string): boolean {
+  return matchLocation(address)?.isAirport === true;
+}
 
 // Resend client is created lazily (not at module load) so the app can
 // still boot — and every other page can still render — even before
@@ -47,6 +70,24 @@ const TEXT = "#111827";
 const MUTED = "#64748b";
 const BORDER = "#e2e8f0";
 const MUTED_BG = "#f5f7fa";
+const SUCCESS = "#3ddc84"; // --success — same green as the site's own WhatsApp buttons
+
+/**
+ * A WhatsApp CTA button, reused in every email that needs one. Real gap
+ * found in this audit: schipholMeetingPoint.ts's own text explicitly
+ * promises "bel of app dan het nummer dat u in uw boekingsbevestiging
+ * ontvangt" ("call or message the number in your booking confirmation")
+ * — but no email (or the on-screen confirmation, see
+ * ConfirmationCard.tsx's own fix) ever actually included a number. A
+ * customer stranded at Schiphol with no call from their driver had
+ * nothing to call or message. Renders nothing when
+ * companyInfo.whatsapp is unset — never a fabricated contact method.
+ */
+function whatsAppButton(label: string): string {
+  if (!companyInfo.whatsapp) return "";
+  const href = `https://wa.me/${companyInfo.whatsapp}`;
+  return `<a href="${href}" style="display:inline-block;margin-top:10px;padding:10px 18px;background-color:${SUCCESS};color:#ffffff;font-size:13px;font-weight:700;text-decoration:none;border-radius:999px;">${escapeHtml(label)}</a>`;
+}
 
 // Hosted on the live domain, not a relative path — email <img> tags need
 // a real, publicly reachable URL regardless of which host renders the
@@ -154,8 +195,12 @@ function tripCard(pickup: string, destination: string, pickupLabel: string, dest
 }
 
 function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
-  const isAirport = booking.rideType === "AIRPORT_TRANSFER";
   const isReturn = booking.returnTrip && booking.returnPickup && booking.returnDestination;
+  // Computed per leg, independently — see isSchipholPickup's own note on
+  // why the old single `isAirport` flag wasn't enough.
+  const outboundIsSchipholPickup = isSchipholPickup(booking.pickupAddress);
+  const returnIsSchipholPickup = isReturn ? isSchipholPickup(booking.returnPickup!) : false;
+
   const t =
     locale === "nl"
       ? {
@@ -174,7 +219,11 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
           payment:
             "Vaste prijs vooraf — geen taxameter, geen verrassingen achteraf. Betaal eenvoudig na de rit rechtstreeks aan de chauffeur met PIN of contant. Een bon is beschikbaar in de taxi.",
           schiphol: "Waar vindt u uw chauffeur?",
-          schipholNote: isReturn ? " (geldt voor het ophalen op Schiphol — niet voor de terugreis)" : "",
+          pickupTitle: "Uw chauffeur komt naar u toe",
+          pickupBody: "Zorg dat u op het opgegeven ophaaladres klaarstaat rond de afgesproken tijd.",
+          whatsappCta: "App ons",
+          contactTitle: "Vragen over uw rit?",
+          contactBody: "Neem gerust contact op via WhatsApp — ook als u uw boeking nog wilt wijzigen.",
           footer: "Dit is een automatisch gegenereerde boekingsbevestiging van AMS Airport Ride.",
         }
       : {
@@ -193,14 +242,39 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
           payment:
             "Fixed price upfront — no meter, no surprises afterwards. Pay easily after your ride directly to the driver by card or cash. A receipt is available in the taxi.",
           schiphol: "Where will you find your driver?",
-          schipholNote: isReturn ? " (applies to pickup at Schiphol — not to the return trip)" : "",
+          pickupTitle: "Your driver will come to you",
+          pickupBody: "Please be ready at the pickup address you provided around the agreed time.",
+          whatsappCta: "Message us",
+          contactTitle: "Questions about your ride?",
+          contactBody: "Feel free to reach out on WhatsApp — also if you'd like to change your booking.",
           footer: "This is an automated booking confirmation from AMS Airport Ride.",
         };
 
+  // One info block per leg: the Schiphol meeting-point block ONLY when
+  // THAT leg's pickup is genuinely Schiphol (an arrival), otherwise the
+  // "your driver comes to you" block — both end with the same WhatsApp
+  // button, since that's the one contact method every booking has
+  // regardless of direction.
+  function legInfoBlock(legPickupIsSchiphol: boolean): string {
+    return legPickupIsSchiphol
+      ? `<div style="border:1px solid ${BRAND_NAVY}22;background-color:${BRAND_NAVY}0d;border-radius:8px;padding:16px 20px;margin-bottom:20px;">
+          <p style="margin:0 0 6px;font-weight:600;color:${BRAND_NAVY};font-size:14px;">${t.schiphol}</p>
+          <p style="margin:0;color:${TEXT};font-size:13px;">${escapeHtml(getSchipholMeetingPointText(locale))}</p>
+          ${whatsAppButton(t.whatsappCta)}
+        </div>`
+      : `<div style="border:1px solid ${BORDER};border-radius:8px;padding:16px 20px;margin-bottom:20px;">
+          <p style="margin:0 0 6px;font-weight:600;color:${BRAND_NAVY};font-size:14px;">${t.pickupTitle}</p>
+          <p style="margin:0;color:${TEXT};font-size:13px;">${t.pickupBody}</p>
+          ${whatsAppButton(t.whatsappCta)}
+        </div>`;
+  }
+
   // Outbound trip: date/time row, plus flight number when this leg is
-  // the airport pickup — unchanged from before.
+  // genuinely a Schiphol arrival (a flight number only ever matters for
+  // the leg that starts at Schiphol, not a departure leg that ends
+  // there).
   const outboundRows = [detailRow(t.when, `${booking.date} ${booking.time}`)];
-  if (isAirport && booking.flightNumber) {
+  if (outboundIsSchipholPickup && booking.flightNumber) {
     outboundRows.push(detailRow(t.flight, booking.flightNumber));
   }
 
@@ -223,6 +297,7 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
         ${detailRow(t.when, `${booking.returnDate ?? "—"} ${booking.returnTime ?? ""}`.trim())}
       </table>
+      ${legInfoBlock(returnIsSchipholPickup)}
     `
     : "";
 
@@ -247,6 +322,8 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
       ${outboundRows.join("\n")}
     </table>
 
+    ${legInfoBlock(outboundIsSchipholPickup)}
+
     ${returnSection}
 
     ${priceBreakdown}
@@ -261,16 +338,7 @@ function customerEmailBody(booking: Booking, locale: "nl" | "en"): string {
     </table>
 
     <p style="margin:0 0 4px;font-weight:600;color:${BRAND_NAVY};font-size:14px;">${t.paymentTitle}</p>
-    <p style="margin:0 0 20px;color:${MUTED};font-size:13px;">${t.payment}</p>
-
-    ${
-      isAirport
-        ? `<div style="border:1px solid ${BRAND_NAVY}22;background-color:${BRAND_NAVY}0d;border-radius:8px;padding:16px 20px;">
-            <p style="margin:0 0 6px;font-weight:600;color:${BRAND_NAVY};font-size:14px;">${t.schiphol}${t.schipholNote}</p>
-            <p style="margin:0;color:${TEXT};font-size:13px;">${escapeHtml(getSchipholMeetingPointText(locale))}</p>
-          </div>`
-        : ""
-    }
+    <p style="margin:0;color:${MUTED};font-size:13px;">${t.payment}</p>
   `;
 
   return emailLayout(body, t.footer);
