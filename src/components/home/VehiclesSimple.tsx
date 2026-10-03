@@ -1,5 +1,4 @@
-import { getTranslations, getLocale } from "next-intl/server";
-import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { CarIcon, VanIcon, ArrowRightIcon } from "@/components/ui/icons";
 import {
@@ -8,9 +7,6 @@ import {
   BUS_SURCHARGE_EUR,
 } from "@/lib/pricing/vehicle";
 import { CHEAPEST_SCHIPHOL_PRICE } from "@/lib/pricing";
-import { vehiclePhoto } from "@/lib/vehiclePhoto";
-import { comfortPhoto } from "@/lib/comfortPhoto";
-import { xlVanPhoto } from "@/lib/xlVanPhoto";
 
 /**
  * "Vertrekbord" rebuild — badge on Comfort, and real "vanaf €X" prices
@@ -20,44 +16,28 @@ import { xlVanPhoto } from "@/lib/xlVanPhoto";
  * Real issue found during a pricing/marketing review: the badge used to
  * read "Meest gekozen" (most chosen) — a factual claim about OTHER
  * customers' behavior — while `mostChosen: true` below is simply
- * hardcoded, never derived from real booking volume. That's exactly the
- * class of unverifiable operational claim this project has avoided
- * everywhere else (reviews, "24/7 bereikbaar", KvK, etc.) — it just
- * read as an ordinary design pattern so it slipped through earlier.
- * Changed the label to "Aanbevolen" (Recommended) — an honest editorial
- * opinion (Comfort fits the common 1-4 passenger case), not a claim
- * about what other people did. Same visual/conversion value, nothing
- * fabricated.
+ * hardcoded, never derived from real booking volume. Changed the label
+ * to "Aanbevolen" (Recommended) — an honest editorial opinion, not a
+ * claim about what other people did.
  *
- * Real photos, per direct feedback ("zoek taxi auto fotos en gebruik
- * ze"): a first pass found every clean-looking Comfort candidate had a
- * visible, legible license plate or actual company livery — the same
- * honesty bar this project has held to all along (no plates/logos that
- * could misrepresent the vehicle) — so Comfort shipped as an icon
- * placeholder. A later, wider search (comfortPhoto.ts) found a clean
- * generic black sedan with no plate in frame either way.
- *
- * XL Van's photo went through two rounds: it first reused heroPhoto.ts
- * (a dark van on an actual airport service road, headlights on, real
- * aircraft visible) — client feedback, repeated: that read as an
- * industrial/ground-service vehicle, not a passenger taxi, "echt raar"
- * next to Comfort's clean street photo. Replaced with xlVanPhoto.ts — a
- * genuinely clean, pure side-profile passenger minibus at an airport
- * terminal, same no-plate/no-branding honesty bar, found after an
- * extensive multi-session search specifically for a black van/minibus
- * came up empty (every clean black candidate had a visible plate, wrong
- * angle, or visible branding — see git history). vehiclePhoto.ts (the
- * client's own real fleet photo, still null) overrides both the moment
- * it's set.
+ * Stock photos removed entirely, per direct feedback: two separate
+ * sourced photos (comfortPhoto.ts, xlVanPhoto.ts — see git history)
+ * still read as "nep" (fake/staged) even after an honesty pass on each
+ * (no plates, no livery, genuinely matching vehicle class). A generic
+ * stock photo claiming to show "your car" apparently reads as
+ * inauthentic regardless of how carefully it's vetted — a real,
+ * different problem than the honesty checks this project ran before,
+ * and not one more careful photo-hunting was going to fix. Replaced
+ * with a deliberately-designed icon treatment (glow + dot-grid texture
+ * behind the existing hand-drawn Car/Van silhouettes) instead of
+ * falling back to the old flat placeholder look. vehiclePhoto.ts (the
+ * client's own real fleet photo, still null) is kept as a dormant
+ * override for if/when a real fleet photo ever exists — see that
+ * file's own note — but is never a stock substitute.
  */
 export async function VehiclesSimple() {
   const t = await getTranslations("Vehicles");
   const tb = await getTranslations("Booking");
-  // Real, pre-existing bug found while touching this file for the new
-  // Comfort photo: the vehicle photo's alt text was hardcoded to
-  // `.alt.nl` regardless of the page's actual locale, so an English
-  // visitor got Dutch alt text on both vehicle images.
-  const locale = (await getLocale()) as "nl" | "en";
 
   const vehicles = [
     {
@@ -66,7 +46,6 @@ export async function VehiclesSimple() {
       capacity: tb("vehiclePersonenautoCapacity", { max: PERSONENAUTO_MAX_PASSENGERS }),
       price: CHEAPEST_SCHIPHOL_PRICE,
       mostChosen: true,
-      photo: comfortPhoto as { url: string; alt: { nl: string; en: string } } | null,
     },
     {
       Icon: VanIcon,
@@ -74,7 +53,6 @@ export async function VehiclesSimple() {
       capacity: tb("vehicleBusCapacity", { max: BUS_MAX_PASSENGERS }),
       price: CHEAPEST_SCHIPHOL_PRICE + BUS_SURCHARGE_EUR,
       mostChosen: false,
-      photo: xlVanPhoto,
     },
   ];
 
@@ -90,9 +68,7 @@ export async function VehiclesSimple() {
       </div>
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2">
-        {vehicles.map(({ Icon, title, capacity, price, mostChosen, photo }) => {
-          const displayPhoto = vehiclePhoto.url ? { url: vehiclePhoto.url, alt: vehiclePhoto.alt } : photo;
-          return (
+        {vehicles.map(({ Icon, title, capacity, price, mostChosen }) => (
           <Link
             key={title}
             href="/#boeken"
@@ -103,28 +79,22 @@ export async function VehiclesSimple() {
                 {t("mostChosen")}
               </span>
             )}
+            {/* Deliberately no photo — see this file's header note. A
+                dot-grid texture + a soft brand-colored glow behind the
+                existing hand-drawn Car/Van silhouette, both pure CSS, no
+                image request at all (so the earlier "oversized photo"
+                performance bug this card once had structurally can't
+                recur here). */}
             <div className="relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-[#17263d] to-ink-2 sm:h-48">
-              {displayPhoto ? (
-                // Real performance bug found live: `fill` with no `sizes`
-                // made Next.js assume this image could be full-viewport
-                // width at every breakpoint, so it requested the largest
-                // configured size (w=3840 — checked via the network
-                // panel) for a card that's never wider than ~420px (this
-                // section is max-w-4xl / 896px, 2 columns, gap-6 — see
-                // the grid above). That's a multi-megabyte image for a
-                // card a few hundred pixels wide, on every single
-                // homepage visit. sizes below matches the real rendered
-                // width at each breakpoint instead of guessing 100vw.
-                <Image
-                  src={displayPhoto.url}
-                  alt={displayPhoto.alt[locale]}
-                  fill
-                  sizes="(min-width: 640px) 420px, 100vw"
-                  className="object-cover"
-                />
-              ) : (
-                <Icon className="h-16 w-16 text-brand sm:h-20 sm:w-20" />
-              )}
+              <div
+                className="absolute inset-0 opacity-[0.12]"
+                style={{
+                  backgroundImage: "radial-gradient(circle, #ffffff 1px, transparent 1px)",
+                  backgroundSize: "18px 18px",
+                }}
+              />
+              <div className="absolute h-28 w-28 rounded-full bg-brand/25 blur-2xl sm:h-32 sm:w-32" />
+              <Icon className="relative h-16 w-16 text-brand sm:h-20 sm:w-20" />
             </div>
             <div className="flex items-center justify-between gap-4 p-5">
               <span>
@@ -137,8 +107,7 @@ export async function VehiclesSimple() {
               <ArrowRightIcon className="h-4 w-4 shrink-0 text-muted transition duration-200 group-hover:translate-x-1 group-hover:text-brand-text" />
             </div>
           </Link>
-          );
-        })}
+        ))}
       </div>
     </section>
   );
