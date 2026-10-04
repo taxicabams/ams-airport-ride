@@ -48,6 +48,24 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
       a: `Comfort biedt plaats voor tot ${PERSONENAUTO_MAX_LUGGAGE} koffers. Heeft u meer bagage nodig, dan selecteren wij automatisch de Van, met plaats voor tot ${BUS_MAX_LUGGAGE} koffers.`,
     },
     {
+      // Moved up from near the bottom of the list (2026-10-04): this is
+      // now one of the live Google Ads keyword themes ("Taxi Schiphol
+      // kinderzitje") — a visitor arriving specifically because of that
+      // ad shouldn't have to scroll past 8 other questions to confirm
+      // the feature actually exists. Same honest answer as before, just
+      // repositioned next to the other capacity-related questions.
+      //
+      // Original honesty note, carried over: trimmed a second sentence
+      // ("contact us for the exact cost") that pointed at a channel
+      // that doesn't currently exist, and the cost itself isn't in the
+      // pricing engine either (no child-seat price constant anywhere in
+      // lib/pricing/) — promising a cost "at booking confirmation"
+      // would be an equally unverified claim. Left with only what's
+      // true today: the option exists and works.
+      q: "Kan ik een kinderzitje bestellen?",
+      a: "Ja, geef dit aan bij het boeken via de optie 'Kinderzitje nodig'.",
+    },
+    {
       q: "Kan ik ook een normale taxi in Amsterdam boeken?",
       a: "Ja. Naast Schiphol-transfers boeken wij ook gewone taxiritten binnen Amsterdam zelf — bijvoorbeeld van huis naar werk, station, hotel of restaurant — én privéritten tussen Nederlandse steden, bijvoorbeeld Amsterdam ↔ Utrecht of Amsterdam ↔ Rotterdam.",
     },
@@ -62,17 +80,6 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     {
       q: "Is een taxi goedkoper dan Uber of Bolt?",
       a: "Onze prijs staat vast op het moment van boeken, ongeacht drukte, spits of tijdstip — bij platforms met dynamische prijzen kan de prijs juist oplopen tijdens piekmomenten. Wij kunnen niet garanderen altijd goedkoper te zijn, maar wel dat u vooraf precies weet wat u betaalt.",
-    },
-    {
-      q: "Kan ik een kinderzitje bestellen?",
-      // Trimmed the second sentence ("contact us for the exact cost") —
-      // it pointed at a channel that doesn't currently exist, and the
-      // cost itself isn't in the pricing engine yet either (checked:
-      // no child-seat price constant anywhere in lib/pricing/), so
-      // promising it "at booking confirmation" would be an equally
-      // unverified claim. Left with only what's true today: the option
-      // exists and works.
-      a: "Ja, geef dit aan bij het boeken via de optie 'Kinderzitje nodig'.",
     },
     {
       q: "Tot wanneer kan ik gratis annuleren?",
@@ -130,6 +137,11 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
       a: `Comfort has room for up to ${PERSONENAUTO_MAX_LUGGAGE} suitcases. If you need more space, we automatically select the Van, with room for up to ${BUS_MAX_LUGGAGE} suitcases.`,
     },
     {
+      // Same reorder as the NL list above, see that entry's note.
+      q: "Can I request a child seat?",
+      a: "Yes, let us know when booking via the 'Child seat needed' option.",
+    },
+    {
       q: "Can I also book a regular taxi in Amsterdam?",
       a: "Yes. Besides Schiphol transfers, we also book regular taxi rides within Amsterdam itself — for example from home to work, the station, a hotel or a restaurant — as well as private rides between Dutch cities, for example Amsterdam ↔ Utrecht or Amsterdam ↔ Rotterdam.",
     },
@@ -144,10 +156,6 @@ export const GENERAL_FAQ: Record<"nl" | "en", { q: string; a: string }[]> = {
     {
       q: "Is a taxi cheaper than Uber or Bolt?",
       a: "Our price is fixed the moment you book, regardless of demand, rush hour or time of day — platforms with dynamic pricing can actually charge more during peak times. We can't promise we're always cheaper, but we can promise you'll know exactly what you'll pay upfront.",
-    },
-    {
-      q: "Can I request a child seat?",
-      a: "Yes, let us know when booking via the 'Child seat needed' option.",
     },
     {
       q: "Until when can I cancel for free?",
