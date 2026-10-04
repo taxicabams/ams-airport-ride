@@ -370,7 +370,7 @@ function internalNotificationBody(booking: Booking, locale: "nl" | "en"): string
     detailRow("Naar", booking.destination),
     detailRow("Wanneer", `${booking.date} ${booking.time}`),
     detailRow("Passagiers / bagage", `${booking.passengers} / ${booking.luggage}`),
-    detailRow("Voertuig", booking.vehicleType === "BUS" ? "Van" : "Comfort"),
+    detailRow("Voertuig", booking.vehicleType === "BUS" ? "XL Van" : "Comfort"),
   ];
   if (booking.flightNumber) rows.push(detailRow("Vluchtnummer", booking.flightNumber));
   // Real gap found in this audit: the customer-facing "Kinderzitje

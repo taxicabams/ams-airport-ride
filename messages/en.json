@@ -4,15 +4,8 @@
     "description": "Book your Schiphol taxi with a fixed price from €35. Also for regular taxi rides within Amsterdam and between Dutch cities. Pay easily after your ride."
   },
   "Nav": {
-    "home": "Home",
-    "routes": "Routes",
-    "about": "About us",
-    "taxiSchiphol": "Schiphol",
-    "taxiAmsterdam": "Amsterdam",
-    "howItWorks": "How it works",
     "prices": "Prices",
     "ourCars": "Our cars",
-    "contact": "Contact",
     "faq": "FAQ",
     "bookNow": "Book now",
     "openMenu": "Open menu",
@@ -23,7 +16,6 @@
     "freeCancellation": "Free cancellation up to 3 hours in advance"
   },
   "Hero": {
-    "eyebrow": "Schiphol taxi",
     "label1": "Fixed price",
     "label2": "Flight number? We account for delays",
     "label3": "24/7",
@@ -31,10 +23,7 @@
     "titleHighlight": "On time. Fixed price.",
     "heroPrice": "Fixed price from €{price}",
     "subtitle": "Your price is fixed before you book — even at night, on weekends, or in traffic. Add your flight number and we'll take any delay into account. Booking takes 30 seconds.",
-    "supportingText": "Enter your route and see your price right away — before you book.",
-    "ctaPrimary": "Show my fixed price →",
-    "compactTrustLine": "No surcharges · Luggage included · Free cancellation up to 3 hours ahead",
-    "floatingCardRoute": "Schiphol → Amsterdam"
+    "compactTrustLine": "No surcharges · Luggage included · Free cancellation up to 3 hours ahead"
   },
   "FlightMonitor": {
     "label": "How we account for your flight — example",
@@ -48,17 +37,6 @@
     "eyebrow": "Book directly",
     "title": "Book your ride"
   },
-  "Why": {
-    "eyebrow": "Why AMS Airport Ride",
-    "title": "Your airport transfer, without the hassle.",
-    "intro": "From your front door to Schiphol and back again. We keep the booking simple, the price clear and the journey comfortable.",
-    "item1Title": "Clear pricing",
-    "item1Body": "See your fixed fare before you book. No taximeter surprises during your journey.",
-    "item2Title": "Simple booking",
-    "item2Body": "Enter your trip details, confirm your ride and you're ready to go.",
-    "item3Title": "Local airport transfer",
-    "item3Body": "We focus on rides to and from Schiphol and destinations around Amsterdam."
-  },
   "TwoColumnBanner": {
     "amsterdamTitle": "Taxi in Amsterdam",
     "amsterdamBody": "From Amsterdam West to the city centre and every other district. Calculate your ride price based on distance and travel time.",
@@ -66,20 +44,6 @@
     "schipholTitle": "Arriving at Schiphol",
     "schipholBody": "After a long journey, you want to get to your destination quickly and comfortably. Your driver will contact you as soon as you clear customs.",
     "schipholLink": "How Schiphol pickup works →"
-  },
-  "AmsterdamTaxi": {
-    "eyebrow": "More than airport transfers",
-    "title": "Need a taxi in Amsterdam?",
-    "body": "Schiphol isn't required: you can book AMS Airport Ride just as easily for a regular taxi ride within Amsterdam itself.",
-    "fromLabel": "From:",
-    "example1": "home → work",
-    "example2": "station → home",
-    "example3": "hotel → restaurant",
-    "example4": "Amsterdam North → Amsterdam South",
-    "example5": "Osdorp → Amsterdam Centre",
-    "example6": "or any other address in Amsterdam",
-    "outro": "Enter your pickup and destination to see your price right away — based on distance and travel time.",
-    "cta": "Calculate my price →"
   },
   "PaymentTrust": {
     "title": "Pay when you arrive",
@@ -91,27 +55,14 @@
     "eyebrow": "Our cars",
     "title": "Comfortable rides for every trip",
     "mostChosen": "Recommended",
-    "fromPrice": "from €{price}",
     "sedanTitle": "Comfort",
-    "sedanCapacity": "1–{max} passengers",
-    "sedanBody": "Comfortable for individuals, couples and small groups.",
     "sedanCta": "Choose Comfort →",
     "busTitle": "XL Van",
-    "busCapacity": "Up to {max} passengers",
-    "busBody": "More space for larger groups and extra luggage.",
     "busCta": "Choose XL Van →",
     "sedanModel": "Comfortable sedan or similar",
     "busModel": "Mercedes V-Class or similar",
     "specsLine": "{passengers} · {luggage} bags",
     "fromLabel": "From"
-  },
-  "SchipholSteps": {
-    "title": "Arriving at Schiphol",
-    "step1": "Land",
-    "step2": "Collect your luggage",
-    "step3": "Head to the agreed meeting point",
-    "step4": "Meet your driver",
-    "step5": "Continue to your destination"
   },
   "Booking": {
     "heading": "Calculate my fixed price →",
@@ -173,7 +124,7 @@
     "priceBasisFixed": "Fixed price upfront",
     "priceBasisEstimate": "Price based on distance and travel time",
     "vehicleSummarySedan": "Comfort · 1–{max} passengers",
-    "vehicleSummaryBus": "Van · up to {max} passengers",
+    "vehicleSummaryBus": "XL Van · up to {max} passengers",
     "noHiddenCosts": "No hidden costs.",
     "paymentNote": "Pay the driver after your ride, in the car: card, credit card or cash. You always get a receipt.",
     "bookButton": "Book this ride",
@@ -193,7 +144,6 @@
     "submitButton": "Confirm booking",
     "submitting": "Booking…",
     "submitError": "Something went wrong while booking. Please try again.",
-    "requiredField": "This field is required",
     "invalidEmail": "Enter a valid email address",
     "invalidName": "Enter your full name",
     "invalidPhone": "Enter a valid phone number",
@@ -206,9 +156,8 @@
     "title": "Your booking is confirmed",
     "subtitle": "Thank you! We've received your booking.",
     "emailConfirmationSent": "A confirmation has been sent to your email.",
-    "emailConfirmationPending": "Once email confirmations are set up, you'll also receive one by email.",
+    "emailConfirmationPending": "We couldn't confirm the email was sent — your booking has been received regardless.",
     "bookingRef": "Booking reference",
-    "detailsTitle": "Ride details",
     "pickup": "Pickup address",
     "destination": "Destination",
     "dateTime": "Date and time",
@@ -223,18 +172,6 @@
     "contactTitle": "Questions about your booking?",
     "backHome": "← Back to home"
   },
-  "Schiphol": {
-    "eyebrow": "Arriving at Schiphol?",
-    "title": "We'll take care of the last part of your journey.",
-    "intro": "After your flight, the last thing you want is to figure out how to get across Amsterdam. Your driver will pick you up at the agreed meeting point and take you directly to your destination.",
-    "moreLink": "How airport pickup works →"
-  },
-  "FlightDelay": {
-    "title": "Flight delayed?",
-    "highlight": "No problem.",
-    "note": "Connecting flight or a chance of delay? Add your flight number when booking and we'll take it into account.",
-    "cta": "Calculate your airport transfer →"
-  },
   "TrustBar": {
     "title1": "Price is fixed",
     "body1": "No surprises afterwards.",
@@ -245,16 +182,6 @@
     "title4": "Free cancellation",
     "body4": "Up to 3 hours in advance."
   },
-  "Trust": {
-    "fixedPriceTitle": "Clear price",
-    "fixedPriceBody": "For Schiphol rides you know the price upfront. For other rides you see the price based on distance and travel time, before you book.",
-    "easyBookingTitle": "Easy booking",
-    "easyBookingBody": "Enter your route, see your price and book right away.",
-    "doorToDoorTitle": "Door-to-door",
-    "doorToDoorBody": "Pickup and drop-off at your chosen address.",
-    "paymentTitle": "Pay after your ride",
-    "paymentBody": "Easily by card or cash, directly with the driver."
-  },
   "HowItWorks": {
     "eyebrow": "How it works",
     "title": "No app needed, no account.",
@@ -264,20 +191,16 @@
     "step2Title": "Confirm your booking",
     "step2Body": "Choose your vehicle, fill in your details and confirm — you pay after the ride.",
     "step3Title": "We're ready for you",
-    "step3Body": "Your driver tracks your flight and is on time to meet you.",
-    "step4Title": "Book",
-    "step4Body": "Fill in your details and get your confirmation."
+    "step3Body": "Your driver tracks your flight and is on time to meet you."
   },
   "Routes": {
     "eyebrow": "Popular Schiphol routes",
     "title": "What your ride to Schiphol costs.",
     "subtitle": "The same fixed price applies to and from Schiphol.",
-    "viewAll": "View all locations →",
     "colDeparture": "Departure",
     "colDuration": "Travel time",
     "colPrice": "Fixed price",
-    "fixedPrice": "{price}",
-    "bookRoute": "Book route →"
+    "fixedPrice": "{price}"
   },
   "Reviews": {
     "eyebrow": "Reviews",
@@ -292,20 +215,15 @@
     "tagline": "Schiphol & Amsterdam taxi transfers. Fixed price, easy booking.",
     "rights": "All rights reserved.",
     "aboutLink": "About us",
-    "howItWorksLink": "How it works",
     "termsLink": "Terms and Conditions",
     "privacyLink": "Privacy Policy",
     "cookiesLink": "Cookies",
     "cookieSettingsLink": "Cookie settings",
-    "cancellationLink": "Cancellation Policy",
     "servicesTitle": "Services",
     "serviceAmsterdam": "Amsterdam Taxi",
     "serviceSchiphol": "Schiphol Taxi",
-    "serviceAirportTransfers": "Airport transfers",
-    "servicePrivateRides": "Private rides",
     "routesTitle": "Routes",
-    "infoTitle": "Information",
-    "legalTitle": "Legal"
+    "infoTitle": "Information"
   },
   "FinalCtaSimple": {
     "title": "Flight booked?",
