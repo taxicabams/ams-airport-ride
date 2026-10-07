@@ -254,7 +254,7 @@
   },
   "Cookies": {
     "bannerTitle": "Cookie preferences",
-    "bannerBody": "We only use strictly necessary cookies to make the site work. Once we activate analytics/ad measurement, we'll explicitly ask for consent here before anything loads.",
+    "bannerBody": "We use necessary cookies to make the site work. For analytics and ad measurement we ask for your consent — these only load after your choice below.",
     "bannerLink": "Learn more",
     "accept": "Accept",
     "reject": "Reject",
