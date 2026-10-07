@@ -294,7 +294,20 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
       });
       if (!res.ok) throw new Error("Booking failed");
       const data = await res.json();
-      track("booking_completed", { bookingId: data.bookingId });
+      // Real gap found while setting up the Google Ads "Aankoop"
+      // (Purchase) conversion goal: this event only ever sent
+      // bookingId, never the actual price. Without a `value`, Google
+      // Ads can treat every booking as equally "worth" the same,
+      // instead of being able to learn that an XL Van / long-route
+      // booking is worth more than a short Comfort ride and bid
+      // accordingly. `value`/`currency` are the standard field names
+      // GA4's own purchase event uses, so this plugs directly into
+      // that without any other wiring.
+      track("booking_completed", {
+        bookingId: data.bookingId,
+        value: data.totalPrice as number,
+        currency: "EUR",
+      });
       // Clear the draft the instant a booking actually completes — a
       // second booking started later in the same tab must never inherit
       // this one's name/phone/address (see this function's own note).
