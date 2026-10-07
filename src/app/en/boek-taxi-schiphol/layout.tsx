@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { fontVariables } from "@/lib/fonts";
 import { Analytics } from "@/components/marketing/Analytics";
+import { CookieConsentBanner } from "@/components/marketing/CookieConsentBanner";
 import "../../globals.css";
 
 /**
@@ -13,6 +14,12 @@ import "../../globals.css";
  * segment, which Next.js resolves ahead of the `[locale]` dynamic
  * segment at the same level — same precedence the real `/en/...` site
  * pages already rely on being reachable at all alongside this route.
+ *
+ * CookieConsentBanner is included for the same reason as the Dutch
+ * sibling route's layout — see that file's own note: without it, a
+ * visitor arriving straight from an ad (this page's entire purpose) has
+ * no way to ever grant analytics consent, permanently blocking GA4/
+ * Google Ads tracking for all of this page's real traffic.
  */
 export const metadata: Metadata = {
   title: "Book your Schiphol taxi — fixed price from €35 — AMS Airport Ride",
@@ -42,6 +49,7 @@ export default async function LandingLayoutEn({ children }: { children: React.Re
         <Analytics />
         <NextIntlClientProvider locale="en" messages={messages}>
           {children}
+          <CookieConsentBanner />
         </NextIntlClientProvider>
       </body>
     </html>

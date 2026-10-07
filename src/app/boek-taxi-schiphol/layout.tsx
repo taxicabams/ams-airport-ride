@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { fontVariables } from "@/lib/fonts";
 import { Analytics } from "@/components/marketing/Analytics";
+import { CookieConsentBanner } from "@/components/marketing/CookieConsentBanner";
 import "../globals.css";
 
 /**
@@ -38,6 +39,14 @@ import "../globals.css";
  * Fonts come from lib/fonts.ts, not a fresh next/font/google call here —
  * calling the same Google Font loader from two separate root layouts
  * hit a real, reproducible Next.js build bug (see that file's own note).
+ *
+ * CookieConsentBanner is included even though it's the one piece of UI
+ * besides the booking widget itself: without it, a visitor arriving here
+ * straight from an ad (the whole point of this route) has no way to ever
+ * grant analytics consent, so Analytics.tsx's consent check permanently
+ * blocks GA4/Google Ads from firing for 100% of this page's real traffic
+ * — silently breaking the exact conversion tracking this page exists to
+ * feed. Found and fixed in the same pass that wired up real GA4/Ads IDs.
  */
 export const metadata: Metadata = {
   title: "Boek uw taxi Schiphol — vaste prijs vanaf €35 — AMS Airport Ride",
@@ -67,6 +76,7 @@ export default async function LandingLayout({ children }: { children: React.Reac
         <Analytics />
         <NextIntlClientProvider locale="nl" messages={messages}>
           {children}
+          <CookieConsentBanner />
         </NextIntlClientProvider>
       </body>
     </html>

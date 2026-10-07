@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { ShieldCheckIcon, ClockIcon, PhoneIcon, CalendarIcon } from "@/components/ui/icons";
+import { ShieldCheckIcon, ClockIcon, WhatsAppIcon, CalendarIcon } from "@/components/ui/icons";
 
 /**
  * "Vertrekbord" USP band — 4 columns, each with a navy icon block + amber
@@ -14,7 +14,7 @@ export async function TrustBar() {
   const items = [
     { Icon: ShieldCheckIcon, title: t("title1"), body: t("body1") },
     { Icon: ClockIcon, title: t("title2"), body: t("body2") },
-    { Icon: PhoneIcon, title: t("title3"), body: t("body3") },
+    { Icon: WhatsAppIcon, title: t("title3"), body: t("body3") },
     { Icon: CalendarIcon, title: t("title4"), body: t("body4") },
   ];
 
