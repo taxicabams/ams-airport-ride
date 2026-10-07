@@ -5,13 +5,23 @@ import Script from "next/script";
 import { CONSENT_CHANGED_EVENT, readConsentCookie } from "@/lib/cookieConsent";
 
 /**
- * Loads GA4 and/or GTM — but only once a real-looking ID is actually
- * configured (NEXT_PUBLIC_GA4_ID / NEXT_PUBLIC_GTM_ID, both empty by
- * default — see .env's own note). No ID set means this renders nothing
- * at all: no external script tag, no request to Google, nothing to
- * explain away later. Real IDs always start with "G-" (GA4) or "GTM-"
- * (Tag Manager) — checked here so a stray typo/placeholder value can
- * never accidentally start firing real analytics requests.
+ * Loads GA4, a Google Ads conversion tag, and/or GTM — but only once a
+ * real-looking ID is actually configured (NEXT_PUBLIC_GA4_ID /
+ * NEXT_PUBLIC_GOOGLE_ADS_ID / NEXT_PUBLIC_GTM_ID, all empty by default
+ * — see .env's own note). No ID set means this renders nothing at all:
+ * no external script tag, no request to Google, nothing to explain
+ * away later. Real IDs always start with "G-" (GA4), "AW-" (Google Ads
+ * conversion tag — added once the user set up a Google Ads account and
+ * Google asked for this exact tag), or "GTM-" (Tag Manager) — checked
+ * here so a stray typo/placeholder value can never accidentally start
+ * firing real analytics requests.
+ *
+ * GA4 and the Google Ads tag share ONE gtag.js loader script (that's
+ * how Google's own snippet works: the same gtag.js bootstrap, with one
+ * `gtag('config', ...)` call per destination ID) rather than two
+ * separate script tags doing the same job — GTM, when present, takes
+ * over both jobs via its own container instead (hence the `!hasGtm`
+ * guard below).
  *
  * Rewritten from a Server Component to a Client Component during the
  * Ads-readiness pass that actually turned on a real GA4 ID: the
@@ -47,15 +57,18 @@ import { CONSENT_CHANGED_EVENT, readConsentCookie } from "@/lib/cookieConsent";
  * relied on for the same job.
  */
 const ga4Id = process.env.NEXT_PUBLIC_GA4_ID;
+const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
 const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 const hasGa4 = Boolean(ga4Id && ga4Id.startsWith("G-"));
+const hasGoogleAds = Boolean(googleAdsId && googleAdsId.startsWith("AW-"));
 const hasGtm = Boolean(gtmId && gtmId.startsWith("GTM-"));
+const hasAnyGtagId = hasGa4 || hasGoogleAds;
 
 export function Analytics() {
   const [consented, setConsented] = useState(false);
 
   useEffect(() => {
-    if (!hasGa4 && !hasGtm) return;
+    if (!hasAnyGtagId && !hasGtm) return;
     // Same hydration-safe "browser-only state, decided once on mount"
     // pattern as CookieConsentBanner.tsx's own identical check — always
     // starting `consented` false and reading the real value here (it
@@ -68,7 +81,7 @@ export function Analytics() {
     return () => window.removeEventListener(CONSENT_CHANGED_EVENT, onChange);
   }, []);
 
-  if (!hasGa4 && !hasGtm) return null;
+  if (!hasAnyGtagId && !hasGtm) return null;
   if (!consented) return null;
 
   return (
@@ -78,14 +91,18 @@ export function Analytics() {
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtmId}');`}
         </Script>
       )}
-      {hasGa4 && !hasGtm && (
+      {hasAnyGtagId && !hasGtm && (
         <>
-          <Script src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} strategy="afterInteractive" />
-          <Script id="ga4-init" strategy="afterInteractive">
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id ?? googleAdsId}`}
+            strategy="afterInteractive"
+          />
+          <Script id="gtag-init" strategy="afterInteractive">
             {`window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', '${ga4Id}');`}
+              ${hasGa4 ? `gtag('config', '${ga4Id}');` : ""}
+              ${hasGoogleAds ? `gtag('config', '${googleAdsId}');` : ""}`}
           </Script>
         </>
       )}

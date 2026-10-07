@@ -11,9 +11,12 @@ import { CONSENT_COOKIE_NAME, CONSENT_CHANGED_EVENT, readConsentCookie, type Con
 // loading decision can never disagree about whether there's anything to
 // ask consent for.
 const ga4Id = process.env.NEXT_PUBLIC_GA4_ID;
+const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
 const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 const hasTrackingConfigured = Boolean(
-  (ga4Id && ga4Id.startsWith("G-")) || (gtmId && gtmId.startsWith("GTM-"))
+  (ga4Id && ga4Id.startsWith("G-")) ||
+    (googleAdsId && googleAdsId.startsWith("AW-")) ||
+    (gtmId && gtmId.startsWith("GTM-"))
 );
 
 /** Name matches the event CookieSettingsLink.tsx dispatches. */
