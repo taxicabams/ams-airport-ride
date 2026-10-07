@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { computeQuoteWithRoute } from "@/lib/computeQuote";
 import { bookingInputSchema } from "@/lib/validation";
 import { sendBookingEmails, isEmailConfigured } from "@/lib/email";
+import { sendBookingPushNotification } from "@/lib/pushNotification";
 import { bookingReference } from "@/lib/bookingReference";
 import { routing } from "@/i18n/routing";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
@@ -118,6 +119,9 @@ export async function POST(request: Request) {
     // Fire-and-forget: the booking is already safely stored, so a slow or
     // failing email provider shouldn't delay or fail this response.
     void sendBookingEmails(booking, locale);
+    // Second, independent notification channel — see pushNotification.ts's
+    // own note on why (email alone was getting missed).
+    void sendBookingPushNotification(booking);
 
     return NextResponse.json({
       // The friendly "AMS-DDMMYY-XXXX" reference, not the raw database
