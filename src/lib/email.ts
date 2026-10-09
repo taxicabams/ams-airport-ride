@@ -497,32 +497,40 @@ export async function sendReviewRequestEmail(booking: Booking, locale: "nl" | "e
   const reviewUrl = locale === "nl" ? `${SITE_URL}/review` : `${SITE_URL}/en/review`;
   const name = escapeHtml(booking.customerName.split(" ")[0] || booking.customerName);
 
-  // Plain-text ★ characters, not the site's StarIcon SVG — same
+  // Plain-text ★ character, not the site's StarIcon SVG — same
   // reasoning as the flight-path divider in emailLayout: email clients
   // can't reliably render inline SVG, but a star glyph at a large font
   // size looks identical in practice and needs no hosted image.
+  //
+  // One compact row, ONE star per cell (not a repeated "N of 5 filled"
+  // block per link — an earlier version of this showed all 5 stars in
+  // EACH of the 5 cells, which overflowed the email's own 560px content
+  // width once laid out side by side, see this function's commit
+  // history). Reads left-to-right exactly like the site's own star
+  // picker (DetailsStep/ReviewForm): tapping the 3rd star means "3".
+  // The number underneath each one removes any doubt on a phone where
+  // the row might wrap or compress.
   const starLinks = [1, 2, 3, 4, 5]
     .map(
-      (n) =>
-        `<a href="${reviewUrl}?rating=${n}" style="text-decoration:none;color:${BRAND_BLUE};font-size:32px;padding:0 2px;">${"★".repeat(n)}${"☆".repeat(5 - n)}</a>`
+      (n) => `<td style="text-align:center;padding:0 10px;">
+                <a href="${reviewUrl}?rating=${n}" style="display:block;text-decoration:none;color:${BRAND_BLUE};font-size:32px;line-height:1;">★</a>
+                <a href="${reviewUrl}?rating=${n}" style="display:block;text-decoration:none;color:${MUTED};font-size:12px;font-weight:700;margin-top:4px;">${n}</a>
+              </td>`
     )
-    // Each link shows all 5 stars with the first N filled — that one
-    // tap communicates both "this is a 1-5 rating" and "here's my
-    // answer" at once, no separate legend needed above the row.
-    .join("<br/>");
+    .join("");
 
   const body =
     locale === "nl"
       ? `<p>Hoi ${name},</p>
          <p>Bedankt dat u met ons heeft gereisd! Hoe was uw rit? Eén tik op het aantal sterren is genoeg:</p>
-         <div style="text-align:center;margin:20px 0;">${starLinks}</div>
+         <table role="presentation" cellpadding="0" cellspacing="0" style="margin:20px auto;"><tr>${starLinks}</tr></table>
          <p style="text-align:center;color:${MUTED};font-size:13px;margin:16px 0 0;">
            Liever eerst iets opschrijven? <a href="${reviewUrl}" style="color:${BRAND_BLUE};">Open het formulier →</a>
          </p>
          <p style="color:${MUTED};font-size:13px;margin-top:20px;">Geen zin? Dan hoeft u niets te doen — fijne reis verder.</p>`
       : `<p>Hi ${name},</p>
          <p>Thanks for riding with us! How was your ride? One tap on a star rating is all it takes:</p>
-         <div style="text-align:center;margin:20px 0;">${starLinks}</div>
+         <table role="presentation" cellpadding="0" cellspacing="0" style="margin:20px auto;"><tr>${starLinks}</tr></table>
          <p style="text-align:center;color:${MUTED};font-size:13px;margin:16px 0 0;">
            Prefer to write something first? <a href="${reviewUrl}" style="color:${BRAND_BLUE};">Open the form →</a>
          </p>
