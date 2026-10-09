@@ -5,6 +5,7 @@ import {
   isDateTimeNotInPast,
   bookingInputSchema,
   isValidPhone,
+  isDisposableEmail,
 } from "./validation";
 
 // Computed relative to "now" (not hardcoded) so these never go stale.
@@ -258,4 +259,34 @@ describe("bookingInputSchema — flight number required for a pickup FROM Schiph
     });
     expect(result.success).toBe(true);
   });
+});
+
+describe("isDisposableEmail / bookingInputSchema — throwaway email domains", () => {
+  const base = {
+    pickup: "Amsterdam",
+    destination: "Utrecht",
+    date: NEXT_YEAR,
+    time: "14:00",
+    passengers: 1,
+    luggage: 1,
+    vehicleType: "PERSONENAUTO" as const,
+    name: "Test Persoon",
+    phone: "+31612345678",
+  };
+
+  it.each(["test@mailinator.com", "foo@guerrillamail.com", "x@yopmail.com", "a@TEMP-MAIL.ORG"])(
+    "rejects a known disposable-email domain: %s",
+    (email) => {
+      expect(isDisposableEmail(email)).toBe(true);
+      expect(bookingInputSchema.safeParse({ ...base, email }).success).toBe(false);
+    }
+  );
+
+  it.each(["test@gmail.com", "foo@outlook.com", "real.person@company.nl"])(
+    "accepts a real email domain: %s",
+    (email) => {
+      expect(isDisposableEmail(email)).toBe(false);
+      expect(bookingInputSchema.safeParse({ ...base, email }).success).toBe(true);
+    }
+  );
 });

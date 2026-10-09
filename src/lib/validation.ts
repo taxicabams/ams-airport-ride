@@ -32,6 +32,39 @@ export function isSchipholPickup(pickup: string): boolean {
   return matchLocation(pickup)?.isAirport === true;
 }
 
+/**
+ * A short, well-known list of disposable/throwaway email domains —
+ * deliberately NOT an attempt to catch every fake email (that's what
+ * the Resend bounce webhook is for, see api/webhooks/resend: a real
+ * delivery failure is a far stronger signal than any domain list could
+ * ever be). This only blocks the specific, common case of someone
+ * deliberately using a temp-mail service to book without a real
+ * address — those domains are built to self-destruct within
+ * minutes/hours, so a booking confirmation sent there is guaranteed
+ * useless regardless of whether the mailbox "exists" at submission
+ * time. A real customer never has a legitimate reason to use one of
+ * these for something as account-like as a taxi booking (updates,
+ * receipts, a driver needing to reach them).
+ */
+const DISPOSABLE_EMAIL_DOMAINS = new Set([
+  "mailinator.com",
+  "guerrillamail.com",
+  "10minutemail.com",
+  "tempmail.com",
+  "temp-mail.org",
+  "yopmail.com",
+  "throwawaymail.com",
+  "trashmail.com",
+  "getnada.com",
+  "maildrop.cc",
+  "sharklasers.com",
+  "dispostable.com",
+]);
+export function isDisposableEmail(email: string): boolean {
+  const domain = email.trim().toLowerCase().split("@")[1];
+  return domain !== undefined && DISPOSABLE_EMAIL_DOMAINS.has(domain);
+}
+
 export const placesAutocompleteInputSchema = z.object({
   input: z.string().trim().min(1).max(200),
   sessionToken: z.string().trim().min(1).max(200),
@@ -192,6 +225,10 @@ export const bookingInputSchema = z
   .refine((data) => !isSchipholPickup(data.pickup) || data.flightNumber.trim().length > 0, {
     message: "Flight number is required for a pickup from Schiphol",
     path: ["flightNumber"],
+  })
+  .refine((data) => !isDisposableEmail(data.email), {
+    message: "Disposable email addresses are not accepted",
+    path: ["email"],
   });
 
 export type BookingInput = z.infer<typeof bookingInputSchema>;
