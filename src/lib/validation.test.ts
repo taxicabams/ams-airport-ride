@@ -8,6 +8,7 @@ import {
   isDisposableEmail,
   reviewInputSchema,
   resolveReviewerName,
+  hasPlausibleAddress,
 } from "./validation";
 
 // Computed relative to "now" (not hardcoded) so these never go stale.
@@ -94,7 +95,7 @@ describe("isDateTimeNotInPast", () => {
 describe("bookingInputSchema — date must not be in the past", () => {
   const base = {
     pickup: "Schiphol",
-    destination: "Amsterdam",
+    destination: "Amsterdam 1",
     date: NEXT_YEAR,
     time: "14:00",
     passengers: 1,
@@ -136,7 +137,7 @@ describe("bookingInputSchema — return trip date/time refine", () => {
   // here. Fixed the same way: compute relative to real "now".
   const base = {
     pickup: "Schiphol",
-    destination: "Amsterdam",
+    destination: "Amsterdam 1",
     date: NEXT_YEAR,
     time: "14:00",
     passengers: 1,
@@ -180,8 +181,8 @@ describe("isValidPhone / bookingInputSchema — phone number", () => {
   // "valid" phone number — a customer's driver then had no way to
   // actually reach them.
   const base = {
-    pickup: "Amsterdam",
-    destination: "Utrecht",
+    pickup: "Amsterdam 1",
+    destination: "Utrecht 1",
     date: NEXT_YEAR,
     time: "14:00",
     passengers: 1,
@@ -226,7 +227,7 @@ describe("bookingInputSchema — flight number required for a pickup FROM Schiph
     const result = bookingInputSchema.safeParse({
       ...base,
       pickup: "Schiphol",
-      destination: "Amsterdam",
+      destination: "Amsterdam 1",
       flightNumber: "",
     });
     expect(result.success).toBe(false);
@@ -236,7 +237,7 @@ describe("bookingInputSchema — flight number required for a pickup FROM Schiph
     const result = bookingInputSchema.safeParse({
       ...base,
       pickup: "Schiphol",
-      destination: "Amsterdam",
+      destination: "Amsterdam 1",
       flightNumber: "KL1234",
     });
     expect(result.success).toBe(true);
@@ -245,7 +246,7 @@ describe("bookingInputSchema — flight number required for a pickup FROM Schiph
   it("does not require a flight number for a drop-off AT Schiphol (departure, not arrival)", () => {
     const result = bookingInputSchema.safeParse({
       ...base,
-      pickup: "Amsterdam",
+      pickup: "Amsterdam 1",
       destination: "Schiphol",
       flightNumber: "",
     });
@@ -255,8 +256,8 @@ describe("bookingInputSchema — flight number required for a pickup FROM Schiph
   it("does not require a flight number for a private ride that never touches Schiphol", () => {
     const result = bookingInputSchema.safeParse({
       ...base,
-      pickup: "Utrecht",
-      destination: "Rotterdam",
+      pickup: "Utrecht 1",
+      destination: "Rotterdam 1",
       flightNumber: "",
     });
     expect(result.success).toBe(true);
@@ -265,8 +266,8 @@ describe("bookingInputSchema — flight number required for a pickup FROM Schiph
 
 describe("isDisposableEmail / bookingInputSchema — throwaway email domains", () => {
   const base = {
-    pickup: "Amsterdam",
-    destination: "Utrecht",
+    pickup: "Amsterdam 1",
+    destination: "Utrecht 1",
     date: NEXT_YEAR,
     time: "14:00",
     passengers: 1,
@@ -308,5 +309,45 @@ describe("resolveReviewerName / reviewInputSchema — only rating is required", 
 
   it("keeps a real name exactly as given, trimmed", () => {
     expect(resolveReviewerName("  Jan de Vries  ", "nl")).toBe("Jan de Vries");
+  });
+});
+
+describe("hasPlausibleAddress / bookingInputSchema — real address required server-side", () => {
+  // Real gap found live: a booking sent straight to the API (bypassing
+  // the real website's own Google Places precision check — see
+  // ResolvedPlace.tooImprecise) with a bare city name as the
+  // destination went through with no server-side objection at all.
+  const base = {
+    pickup: "Schiphol",
+    date: NEXT_YEAR,
+    time: "14:00",
+    passengers: 1,
+    luggage: 1,
+    vehicleType: "PERSONENAUTO" as const,
+    name: "Test Persoon",
+    phone: "+31612345678",
+    email: "test@example.com",
+    flightNumber: "KL1234",
+  };
+
+  it.each(["Haarlem, Netherlands", "Zeist, Netherlands", "Rotterdam", "Amsterdam"])(
+    "rejects a bare city/area name with no house number as the destination: %s",
+    (destination) => {
+      expect(hasPlausibleAddress(destination)).toBe(false);
+      expect(bookingInputSchema.safeParse({ ...base, destination }).success).toBe(false);
+    }
+  );
+
+  it.each(["Bergweg 12, Haarlem", "Damrak 1, 1012 LP Amsterdam", "Kerkstraat 5"])(
+    "accepts a real street address with a house number: %s",
+    (destination) => {
+      expect(hasPlausibleAddress(destination)).toBe(true);
+      expect(bookingInputSchema.safeParse({ ...base, destination }).success).toBe(true);
+    }
+  );
+
+  it("never requires a house number for Schiphol itself — the one legitimate no-digit case", () => {
+    expect(hasPlausibleAddress("Schiphol Airport")).toBe(true);
+    expect(hasPlausibleAddress("Schiphol")).toBe(true);
   });
 });

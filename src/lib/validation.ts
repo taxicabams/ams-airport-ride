@@ -33,6 +33,32 @@ export function isSchipholPickup(pickup: string): boolean {
 }
 
 /**
+ * Server-side backstop for the exact gap found live: the real website
+ * flow already refuses a bare city/area pick as an address (see
+ * ResolvedPlace.tooImprecise in lib/places/types.ts and RouteStep.tsx's
+ * own handling of it) — but that check only runs client-side, against
+ * a real Google Places result. A request sent straight to this API
+ * (bypassing the browser UI entirely) skips it completely, and a plain
+ * string like "Haarlem, Netherlands" or "Zeist, Netherlands" has
+ * nothing server-side stopping it — confirmed live during this
+ * session's own direct-API testing.
+ *
+ * Can't re-run the client's exact Google Places type check here without
+ * a placeId (free-text addresses don't carry one), so this is a
+ * cheaper, real heuristic instead: a genuine street address always has
+ * a number in it somewhere (a house number, or at minimum a postal
+ * code) — a bare city/area name never does. The one legitimate
+ * exception is Schiphol itself (the hardcoded "Schiphol Airport" pickup/
+ * destination text the booking wizard always uses for that side of an
+ * airport-transfer tab — see RouteStep.tsx's SCHIPHOL constant), which
+ * correctly needs no house number and never will.
+ */
+export function hasPlausibleAddress(address: string): boolean {
+  if (matchLocation(address)?.isAirport === true) return true;
+  return /\d/.test(address);
+}
+
+/**
  * A short, well-known list of disposable/throwaway email domains —
  * deliberately NOT an attempt to catch every fake email (that's what
  * the Resend bounce webhook is for, see api/webhooks/resend: a real
@@ -255,6 +281,14 @@ export const bookingInputSchema = z
   .refine((data) => !isDisposableEmail(data.email), {
     message: "Disposable email addresses are not accepted",
     path: ["email"],
+  })
+  .refine((data) => hasPlausibleAddress(data.pickup), {
+    message: "Pickup must be a specific address (street + house number), not just a city",
+    path: ["pickup"],
+  })
+  .refine((data) => hasPlausibleAddress(data.destination), {
+    message: "Destination must be a specific address (street + house number), not just a city",
+    path: ["destination"],
   });
 
 export type BookingInput = z.infer<typeof bookingInputSchema>;

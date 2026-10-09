@@ -33,12 +33,21 @@ export function ReviewForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(false);
   const [done, setDone] = useState(false);
+  // True when the rating arrived pre-filled from the email's 1-tap
+  // links — used only to show a soft, encouraging nudge toward adding
+  // a few words (never a requirement, see the comment field's own
+  // optional status): a star-only rating is a genuine, useful private
+  // signal, but only a review with real text is ever shown on the site
+  // (see Reviews.tsx's own note) — worth explaining briefly so the
+  // extra tap-through to type something feels worthwhile, not nagging.
+  const [prefilledFromEmail, setPrefilledFromEmail] = useState(false);
 
   useEffect(() => {
     const fromEmail = Number(searchParams.get("rating"));
     if (Number.isInteger(fromEmail) && fromEmail >= 1 && fromEmail <= 5) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setRating(fromEmail);
+      setPrefilledFromEmail(true);
     }
     // Only ever read once, on the link that brought the visitor here —
     // never re-run on an unrelated re-render.
@@ -117,7 +126,11 @@ export function ReviewForm() {
         />
       </Field>
 
-      <Field label={t("commentLabel")} htmlFor="review-comment">
+      <Field
+        label={t("commentLabel")}
+        htmlFor="review-comment"
+        hint={prefilledFromEmail && comment.length === 0 ? t("commentNudge") : undefined}
+      >
         <textarea
           id="review-comment"
           rows={4}

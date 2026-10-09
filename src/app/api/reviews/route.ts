@@ -53,8 +53,11 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
+  // Same filter as Reviews.tsx's own query (and the same reasoning —
+  // see that file's note): a star-only review is never public-facing,
+  // regardless of which code path reads published reviews.
   const reviews = await prisma.review.findMany({
-    where: { published: true },
+    where: { published: true, comment: { not: "" } },
     orderBy: { createdAt: "desc" },
     take: 9,
     select: { id: true, customerName: true, rating: true, comment: true },

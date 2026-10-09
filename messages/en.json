@@ -217,6 +217,7 @@
     "ratingLabel": "Your rating",
     "commentLabel": "Your experience (optional)",
     "commentPlaceholder": "Tell us briefly how your ride went...",
+    "commentNudge": "Tip: we only publish reviews with a few words of text — your rating alone still helps us, but adding a sentence is what makes it visible to other travelers.",
     "submitButton": "Submit review",
     "submitting": "Submitting...",
     "submitError": "Submitting failed. Please try again.",

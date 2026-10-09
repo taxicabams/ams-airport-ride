@@ -16,6 +16,20 @@ import { prisma } from "@/lib/db";
  * entirely invisible until the first real review is approved, then
  * appears automatically — no code change needed to "launch" it.
  *
+ * Only ever shows a review that has actual written text — direct
+ * client concern: the 1-tap rating links in sendReviewRequestEmail
+ * (star only, no comment) are genuinely valuable as a quick, private
+ * satisfaction signal (an instant push notification either way), but a
+ * public page full of nameless, textless "★★★★★" entries reads exactly
+ * like something the owner typed themselves, real or not. This filter
+ * is the actual fix — not a display-only hide, the DB query itself
+ * excludes them, so a star-only review can never be counted in the
+ * average rating or the review count either, no matter what `published`
+ * ends up set to. A blank *name* (shown as "Anoniem"/"Anonymous") next
+ * to real written text is left alone — that combination is completely
+ * normal on genuine review sites and isn't the thing that reads as
+ * fake; an empty comment is.
+ *
  * Still wrapped in try/catch: defensive against the Review table not
  * existing in whatever database this happens to run against (e.g. a
  * fresh local clone before migrations are applied), degrading to
@@ -27,7 +41,7 @@ export async function Reviews() {
   let reviews: { id: string; customerName: string; rating: number; comment: string }[] = [];
   try {
     reviews = await prisma.review.findMany({
-      where: { published: true },
+      where: { published: true, comment: { not: "" } },
       orderBy: { createdAt: "desc" },
       take: 9,
       select: { id: true, customerName: true, rating: true, comment: true },
@@ -65,10 +79,10 @@ export async function Reviews() {
                 <StarIcon key={i} className={`h-3.5 w-3.5 ${i < review.rating ? "" : "opacity-25"}`} />
               ))}
             </span>
-            {/* A star-only review (submitted via the 1-tap email links,
-                see sendReviewRequestEmail) has no comment text — never
-                render an empty paragraph for it. */}
-            {review.comment.length > 0 && <p className="mt-2 text-sm text-muted">{review.comment}</p>}
+            {/* Always real text here — the query above only ever
+                returns reviews with a non-empty comment, see this
+                file's own note on why. */}
+            <p className="mt-2 text-sm text-muted">{review.comment}</p>
             <p className="mt-3 text-sm font-semibold text-foreground">{review.customerName}</p>
           </div>
         ))}

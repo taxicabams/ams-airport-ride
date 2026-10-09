@@ -45,7 +45,7 @@ describe("bookingInputSchema — capacity above the Bus maximum is not allowed",
 
   const base = {
     pickup: "Schiphol",
-    destination: "Amsterdam",
+    destination: "Amsterdam 1",
     date: NEXT_YEAR,
     time: "14:00",
     vehicleType: "BUS" as const,
