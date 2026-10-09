@@ -111,6 +111,18 @@ model Booking {
   // once in the same window.
   reviewRequestSentAt DateTime?
 
+  // Real gap found live: a genuine-looking booking (name, route, price —
+  // all plausible) turned out to have an unreachable phone, no
+  // WhatsApp, AND a bounced confirmation email — but nothing in the app
+  // itself ever surfaced that last, most conclusive signal. Set by the
+  // Resend webhook (api/webhooks/resend) the moment the real mail
+  // provider reports a hard bounce/complaint for this booking's
+  // customerEmail — an actual delivery-failure fact, not a guess, so
+  // this is a much stronger "probably not a real customer" signal than
+  // any format-only validation could ever be.
+  emailBounced       Boolean @default(false)
+  emailBounceReason  String?
+
   @@index([createdAt])
   @@index([rideType])
 }

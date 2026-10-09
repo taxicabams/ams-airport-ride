@@ -76,3 +76,21 @@ export async function sendReviewPushNotification(review: { id: string; customerN
     `review ${review.id}`
   );
 }
+
+/**
+ * Sent by api/webhooks/resend the moment Resend reports a hard bounce
+ * or spam complaint for a booking's confirmation email — see that
+ * route's own note on why this is a much stronger "probably not a real
+ * customer" signal than anything checkable at submission time. High
+ * priority + a distinct warning tag so this visually stands out from a
+ * routine new-booking push in the ntfy app.
+ */
+export async function sendBounceAlertPushNotification(booking: Booking, reason: string): Promise<void> {
+  const ref = bookingReference(booking);
+  await sendPush(
+    `⚠️ Mail gebounced voor ${ref} — mogelijk nep`,
+    `${booking.customerName} · ${booking.customerEmail} · ${booking.customerPhone}\nReden: ${reason}\nRoute: ${booking.pickupAddress} → ${booking.destination}`,
+    "warning,x",
+    `bounce alert ${ref}`
+  );
+}
