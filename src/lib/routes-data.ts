@@ -63,11 +63,11 @@ const CITY_CONTENT: CityContent[] = [
     },
     faq: {
       nl: [
-        { q: "Stopt de chauffeur bij mijn hotel in de binnenstad?", a: "Ja, we brengen u tot voor de deur, ook in de historische binnenstad van Haarlem." },
+        { q: "Stopt de chauffeur bij mijn hotel in de binnenstad?", a: "Ja, de chauffeur zet u tot voor de deur af, ook in de historische binnenstad van Haarlem." },
         { q: "Wat kost een taxi Schiphol Haarlem?", a: "Wij hanteren een vaste prijs die u vooraf ziet — geen verrassingen achteraf." },
       ],
       en: [
-        { q: "Will the driver stop right at my hotel in the city centre?", a: "Yes, we drop you off right at the door, including in Haarlem's historic centre." },
+        { q: "Will the driver stop right at my hotel in the city centre?", a: "Yes, the driver drops you off right at the door, including in Haarlem's historic centre." },
         { q: "What does a Schiphol Haarlem taxi cost?", a: "We use a fixed price that you see upfront — no surprises afterwards." },
       ],
     },
@@ -81,11 +81,11 @@ const CITY_CONTENT: CityContent[] = [
     faq: {
       nl: [
         { q: "Hoe ver is Hoofddorp van Schiphol?", a: "Heel dichtbij — Hoofddorp grenst aan Schiphol, de rit duurt doorgaans maar een paar minuten." },
-        { q: "Kan ik ook naar een kantoor in Hoofddorp?", a: "Ja, wij brengen u naar elk adres in Hoofddorp, zowel zakelijk als privé." },
+        { q: "Kan ik ook naar een kantoor in Hoofddorp?", a: "Ja, u kunt elk adres in Hoofddorp opgeven als bestemming, zowel zakelijk als privé." },
       ],
       en: [
         { q: "How far is Hoofddorp from Schiphol?", a: "Very close — Hoofddorp borders Schiphol, so the ride usually only takes a few minutes." },
-        { q: "Can you also take me to an office in Hoofddorp?", a: "Yes, we take you to any address in Hoofddorp, for business or personal trips." },
+        { q: "Can you also take me to an office in Hoofddorp?", a: "Yes, you can enter any address in Hoofddorp as your destination, for business or personal trips." },
       ],
     },
   },
@@ -148,11 +148,11 @@ const CITY_CONTENT: CityContent[] = [
     },
     faq: {
       nl: [
-        { q: "Rijdt u ook naar Scheveningen?", a: "Ja, we brengen u ook naar Scheveningen en andere delen van de gemeente Den Haag — vermeld dit gewoon bij het boeken." },
+        { q: "Rijdt u ook naar Scheveningen?", a: "Ja, u kunt Scheveningen of elk ander deel van de gemeente Den Haag gewoon als bestemming opgeven bij het boeken." },
         { q: "Kan ik vroeg in de ochtend vertrekken?", a: "Ja, u kunt op elk moment boeken, ook voor vroege vluchten vanaf Schiphol." },
       ],
       en: [
-        { q: "Do you also drive to Scheveningen?", a: "Yes, we also take you to Scheveningen and other parts of The Hague — just mention this when booking." },
+        { q: "Do you also drive to Scheveningen?", a: "Yes, you can enter Scheveningen or any other part of The Hague as your destination when booking." },
         { q: "Can I depart early in the morning?", a: "Yes, you can book at any time, including for early flights from Schiphol." },
       ],
     },
@@ -199,11 +199,11 @@ const CITY_CONTENT: CityContent[] = [
     },
     faq: {
       nl: [
-        { q: "Komt de chauffeur ook naar De Kwakel?", a: "Ja, we rijden naar elk adres binnen de gemeente Uithoorn, inclusief De Kwakel." },
+        { q: "Komt de chauffeur ook naar De Kwakel?", a: "Ja, u kunt elk adres binnen de gemeente Uithoorn opgeven als bestemming, inclusief De Kwakel." },
         { q: "Is de prijs naar Uithoorn vast?", a: "Ja, u ziet de vaste prijs vooraf, ongeacht het verkeer onderweg." },
       ],
       en: [
-        { q: "Do you also drive to De Kwakel?", a: "Yes, we drive to any address within the Uithoorn municipality, including De Kwakel." },
+        { q: "Do you also drive to De Kwakel?", a: "Yes, you can enter any address within the Uithoorn municipality as your destination, including De Kwakel." },
         { q: "Is the price to Uithoorn fixed?", a: "Yes, you see the fixed price upfront, regardless of traffic along the way." },
       ],
     },
@@ -216,11 +216,11 @@ const CITY_CONTENT: CityContent[] = [
     },
     faq: {
       nl: [
-        { q: "Kan de chauffeur mij afzetten in de binnenstad van Leiden?", a: "Ja, we brengen u tot voor de deur, ook in de historische binnenstad." },
+        { q: "Kan de chauffeur mij afzetten in de binnenstad van Leiden?", a: "Ja, de chauffeur zet u tot voor de deur af, ook in de historische binnenstad." },
         { q: "Rijdt u ook naar Keukenhof?", a: "Ja, geef dit gewoon als bestemming op bij het boeken." },
       ],
       en: [
-        { q: "Can the driver drop me off in Leiden's city centre?", a: "Yes, we drop you off right at the door, including in the historic centre." },
+        { q: "Can the driver drop me off in Leiden's city centre?", a: "Yes, the driver drops you off right at the door, including in the historic centre." },
         { q: "Do you also drive to Keukenhof?", a: "Yes, just enter it as your destination when booking." },
       ],
     },
@@ -250,11 +250,11 @@ const CITY_CONTENT: CityContent[] = [
     },
     faq: {
       nl: [
-        { q: "Rijdt u ook naar de mediabedrijven in Hilversum?", a: "Ja, we brengen u naar elk zakelijk of privéadres in Hilversum." },
+        { q: "Rijdt u ook naar de mediabedrijven in Hilversum?", a: "Ja, u kunt elk zakelijk of privéadres in Hilversum opgeven als bestemming." },
         { q: "Hoe lang van tevoren moet ik boeken voor Hilversum?", a: "Hoe eerder hoe beter, maar een rit naar Hilversum kan doorgaans ook dezelfde dag nog geboekt worden." },
       ],
       en: [
-        { q: "Do you also drive to the media companies in Hilversum?", a: "Yes, we take you to any business or personal address in Hilversum." },
+        { q: "Do you also drive to the media companies in Hilversum?", a: "Yes, you can enter any business or personal address in Hilversum as your destination." },
         { q: "How far in advance should I book for Hilversum?", a: "The sooner the better, but a ride to Hilversum can usually still be booked the same day." },
       ],
     },
@@ -285,11 +285,11 @@ const CITY_CONTENT: CityContent[] = [
     faq: {
       nl: [
         { q: "Hoe ver is Badhoevedorp van Schiphol?", a: "Heel dichtbij — Badhoevedorp grenst praktisch aan Schiphol, de rit duurt doorgaans maar een paar minuten." },
-        { q: "Rijdt u ook naar De Aker?", a: "Ja, wij brengen u naar elk adres in De Aker en Badhoevedorp, zowel zakelijk als privé." },
+        { q: "Rijdt u ook naar De Aker?", a: "Ja, u kunt elk adres in De Aker en Badhoevedorp opgeven als bestemming, zowel zakelijk als privé." },
       ],
       en: [
         { q: "How far is Badhoevedorp from Schiphol?", a: "Very close — Badhoevedorp practically borders Schiphol, so the ride usually only takes a few minutes." },
-        { q: "Do you also drive to De Aker?", a: "Yes, we take you to any address in De Aker and Badhoevedorp, for business or personal trips." },
+        { q: "Do you also drive to De Aker?", a: "Yes, you can enter any address in De Aker and Badhoevedorp as your destination, for business or personal trips." },
       ],
     },
   },
@@ -302,11 +302,11 @@ const CITY_CONTENT: CityContent[] = [
     faq: {
       nl: [
         { q: "Is Heemstede ver van Schiphol?", a: "Nee, Heemstede ligt vlak bij Haarlem — de rit vanaf Schiphol is vergelijkbaar met die naar Haarlem." },
-        { q: "Kan ik ook naar een adres net buiten het centrum van Heemstede?", a: "Ja, wij brengen u naar elk adres in Heemstede, ook buiten het centrum." },
+        { q: "Kan ik ook naar een adres net buiten het centrum van Heemstede?", a: "Ja, u kunt elk adres in Heemstede opgeven als bestemming, ook buiten het centrum." },
       ],
       en: [
         { q: "Is Heemstede far from Schiphol?", a: "No, Heemstede sits right next to Haarlem — the ride from Schiphol is similar to the one to Haarlem." },
-        { q: "Can you also take me to an address just outside Heemstede's centre?", a: "Yes, we take you to any address in Heemstede, including outside the town centre." },
+        { q: "Can you also take me to an address just outside Heemstede's centre?", a: "Yes, you can enter any address in Heemstede as your destination, including outside the town centre." },
       ],
     },
   },
@@ -391,11 +391,11 @@ const CITY_CONTENT: CityContent[] = [
     faq: {
       nl: [
         { q: "Is de prijs naar Sassenheim een vaste prijs?", a: "De prijs hierboven is een richtprijs op basis van afstand. Vul uw adres in bij het boeken en u ziet direct uw exacte, definitieve prijs — vóór u bevestigt." },
-        { q: "Rijdt u ook naar Warmond of Voorhout?", a: "Ja, geef uw exacte adres op als bestemming — wij rijden in de hele gemeente Teylingen." },
+        { q: "Rijdt u ook naar Warmond of Voorhout?", a: "Ja, geef uw exacte adres op als bestemming — dat kan overal binnen de gemeente Teylingen." },
       ],
       en: [
         { q: "Is the price to Sassenheim a fixed price?", a: "The price above is a distance-based estimate. Enter your address when booking and you'll see your exact, final price immediately — before you confirm." },
-        { q: "Do you also drive to Warmond or Voorhout?", a: "Yes, enter your exact address as your destination — we drive throughout the Teylingen municipality." },
+        { q: "Do you also drive to Warmond or Voorhout?", a: "Yes, enter your exact address as your destination — that works anywhere within the Teylingen municipality." },
       ],
     },
   },
@@ -425,11 +425,11 @@ const CITY_CONTENT: CityContent[] = [
     faq: {
       nl: [
         { q: "Is de prijs naar Noordwijk een vaste prijs?", a: "De prijs hierboven is een richtprijs op basis van afstand. Vul uw adres in bij het boeken en u ziet direct uw exacte, definitieve prijs — vóór u bevestigt." },
-        { q: "Rijdt u ook naar hotels in Noordwijk aan Zee?", a: "Ja, wij brengen u naar elk hotel of adres in Noordwijk, inclusief Noordwijk aan Zee." },
+        { q: "Rijdt u ook naar hotels in Noordwijk aan Zee?", a: "Ja, u kunt elk hotel of adres in Noordwijk opgeven als bestemming, inclusief Noordwijk aan Zee." },
       ],
       en: [
         { q: "Is the price to Noordwijk a fixed price?", a: "The price above is a distance-based estimate. Enter your address when booking and you'll see your exact, final price immediately — before you confirm." },
-        { q: "Do you also drive to hotels in Noordwijk aan Zee?", a: "Yes, we take you to any hotel or address in Noordwijk, including Noordwijk aan Zee." },
+        { q: "Do you also drive to hotels in Noordwijk aan Zee?", a: "Yes, you can enter any hotel or address in Noordwijk as your destination, including Noordwijk aan Zee." },
       ],
     },
   },
@@ -442,11 +442,11 @@ const CITY_CONTENT: CityContent[] = [
     faq: {
       nl: [
         { q: "Is de prijs naar Noordwijkerhout een vaste prijs?", a: "De prijs hierboven is een richtprijs op basis van afstand. Vul uw adres in bij het boeken en u ziet direct uw exacte, definitieve prijs — vóór u bevestigt." },
-        { q: "Rijdt u ook naar congrescentra in Noordwijkerhout?", a: "Ja, wij brengen u naar elk zakelijk of privéadres in Noordwijkerhout." },
+        { q: "Rijdt u ook naar congrescentra in Noordwijkerhout?", a: "Ja, u kunt elk zakelijk of privéadres in Noordwijkerhout opgeven als bestemming." },
       ],
       en: [
         { q: "Is the price to Noordwijkerhout a fixed price?", a: "The price above is a distance-based estimate. Enter your address when booking and you'll see your exact, final price immediately — before you confirm." },
-        { q: "Do you also drive to conference venues in Noordwijkerhout?", a: "Yes, we take you to any business or personal address in Noordwijkerhout." },
+        { q: "Do you also drive to conference venues in Noordwijkerhout?", a: "Yes, you can enter any business or personal address in Noordwijkerhout as your destination." },
       ],
     },
   },
