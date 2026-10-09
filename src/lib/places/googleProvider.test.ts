@@ -95,6 +95,7 @@ describe("googlePlacesProvider", () => {
       lat: 52.3731,
       lng: 4.8926,
       missingHouseNumber: false,
+      tooImprecise: false,
     });
 
     const [url, options] = fetchMock.mock.calls[0];
@@ -119,6 +120,7 @@ describe("googlePlacesProvider", () => {
 
     const result = await googlePlacesProvider.getDetails("abc123", "session-1");
     expect(result.missingHouseNumber).toBe(true);
+    expect(result.tooImprecise).toBe(false);
   });
 
   it("does not flag a named place (e.g. an airport) even though it has no street_number", async () => {
@@ -134,6 +136,41 @@ describe("googlePlacesProvider", () => {
     );
 
     const result = await googlePlacesProvider.getDetails("schiphol", "session-1");
+    expect(result.missingHouseNumber).toBe(false);
+    expect(result.tooImprecise).toBe(false);
+  });
+
+  it("flags tooImprecise for a whole city (Google type 'locality') with no street at all — real booking found live", async () => {
+    vi.stubGlobal(
+      "fetch",
+      mockFetchOnce({
+        id: "zeist",
+        formattedAddress: "Zeist, Netherlands",
+        location: { latitude: 52.0875, longitude: 5.2325 },
+        types: ["locality", "political"],
+        addressComponents: [],
+      })
+    );
+
+    const result = await googlePlacesProvider.getDetails("zeist", "session-1");
+    expect(result.tooImprecise).toBe(true);
+    expect(result.missingHouseNumber).toBe(false);
+  });
+
+  it("does not flag tooImprecise for a specific address within a locality", async () => {
+    vi.stubGlobal(
+      "fetch",
+      mockFetchOnce({
+        id: "abc123",
+        formattedAddress: "Bergweg 12, 3701 Zeist, Netherlands",
+        location: { latitude: 52.0875, longitude: 5.2325 },
+        types: ["street_address"],
+        addressComponents: [{ types: ["street_number"] }, { types: ["route"] }, { types: ["locality", "political"] }],
+      })
+    );
+
+    const result = await googlePlacesProvider.getDetails("abc123", "session-1");
+    expect(result.tooImprecise).toBe(false);
     expect(result.missingHouseNumber).toBe(false);
   });
 

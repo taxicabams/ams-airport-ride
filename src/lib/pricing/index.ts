@@ -60,9 +60,38 @@ export function calculateQuote(input: QuoteInput): Quote {
   // the price itself was a static lookup or the fallback formula.
   const { distanceKm, durationMin } =
     input.routeOverride ?? estimateDistanceDuration(origin, destination);
-  const basePrice = staticRoute
+
+  const basePriceBeforeFarSurcharge = staticRoute
     ? staticRoute.basePrice
     : estimateFallback(distanceKm, rideType, durationMin);
+
+  // Real pricing gap found live: a genuine customer booking (Schiphol →
+  // Zeist, 52km) priced at a curated €85 made the client look at the
+  // whole far-route price list and conclude it was too cheap for that
+  // kind of distance. Explicit instruction: every ride 30km+ gets a
+  // clean +20% on top — applied uniformly to BOTH a curated Schiphol
+  // price and the per-km formula (private rides included), never just
+  // one pricing path, so the rule can't quietly stop applying once a
+  // route falls out of the curated list. Rounded to the nearest €5
+  // ("mooie prijzen" — a clean number a customer reads as a deliberate
+  // price, not a stray formula result like €102).
+  //
+  // Explicit exception, named directly by the client: Utrecht,
+  // Rotterdam and Den Haag stay at their normal (un-surcharged) price —
+  // these are the 3 big cities with real competition (train, other
+  // taxi firms), where he wants to stay competitively priced rather
+  // than add the convenience surcharge that makes sense for smaller/
+  // less-served far destinations like Zeist or Dordrecht.
+  const FAR_ROUTE_THRESHOLD_KM = 30;
+  const FAR_ROUTE_SURCHARGE_MULTIPLIER = 1.2;
+  const FAR_ROUTE_SURCHARGE_EXEMPT_IDS = ["utrecht", "rotterdam", "den-haag"];
+  const isSurchargeExempt =
+    (origin && FAR_ROUTE_SURCHARGE_EXEMPT_IDS.includes(origin.id)) ||
+    (destination && FAR_ROUTE_SURCHARGE_EXEMPT_IDS.includes(destination.id));
+  const basePrice =
+    distanceKm > FAR_ROUTE_THRESHOLD_KM && !isSurchargeExempt
+      ? Math.round((basePriceBeforeFarSurcharge * FAR_ROUTE_SURCHARGE_MULTIPLIER) / 5) * 5
+      : basePriceBeforeFarSurcharge;
 
   // v1 has no time-of-day/day-of-week surcharges (deliberately, per the
   // client's spec) — the array exists so one can be added later without

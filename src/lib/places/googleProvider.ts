@@ -111,12 +111,41 @@ async function getDetails(placeId: string, sessionToken: string): Promise<Resolv
   );
   const missingHouseNumber = types.includes("route") && !hasStreetNumber;
 
+  // Real booking found live: a customer selected "Zeist, Netherlands" —
+  // Google's "locality" type (a whole city/town), not a street — as a
+  // destination, with no specific address at all. `missingHouseNumber`
+  // above never catches this (it only looks for a bare street), so
+  // nothing asked for a real address. AREA_TYPES covers every Google
+  // Places type that means "a whole place/area," not one specific point
+  // — rejecting these (instead of just the "route" case) forces the
+  // customer back to the autocomplete to pick an actual address.
+  // Deliberately NOT included: specific-point types like
+  // "street_address"/"premise"/"subpremise" (already excluded by
+  // hasStreetNumber below being true for those), and named places
+  // (airports, stations, hotels) which resolve to their own type
+  // entirely (e.g. "airport"), never one of these.
+  const AREA_TYPES = [
+    "locality",
+    "sublocality",
+    "sublocality_level_1",
+    "sublocality_level_2",
+    "neighborhood",
+    "postal_town",
+    "administrative_area_level_1",
+    "administrative_area_level_2",
+    "administrative_area_level_3",
+    "colloquial_area",
+    "country",
+  ];
+  const tooImprecise = !hasStreetNumber && types.some((t) => AREA_TYPES.includes(t));
+
   return {
     placeId: data.id ?? placeId,
     formattedAddress: data.formattedAddress,
     lat: data.location.latitude,
     lng: data.location.longitude,
     missingHouseNumber,
+    tooImprecise,
   };
 }
 

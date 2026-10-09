@@ -53,6 +53,7 @@ describe("bookingInputSchema — capacity above the Bus maximum is not allowed",
     phone: "+31612345678",
     email: "test@example.com",
     luggage: 2,
+    flightNumber: "KL1234", // pickup is Schiphol — now required, see validation.test.ts
   };
 
   it("accepts exactly the maximum (7) passengers", () => {

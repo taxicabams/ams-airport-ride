@@ -2,10 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { Field, inputClassName } from "@/components/ui/Field";
+import { isValidPhone } from "@/lib/validation";
 import type { BookingFormState } from "../types";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_RE = /^[0-9+\s()-]{6,}$/;
 
 export function ContactStep({
   form,
@@ -23,7 +23,7 @@ export function ContactStep({
   const t = useTranslations("Booking");
 
   const nameValid = form.name.trim().length > 1;
-  const phoneValid = PHONE_RE.test(form.phone.trim());
+  const phoneValid = isValidPhone(form.phone);
   const emailValid = EMAIL_RE.test(form.email.trim());
   const canSubmit = nameValid && phoneValid && emailValid && !submitting;
 

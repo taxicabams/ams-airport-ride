@@ -8,6 +8,7 @@ import { Stepper } from "@/components/ui/Stepper";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { CalendarIcon, ClockIcon } from "@/components/ui/icons";
 import { detectRideType } from "@/lib/rideType";
+import { matchLocation } from "@/lib/locations";
 import {
   BUS_MAX_PASSENGERS,
   BUS_MAX_LUGGAGE,
@@ -51,6 +52,14 @@ export function DetailsStep({
   const locale = useLocale();
   const rideType = detectRideType(form.pickup, form.destination);
   const isAirport = rideType === "AIRPORT_TRANSFER";
+  // Specifically a pickup FROM Schiphol (not a drop-off there) — real
+  // gap found live: a booking with no flight number and an unreachable
+  // phone number made it impossible to actually find the customer.
+  // Required here, not for a Schiphol drop-off, where there's no flight
+  // to track yet. Same check as lib/validation.ts's isSchipholPickup
+  // (server-side), kept independent since this file never imports zod.
+  const pickupIsSchiphol = matchLocation(form.pickup)?.isAirport === true;
+  const flightNumberMissing = pickupIsSchiphol && form.flightNumber.trim().length === 0;
 
   // Fired once per mount when Schiphol is part of the route — pickup/
   // destination are fixed by the time the customer reaches this step,
@@ -140,7 +149,8 @@ export function DetailsStep({
     form.time.length > 0 &&
     !timeInPast &&
     (!form.returnTrip || (returnDateDisplay.length > 0 && form.returnTime.length > 0 && returnDateTimeValid)) &&
-    priceReady;
+    priceReady &&
+    !flightNumberMissing;
 
   function selectVehicle(vehicle: "PERSONENAUTO" | "BUS") {
     track("vehicle_selected", { vehicleType: vehicle });
@@ -315,12 +325,14 @@ export function DetailsStep({
 
       {isAirport && (
         <Field
-          label={t("flightNumberLabel")}
+          label={pickupIsSchiphol ? t("flightNumberLabelRequired") : t("flightNumberLabel")}
           htmlFor="flightNumber"
-          hint={t("flightNumberHint")}
+          hint={pickupIsSchiphol ? undefined : t("flightNumberHint")}
+          error={flightNumberMissing ? t("flightNumberRequired") : undefined}
         >
           <input
             id="flightNumber"
+            required={pickupIsSchiphol}
             className={inputClassName}
             placeholder={t("flightNumberPlaceholder")}
             value={form.flightNumber}

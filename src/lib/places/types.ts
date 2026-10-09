@@ -31,6 +31,19 @@ export type ResolvedPlace = {
    * actually needs one for routing, not to demand one everywhere.
    */
   missingHouseNumber: boolean;
+  /**
+   * True when the resolved place is a whole area (a city, neighborhood,
+   * region — Google Places types like "locality"/"sublocality"/
+   * "administrative_area_level_*"), not one specific address or named
+   * place. Real booking found live: a customer picked "Zeist,
+   * Netherlands" as a destination — no street, no house number, nothing
+   * a driver could actually navigate to. Distinct from
+   * missingHouseNumber (a bare street that just needs a number appended)
+   * — there's no sensible number to append to a whole city, so
+   * consumers should treat this as "pick a different, more specific
+   * suggestion," not offer a house-number sub-field.
+   */
+  tooImprecise: boolean;
 };
 
 export interface PlacesProvider {

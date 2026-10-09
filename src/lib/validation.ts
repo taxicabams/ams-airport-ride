@@ -1,5 +1,36 @@
 import { z } from "zod";
 import { BUS_MAX_PASSENGERS, BUS_MAX_LUGGAGE } from "./pricing/vehicle";
+import { matchLocation } from "./locations";
+
+/**
+ * Shared by ContactStep (live, as-you-type) and bookingInputSchema
+ * (server, authoritative) — real gap found live: the old check only
+ * verified allowed characters + a 6-character minimum, so a string like
+ * "------" or "111111" passed as a "valid" phone number. Requiring at
+ * least 8 actual digits (ignoring spaces/dashes/parens/+) catches that
+ * while still accepting every real NL/international format
+ * ("+31 6 12345678", "0612345678", "06-12 34 56 78", ...).
+ */
+export const PHONE_CHARSET_RE = /^[0-9+\s()-]{6,}$/;
+export function isValidPhone(value: string): boolean {
+  const trimmed = value.trim();
+  if (!PHONE_CHARSET_RE.test(trimmed)) return false;
+  const digitCount = (trimmed.match(/\d/g) ?? []).length;
+  return digitCount >= 8;
+}
+
+/**
+ * True when `pickup` resolves to Schiphol specifically — used to make
+ * the flight number mandatory only for a pickup-FROM-Schiphol ride
+ * (the driver needs it to track delays and meet the right flight), not
+ * for a drop-off-AT-Schiphol departure, where there's no flight to
+ * track yet. Same `matchLocation`-based check as email.ts's
+ * isSchipholPickup, kept independent (different file, different need)
+ * rather than a shared import, to avoid a pricing/email coupling.
+ */
+export function isSchipholPickup(pickup: string): boolean {
+  return matchLocation(pickup)?.isAirport === true;
+}
 
 export const placesAutocompleteInputSchema = z.object({
   input: z.string().trim().min(1).max(200),
@@ -153,6 +184,14 @@ export const bookingInputSchema = z
       message: "Return date/time must be after the outbound date/time",
       path: ["returnDate"],
     }
-  );
+  )
+  .refine((data) => isValidPhone(data.phone), {
+    message: "Invalid phone number",
+    path: ["phone"],
+  })
+  .refine((data) => !isSchipholPickup(data.pickup) || data.flightNumber.trim().length > 0, {
+    message: "Flight number is required for a pickup from Schiphol",
+    path: ["flightNumber"],
+  });
 
 export type BookingInput = z.infer<typeof bookingInputSchema>;

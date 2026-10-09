@@ -84,6 +84,12 @@ export function RouteStep({
   // typed freely before anything is considered "resolved."
   const [pickupHouseNumberActive, setPickupHouseNumberActive] = useState(false);
   const [destinationHouseNumberActive, setDestinationHouseNumberActive] = useState(false);
+  // See ResolvedPlace.tooImprecise's own note (a whole city/area, e.g.
+  // "Zeist, Netherlands", with no street at all) — tracked locally,
+  // not in BookingFormState, since it only ever blocks Next on this
+  // exact step; once a specific address is picked, it's irrelevant.
+  const [pickupTooImprecise, setPickupTooImprecise] = useState(false);
+  const [destinationTooImprecise, setDestinationTooImprecise] = useState(false);
   const [rideMode, setRideMode] = useState<RideMode>(() => {
     if (form.pickup.toLowerCase().includes("schiphol")) return "fromSchiphol";
     if (form.destination.toLowerCase().includes("schiphol")) return "toSchiphol";
@@ -96,7 +102,12 @@ export function RouteStep({
   const pickupNeedsHouseNumber = pickupResolved && form.pickupMissingHouseNumber === true;
   const destinationNeedsHouseNumber = destinationResolved && form.destinationMissingHouseNumber === true;
   const canContinue =
-    pickupResolved && destinationResolved && !pickupNeedsHouseNumber && !destinationNeedsHouseNumber;
+    pickupResolved &&
+    destinationResolved &&
+    !pickupNeedsHouseNumber &&
+    !destinationNeedsHouseNumber &&
+    !pickupTooImprecise &&
+    !destinationTooImprecise;
 
   // Keeps form state in sync with whichever side should be locked to
   // Schiphol for the current tab — including on mount for the default
@@ -129,17 +140,23 @@ export function RouteStep({
   }, [rideMode]);
 
   function resolvePickup(place: ResolvedPlace | null) {
+    setPickupTooImprecise(place?.tooImprecise ?? false);
     onChange({
-      pickupPlaceId: place?.placeId,
-      pickupLat: place?.lat,
-      pickupLng: place?.lng,
+      // A too-imprecise place (a whole city, no street) is deliberately
+      // NOT accepted as resolved — same as place being null — so Next
+      // stays blocked and the customer has to pick a real address, not
+      // just append a house number onto a city name.
+      pickupPlaceId: place?.tooImprecise ? undefined : place?.placeId,
+      pickupLat: place?.tooImprecise ? undefined : place?.lat,
+      pickupLng: place?.tooImprecise ? undefined : place?.lng,
       pickupMissingHouseNumber: place?.missingHouseNumber ?? false,
     });
-    // Surface the house-number message right away — don't make the
-    // customer blur the field first to discover why Next stays disabled.
-    if (place?.missingHouseNumber) {
+    // Surface the house-number/too-imprecise message right away — don't
+    // make the customer blur the field first to discover why Next stays
+    // disabled.
+    if (place?.missingHouseNumber || place?.tooImprecise) {
       setTouched((s) => ({ ...s, pickup: true }));
-      setPickupHouseNumberActive(true);
+      setPickupHouseNumberActive(Boolean(place?.missingHouseNumber));
     } else {
       setPickupHouseNumber(""); // fresh resolution, any earlier number no longer applies
       setPickupHouseNumberActive(false);
@@ -147,15 +164,16 @@ export function RouteStep({
   }
 
   function resolveDestination(place: ResolvedPlace | null) {
+    setDestinationTooImprecise(place?.tooImprecise ?? false);
     onChange({
-      destinationPlaceId: place?.placeId,
-      destinationLat: place?.lat,
-      destinationLng: place?.lng,
+      destinationPlaceId: place?.tooImprecise ? undefined : place?.placeId,
+      destinationLat: place?.tooImprecise ? undefined : place?.lat,
+      destinationLng: place?.tooImprecise ? undefined : place?.lng,
       destinationMissingHouseNumber: place?.missingHouseNumber ?? false,
     });
-    if (place?.missingHouseNumber) {
+    if (place?.missingHouseNumber || place?.tooImprecise) {
       setTouched((s) => ({ ...s, destination: true }));
-      setDestinationHouseNumberActive(true);
+      setDestinationHouseNumberActive(Boolean(place?.missingHouseNumber));
     } else {
       setDestinationHouseNumber("");
       setDestinationHouseNumberActive(false);
@@ -203,6 +221,8 @@ export function RouteStep({
     });
     setPickupHouseNumber(destinationHouseNumber);
     setDestinationHouseNumber(pickupHouseNumber);
+    setPickupTooImprecise(destinationTooImprecise);
+    setDestinationTooImprecise(pickupTooImprecise);
     setTouched({});
   }
 
@@ -235,19 +255,23 @@ export function RouteStep({
 
   const pickupError =
     touched.pickup && form.pickup.trim().length > 0
-      ? pickupNeedsHouseNumber
-        ? t("addressHouseNumberRequired")
-        : !pickupResolved
-          ? t("addressSelectRequired")
-          : undefined
+      ? pickupTooImprecise
+        ? t("addressTooImprecise")
+        : pickupNeedsHouseNumber
+          ? t("addressHouseNumberRequired")
+          : !pickupResolved
+            ? t("addressSelectRequired")
+            : undefined
       : undefined;
   const destinationError =
     touched.destination && form.destination.trim().length > 0
-      ? destinationNeedsHouseNumber
-        ? t("addressHouseNumberRequired")
-        : !destinationResolved
-          ? t("addressSelectRequired")
-          : undefined
+      ? destinationTooImprecise
+        ? t("addressTooImprecise")
+        : destinationNeedsHouseNumber
+          ? t("addressHouseNumberRequired")
+          : !destinationResolved
+            ? t("addressSelectRequired")
+            : undefined
       : undefined;
 
   const tabs: { mode: RideMode; label: string }[] = [

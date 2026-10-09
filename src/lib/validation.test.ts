@@ -4,6 +4,7 @@ import {
   isDateNotInPast,
   isDateTimeNotInPast,
   bookingInputSchema,
+  isValidPhone,
 } from "./validation";
 
 // Computed relative to "now" (not hardcoded) so these never go stale.
@@ -99,6 +100,7 @@ describe("bookingInputSchema — date must not be in the past", () => {
     name: "Test Persoon",
     phone: "+31612345678",
     email: "test@example.com",
+    flightNumber: "KL1234", // pickup is Schiphol — now required, see the dedicated describe block below
   };
 
   it("rejects a booking dated in the past", () => {
@@ -140,6 +142,7 @@ describe("bookingInputSchema — return trip date/time refine", () => {
     name: "Test Persoon",
     phone: "+31612345678",
     email: "test@example.com",
+    flightNumber: "KL1234", // pickup is Schiphol — now required, see the dedicated describe block below
   };
   const NEXT_YEAR_PLUS_ONE_WEEK = new Date(Date.now() + 372 * 86_400_000).toISOString().slice(0, 10);
 
@@ -163,6 +166,95 @@ describe("bookingInputSchema — return trip date/time refine", () => {
       returnTrip: true,
       returnDate: NEXT_YEAR_PLUS_ONE_WEEK,
       returnTime: "19:00",
+    });
+    expect(result.success).toBe(true);
+  });
+});
+
+describe("isValidPhone / bookingInputSchema — phone number", () => {
+  // Real booking found live: the old check only verified allowed
+  // characters + a 6-char minimum, so "------" or "111111" passed as a
+  // "valid" phone number — a customer's driver then had no way to
+  // actually reach them.
+  const base = {
+    pickup: "Amsterdam",
+    destination: "Utrecht",
+    date: NEXT_YEAR,
+    time: "14:00",
+    passengers: 1,
+    luggage: 1,
+    vehicleType: "PERSONENAUTO" as const,
+    name: "Test Persoon",
+    email: "test@example.com",
+  };
+
+  it.each([
+    "+31612345678",
+    "0612345678",
+    "06-12 34 56 78",
+    "+1 (415) 555-2671",
+  ])("accepts a real-looking phone number: %s", (phone) => {
+    expect(isValidPhone(phone)).toBe(true);
+    expect(bookingInputSchema.safeParse({ ...base, phone }).success).toBe(true);
+  });
+
+  it.each(["------", "111111", "abcdef", "12345"])(
+    "rejects a fake/garbage phone number: %s",
+    (phone) => {
+      expect(isValidPhone(phone)).toBe(false);
+      expect(bookingInputSchema.safeParse({ ...base, phone }).success).toBe(false);
+    }
+  );
+});
+
+describe("bookingInputSchema — flight number required for a pickup FROM Schiphol", () => {
+  const base = {
+    date: NEXT_YEAR,
+    time: "14:00",
+    passengers: 1,
+    luggage: 1,
+    vehicleType: "PERSONENAUTO" as const,
+    name: "Test Persoon",
+    phone: "+31612345678",
+    email: "test@example.com",
+  };
+
+  it("rejects a Schiphol pickup with no flight number", () => {
+    const result = bookingInputSchema.safeParse({
+      ...base,
+      pickup: "Schiphol",
+      destination: "Amsterdam",
+      flightNumber: "",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts a Schiphol pickup with a flight number", () => {
+    const result = bookingInputSchema.safeParse({
+      ...base,
+      pickup: "Schiphol",
+      destination: "Amsterdam",
+      flightNumber: "KL1234",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("does not require a flight number for a drop-off AT Schiphol (departure, not arrival)", () => {
+    const result = bookingInputSchema.safeParse({
+      ...base,
+      pickup: "Amsterdam",
+      destination: "Schiphol",
+      flightNumber: "",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("does not require a flight number for a private ride that never touches Schiphol", () => {
+    const result = bookingInputSchema.safeParse({
+      ...base,
+      pickup: "Utrecht",
+      destination: "Rotterdam",
+      flightNumber: "",
     });
     expect(result.success).toBe(true);
   });

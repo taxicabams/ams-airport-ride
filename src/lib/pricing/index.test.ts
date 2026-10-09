@@ -53,7 +53,11 @@ describe("calculateQuote — curated Schiphol routes", () => {
     expect(quote.basePrice).toBe(40);
   });
 
-  it("prices Schiphol <-> Rotterdam as a fixed €115", () => {
+  it("prices Schiphol <-> Rotterdam as a fixed €115, exempt from the 30km+ surcharge", () => {
+    // Explicit exception, named directly by the client: Utrecht,
+    // Rotterdam and Den Haag stay at their normal price — real
+    // competition there (train, other taxi firms) plus follow-up local
+    // work once he's in the city, unlike smaller far destinations.
     const quote = calculateQuote({
       pickup: "Schiphol",
       destination: "Rotterdam",
@@ -62,7 +66,7 @@ describe("calculateQuote — curated Schiphol routes", () => {
     expect(quote.basePrice).toBe(115);
   });
 
-  it("prices Schiphol <-> Den Haag as a fixed €85", () => {
+  it("prices Schiphol <-> Den Haag as a fixed €85, exempt from the 30km+ surcharge", () => {
     const quote = calculateQuote({
       pickup: "Den Haag",
       destination: "Schiphol",
@@ -82,14 +86,15 @@ describe("calculateQuote — curated Schiphol routes", () => {
     expect(quote.basePrice).toBe(45);
   });
 
-  it("prices Schiphol <-> Almere as a fixed €80", () => {
+  it("prices Schiphol <-> Almere at +20% of the curated €80, rounded to €95 — 30km+ rule", () => {
+    // Estimated ~44km, also over the 30km bump threshold. 80 x 1.2 = 96 -> nearest €5 = 95.
     const quote = calculateQuote({
       pickup: "Schiphol",
       destination: "Almere",
       vehicleType: "PERSONENAUTO",
     });
-    expect(quote.source).toBe("fixed");
-    expect(quote.basePrice).toBe(80);
+    expect(quote.source).toBe("fixed"); // still a fixed upfront price — just no longer the raw curated number
+    expect(quote.basePrice).toBe(95);
   });
 });
 
@@ -136,6 +141,10 @@ describe("calculateQuote — private rides (not touching Schiphol)", () => {
   });
 
   it("prices a Personenauto private ride at start fee + distanceKm x €2.50 + durationMin x €0.50, rounded to a whole euro", () => {
+    // Utrecht and Rotterdam are both on the 30km+ surcharge exemption
+    // list (see pricing/index.ts) — this is the plain formula, unbumped,
+    // even at 40km. The surcharge itself is tested separately below with
+    // non-exempt cities.
     const quote = calculateQuote({
       pickup: "Utrecht",
       destination: "Rotterdam",
@@ -212,18 +221,102 @@ describe("calculateQuote — Google Routes override (Phase 2B)", () => {
     expect(withOverride.basePrice).toBeGreaterThan(0);
   });
 
-  it("never overrides a curated fixed price's basePrice, even with a routeOverride present", () => {
+  it("does not override a short (<30km) curated fixed price's basePrice, even with a routeOverride present", () => {
     const quote = calculateQuote({
       pickup: "Schiphol",
       destination: "Centrum",
       vehicleType: "PERSONENAUTO",
-      routeOverride: { distanceKm: 999, durationMin: 999 }, // deliberately absurd
+      routeOverride: { distanceKm: 16, durationMin: 20 }, // realistic for this route, still well under the 30km bump threshold
     });
     expect(quote.source).toBe("fixed");
     expect(quote.basePrice).toBe(50); // unchanged from the curated staticRoutes.ts value
     // But the *displayed* distance/duration do reflect the real route:
-    expect(quote.distanceKm).toBe(999);
+    expect(quote.distanceKm).toBe(16);
     expect(quote.distanceSource).toBe("google");
+  });
+});
+
+describe("calculateQuote — every ride 30km+ gets a clean +20% surcharge, rounded to the nearest €5", () => {
+  it("applies it on top of a curated Schiphol price: Zeist's €85 at 52km -> €100", () => {
+    // 85 x 1.2 = 102 -> nearest €5 = 100
+    const quote = calculateQuote({
+      pickup: "Schiphol",
+      destination: "Zeist",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 52, durationMin: 60 },
+    });
+    expect(quote.basePrice).toBe(100);
+    expect(quote.source).toBe("fixed"); // still a fixed upfront price, just not the raw curated number
+  });
+
+  it("applies the same +20% to a far curated price even when it was already higher than the formula", () => {
+    // Dordrecht: curated €125 x 1.2 = 150 -> nearest €5 = 150 (already a multiple of 5)
+    const quote = calculateQuote({
+      pickup: "Schiphol",
+      destination: "Dordrecht",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 72, durationMin: 65 },
+    });
+    expect(quote.basePrice).toBe(150);
+  });
+
+  it("exempts Utrecht, Rotterdam and Den Haag from the surcharge even when 30km+ away — named directly by the client (real competition + follow-up local work there)", () => {
+    const rotterdam = calculateQuote({
+      pickup: "Schiphol",
+      destination: "Rotterdam",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 61, durationMin: 55 },
+    });
+    const utrecht = calculateQuote({
+      pickup: "Schiphol",
+      destination: "Utrecht",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 45, durationMin: 50 },
+    });
+    const denHaag = calculateQuote({
+      pickup: "Schiphol",
+      destination: "Den Haag",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 54, durationMin: 50 },
+    });
+    expect(rotterdam.basePrice).toBe(115); // curated value, unchanged
+    expect(utrecht.basePrice).toBe(80); // curated value, unchanged
+    expect(denHaag.basePrice).toBe(85); // curated value, unchanged
+  });
+
+  it("does not touch a curated price under 30km", () => {
+    const quote = calculateQuote({
+      pickup: "Schiphol",
+      destination: "Centrum",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 16, durationMin: 20 },
+    });
+    expect(quote.basePrice).toBe(50); // unchanged curated staticRoutes.ts value
+  });
+
+  it("also applies to a far PRIVATE_RIDE with no curated price at all — the rule isn't Schiphol-specific", () => {
+    // Amsterdam <-> Zeist — neither end is on the exemption list.
+    const quote = calculateQuote({
+      pickup: "Amsterdam",
+      destination: "Zeist",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 58, durationMin: 55 },
+    });
+    expect(quote.rideType).toBe("PRIVATE_RIDE");
+    const formulaPrice = Math.round(
+      PRIVATE_RIDE_START_FEE_EUR + 58 * PRIVATE_RIDE_RATE_PER_KM_EUR + 55 * PRIVATE_RIDE_RATE_PER_MIN_EUR
+    ); // 177
+    expect(quote.basePrice).toBe(Math.round((formulaPrice * 1.2) / 5) * 5); // 210
+  });
+
+  it("does not touch a short PRIVATE_RIDE under 30km", () => {
+    const quote = calculateQuote({
+      pickup: "Utrecht",
+      destination: "Rotterdam",
+      vehicleType: "PERSONENAUTO",
+      routeOverride: { distanceKm: 15, durationMin: 20 },
+    });
+    expect(quote.basePrice).toBe(52); // same as the existing "mid-length private ride" test above, unchanged
   });
 });
 

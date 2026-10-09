@@ -20,6 +20,14 @@
  * The Bus surcharge is NOT baked into these numbers — it's applied once,
  * centrally, in vehicle.ts (`BUS_SURCHARGE_EUR`), so it can never drift
  * out of sync per-route.
+ *
+ * The numbers below are NOT the final price for a route 30km+ away —
+ * `calculateQuote` (pricing/index.ts) applies a +20% surcharge, rounded
+ * to the nearest €5, on top of whatever this file returns once the real
+ * distance crosses that threshold. Kept out of this file on purpose:
+ * that rule applies to every far ride site-wide (private rides too, not
+ * just the curated Schiphol list), so it lives once, centrally, in the
+ * one function that already combines price + distance.
  */
 export const PRICES_APPROVED_BY_CLIENT = false;
 
