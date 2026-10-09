@@ -65,7 +65,10 @@ export async function Reviews() {
                 <StarIcon key={i} className={`h-3.5 w-3.5 ${i < review.rating ? "" : "opacity-25"}`} />
               ))}
             </span>
-            <p className="mt-2 text-sm text-muted">{review.comment}</p>
+            {/* A star-only review (submitted via the 1-tap email links,
+                see sendReviewRequestEmail) has no comment text — never
+                render an empty paragraph for it. */}
+            {review.comment.length > 0 && <p className="mt-2 text-sm text-muted">{review.comment}</p>}
             <p className="mt-3 text-sm font-semibold text-foreground">{review.customerName}</p>
           </div>
         ))}

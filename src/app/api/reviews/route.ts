@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
 import { sendReviewPushNotification } from "@/lib/pushNotification";
+import { reviewInputSchema, resolveReviewerName } from "@/lib/validation";
 
 /**
  * Real, database-backed reviews — replaces relying on a Google Business
@@ -19,12 +19,6 @@ import { sendReviewPushNotification } from "@/lib/pushNotification";
  * site once `published` is flipped to true there. Spam-rate-limited the
  * same way /api/bookings is.
  */
-const reviewInputSchema = z.object({
-  customerName: z.string().trim().min(1).max(80),
-  rating: z.number().int().min(1).max(5),
-  comment: z.string().trim().min(1).max(1000),
-});
-
 const RATE_LIMIT = { limit: 5, windowMs: 10 * 60_000 };
 
 export async function POST(request: Request) {
@@ -42,8 +36,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_input" }, { status: 400 });
   }
 
+  const { locale, customerName, ...rest } = parsed.data;
   const review = await prisma.review.create({
-    data: { ...parsed.data, published: false },
+    data: {
+      ...rest,
+      customerName: resolveReviewerName(customerName, locale),
+      published: false,
+    },
   });
 
   // Fire-and-forget, same pattern as the booking notifications — never

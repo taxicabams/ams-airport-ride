@@ -65,6 +65,32 @@ export function isDisposableEmail(email: string): boolean {
   return domain !== undefined && DISPOSABLE_EMAIL_DOMAINS.has(domain);
 }
 
+/**
+ * Only `rating` is actually required on a review submission — real UX
+ * gap found: forcing a name AND a written comment on someone who just
+ * tapped a star-rating link straight from the request email (see
+ * lib/email.ts's sendReviewRequestEmail) is exactly the kind of
+ * friction that kills response rates.
+ */
+export const reviewInputSchema = z.object({
+  customerName: z.string().trim().max(80).optional().default(""),
+  rating: z.number().int().min(1).max(5),
+  comment: z.string().trim().max(1000).optional().default(""),
+  locale: z.enum(["nl", "en"]).optional().default("nl"),
+});
+
+/**
+ * What a review is credited to when the customer left the name field
+ * blank. The Review model's `customerName` column stays NOT NULL on
+ * purpose (a published review always needs *something* to display as
+ * the author) — this is the one place that decides what that something
+ * is when the customer didn't say, in their own booking's language.
+ */
+export function resolveReviewerName(customerName: string, locale: "nl" | "en"): string {
+  if (customerName.trim().length > 0) return customerName.trim();
+  return locale === "nl" ? "Anoniem" : "Anonymous";
+}
+
 export const placesAutocompleteInputSchema = z.object({
   input: z.string().trim().min(1).max(200),
   sessionToken: z.string().trim().min(1).max(200),

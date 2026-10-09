@@ -476,6 +476,15 @@ export async function sendBookingEmails(booking: Booking, locale: "nl" | "en") {
  * site's own review form. Never claims an existing rating/review count
  * (see Reviews.tsx/companyInfo.ts's own "never fabricate" convention) —
  * this email is how real reviews get created in the first place.
+ *
+ * The 5 stars are each their own link straight to `/review?rating=N` —
+ * ReviewForm pre-selects that rating on load (see its own note). This
+ * is the single biggest lever for response rate on this kind of email:
+ * a reviewer who's already decided "it was great" can go from inbox to
+ * submitted in one tap (rating pre-filled, name/comment both optional —
+ * see ReviewForm/the Review API's own notes on why), instead of having
+ * to land on a page, re-decide a rating from scratch, and then face two
+ * more fields before they can submit anything at all.
  */
 export async function sendReviewRequestEmail(booking: Booking, locale: "nl" | "en"): Promise<void> {
   const resend = getResendClient();
@@ -488,20 +497,36 @@ export async function sendReviewRequestEmail(booking: Booking, locale: "nl" | "e
   const reviewUrl = locale === "nl" ? `${SITE_URL}/review` : `${SITE_URL}/en/review`;
   const name = escapeHtml(booking.customerName.split(" ")[0] || booking.customerName);
 
+  // Plain-text ★ characters, not the site's StarIcon SVG — same
+  // reasoning as the flight-path divider in emailLayout: email clients
+  // can't reliably render inline SVG, but a star glyph at a large font
+  // size looks identical in practice and needs no hosted image.
+  const starLinks = [1, 2, 3, 4, 5]
+    .map(
+      (n) =>
+        `<a href="${reviewUrl}?rating=${n}" style="text-decoration:none;color:${BRAND_BLUE};font-size:32px;padding:0 2px;">${"★".repeat(n)}${"☆".repeat(5 - n)}</a>`
+    )
+    // Each link shows all 5 stars with the first N filled — that one
+    // tap communicates both "this is a 1-5 rating" and "here's my
+    // answer" at once, no separate legend needed above the row.
+    .join("<br/>");
+
   const body =
     locale === "nl"
       ? `<p>Hoi ${name},</p>
-         <p>Bedankt dat u met ons heeft gereisd! We horen graag hoe uw rit was — het kost u een halve minuut en helpt ons enorm.</p>
-         <p style="text-align:center;margin:24px 0;">
-           <a href="${reviewUrl}" style="display:inline-block;padding:12px 24px;background-color:${BRAND_BLUE};color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;border-radius:999px;">Laat een beoordeling achter →</a>
+         <p>Bedankt dat u met ons heeft gereisd! Hoe was uw rit? Eén tik op het aantal sterren is genoeg:</p>
+         <div style="text-align:center;margin:20px 0;">${starLinks}</div>
+         <p style="text-align:center;color:${MUTED};font-size:13px;margin:16px 0 0;">
+           Liever eerst iets opschrijven? <a href="${reviewUrl}" style="color:${BRAND_BLUE};">Open het formulier →</a>
          </p>
-         <p style="color:${MUTED};font-size:13px;">Geen zin? Dan hoeft u niets te doen — fijne reis verder.</p>`
+         <p style="color:${MUTED};font-size:13px;margin-top:20px;">Geen zin? Dan hoeft u niets te doen — fijne reis verder.</p>`
       : `<p>Hi ${name},</p>
-         <p>Thanks for riding with us! We'd love to hear how your trip went — it takes half a minute and helps us a lot.</p>
-         <p style="text-align:center;margin:24px 0;">
-           <a href="${reviewUrl}" style="display:inline-block;padding:12px 24px;background-color:${BRAND_BLUE};color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;border-radius:999px;">Leave a review →</a>
+         <p>Thanks for riding with us! How was your ride? One tap on a star rating is all it takes:</p>
+         <div style="text-align:center;margin:20px 0;">${starLinks}</div>
+         <p style="text-align:center;color:${MUTED};font-size:13px;margin:16px 0 0;">
+           Prefer to write something first? <a href="${reviewUrl}" style="color:${BRAND_BLUE};">Open the form →</a>
          </p>
-         <p style="color:${MUTED};font-size:13px;">Not feeling it? No action needed — safe travels.</p>`;
+         <p style="color:${MUTED};font-size:13px;margin-top:20px;">Not feeling it? No action needed — safe travels.</p>`;
 
   try {
     await resend.emails.send({

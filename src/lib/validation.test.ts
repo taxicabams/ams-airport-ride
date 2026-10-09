@@ -6,6 +6,8 @@ import {
   bookingInputSchema,
   isValidPhone,
   isDisposableEmail,
+  reviewInputSchema,
+  resolveReviewerName,
 } from "./validation";
 
 // Computed relative to "now" (not hardcoded) so these never go stale.
@@ -289,4 +291,22 @@ describe("isDisposableEmail / bookingInputSchema — throwaway email domains", (
       expect(bookingInputSchema.safeParse({ ...base, email }).success).toBe(true);
     }
   );
+});
+
+describe("resolveReviewerName / reviewInputSchema — only rating is required", () => {
+  it("only requires `rating` — name/comment/locale are all optional", () => {
+    expect(reviewInputSchema.safeParse({ rating: 5 }).success).toBe(true);
+    expect(reviewInputSchema.safeParse({ rating: 0 }).success).toBe(false); // out of 1-5 range
+    expect(reviewInputSchema.safeParse({}).success).toBe(false); // rating itself still required
+  });
+
+  it("falls back to a locale-appropriate anonymous name when left blank", () => {
+    expect(resolveReviewerName("", "nl")).toBe("Anoniem");
+    expect(resolveReviewerName("   ", "nl")).toBe("Anoniem"); // whitespace-only counts as blank
+    expect(resolveReviewerName("", "en")).toBe("Anonymous");
+  });
+
+  it("keeps a real name exactly as given, trimmed", () => {
+    expect(resolveReviewerName("  Jan de Vries  ", "nl")).toBe("Jan de Vries");
+  });
 });

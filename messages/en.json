@@ -212,10 +212,10 @@
   "ReviewForm": {
     "title": "How was your ride?",
     "subtitle": "Your review helps other travelers and our team — thanks for taking the time.",
-    "nameLabel": "Your name",
+    "nameLabel": "Your name (optional)",
     "namePlaceholder": "First and last name",
     "ratingLabel": "Your rating",
-    "commentLabel": "Your experience",
+    "commentLabel": "Your experience (optional)",
     "commentPlaceholder": "Tell us briefly how your ride went...",
     "submitButton": "Submit review",
     "submitting": "Submitting...",

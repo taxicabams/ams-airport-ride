@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Field, inputClassName } from "@/components/ui/Field";
 import { StarIcon } from "@/components/ui/icons";
@@ -14,9 +15,17 @@ import { StarIcon } from "@/components/ui/icons";
  * becomes publicly visible until the owner approves it, so there's
  * deliberately no "your review is now live" claim on this page, only an
  * honest "we'll review it and publish it" message.
+ *
+ * Real UX gap found: only the rating itself is required to submit —
+ * name and comment are both optional (see the API route's own note on
+ * the "Anoniem"/"Anonymous" default). A reviewer who already decided
+ * "it was great" and tapped a star link straight from the request email
+ * (?rating=N, read below) can submit in one more tap, with zero typing.
  */
 export function ReviewForm() {
   const t = useTranslations("ReviewForm");
+  const locale = useLocale() as "nl" | "en";
+  const searchParams = useSearchParams();
   const [name, setName] = useState("");
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -24,6 +33,17 @@ export function ReviewForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(false);
   const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    const fromEmail = Number(searchParams.get("rating"));
+    if (Number.isInteger(fromEmail) && fromEmail >= 1 && fromEmail <= 5) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setRating(fromEmail);
+    }
+    // Only ever read once, on the link that brought the visitor here —
+    // never re-run on an unrelated re-render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -34,7 +54,7 @@ export function ReviewForm() {
       const response = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ customerName: name, rating, comment }),
+        body: JSON.stringify({ customerName: name, rating, comment, locale }),
       });
       if (!response.ok) throw new Error("failed");
       setDone(true);
@@ -89,7 +109,6 @@ export function ReviewForm() {
       <Field label={t("nameLabel")} htmlFor="review-name">
         <input
           id="review-name"
-          required
           maxLength={80}
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -101,7 +120,6 @@ export function ReviewForm() {
       <Field label={t("commentLabel")} htmlFor="review-comment">
         <textarea
           id="review-comment"
-          required
           rows={4}
           maxLength={1000}
           value={comment}

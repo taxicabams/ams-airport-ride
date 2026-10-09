@@ -212,10 +212,10 @@
   "ReviewForm": {
     "title": "Hoe was uw rit?",
     "subtitle": "Uw beoordeling helpt andere reizigers en ons team — bedankt voor uw tijd.",
-    "nameLabel": "Uw naam",
+    "nameLabel": "Uw naam (optioneel)",
     "namePlaceholder": "Voor- en achternaam",
     "ratingLabel": "Uw beoordeling",
-    "commentLabel": "Uw ervaring",
+    "commentLabel": "Uw ervaring (optioneel)",
     "commentPlaceholder": "Vertel kort hoe uw rit was...",
     "submitButton": "Verstuur beoordeling",
     "submitting": "Versturen...",

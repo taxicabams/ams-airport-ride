@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { setRequestLocale } from "next-intl/server";
 import { ReviewForm } from "@/components/marketing/ReviewForm";
 import { buildAlternates } from "@/lib/seo";
@@ -35,7 +36,17 @@ export default async function ReviewPage({
 
   return (
     <section className="mx-auto max-w-lg px-4 py-12 sm:px-6">
-      <ReviewForm />
+      {/* ReviewForm reads the ?rating= query param (useSearchParams) to
+          pre-select a star rating from the request email's 1-tap links
+          — that hook requires a Suspense boundary so the rest of this
+          route can still prerender statically (see Analytics.tsx's own
+          precedent this session for the cost of getting a similar
+          dynamic-API tradeoff wrong). No fallback UI needed: this
+          resolves on the client essentially instantly, well before a
+          visitor could perceive a blank state. */}
+      <Suspense>
+        <ReviewForm />
+      </Suspense>
     </section>
   );
 }

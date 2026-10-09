@@ -241,3 +241,47 @@ describe("sendBookingEmails — child seat", () => {
     expect(internalHtml).not.toContain("Kinderzitje");
   });
 });
+
+describe("sendReviewRequestEmail — 1-tap star links", () => {
+  // Real UX gap found: a reviewer who's already decided "it was great"
+  // shouldn't have to land on a page and re-decide a rating from
+  // scratch. Each star count links straight to /review?rating=N, which
+  // ReviewForm pre-selects on load (see that component's own test-free
+  // but directly-inspectable behavior — covered here at the email-HTML
+  // level, since that's the contract between the two).
+  it("includes all 5 rating links, each pointing at the right ?rating=N, for the NL review page", async () => {
+    const { sendReviewRequestEmail } = await import("./email");
+    const booking = makeBooking({ locale: "nl" });
+
+    await sendReviewRequestEmail(booking, "nl");
+
+    const html = sendMock.mock.calls[0][0].html as string;
+    for (let n = 1; n <= 5; n++) {
+      expect(html).toContain(`https://amsairportride.nl/review?rating=${n}`);
+    }
+    // A plain, no-rating-preselected fallback link for someone who
+    // wants to write something before picking a rating.
+    expect(html).toContain('href="https://amsairportride.nl/review"');
+  });
+
+  it("links to the /en/review page for an English booking, not the NL one", async () => {
+    const { sendReviewRequestEmail } = await import("./email");
+    const booking = makeBooking({ locale: "en" });
+
+    await sendReviewRequestEmail(booking, "en");
+
+    const html = sendMock.mock.calls[0][0].html as string;
+    expect(html).toContain("https://amsairportride.nl/en/review?rating=5");
+    expect(html).not.toContain("https://amsairportride.nl/review?rating=5"); // not the bare NL path
+  });
+
+  it("sends to the customer's own address with the expected subject", async () => {
+    const { sendReviewRequestEmail } = await import("./email");
+    const booking = makeBooking({ customerEmail: "reviewer@example.com" });
+
+    await sendReviewRequestEmail(booking, "nl");
+
+    expect(sendMock.mock.calls[0][0].to).toBe("reviewer@example.com");
+    expect(sendMock.mock.calls[0][0].subject).toBe("Hoe was uw rit met AMS Airport Ride?");
+  });
+});
