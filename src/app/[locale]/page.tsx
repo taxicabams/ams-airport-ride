@@ -8,6 +8,7 @@ import { VehiclesSimple } from "@/components/home/VehiclesSimple";
 import { TwoColumnBanner } from "@/components/home/TwoColumnBanner";
 import { RouteList } from "@/components/home/RouteList";
 import { FaqAccordion } from "@/components/home/FaqAccordion";
+import { Reviews } from "@/components/home/Reviews";
 import { FinalCta } from "@/components/home/FinalCta";
 import { buildAlternates } from "@/lib/seo";
 import type { AppLocale } from "@/i18n/routing";
@@ -54,12 +55,12 @@ export default async function HomePage({
   // ("die tabel met vaste prijzen... gelijk duidelijk bovenaan ergens
   // bij booking vak") — was much further down the page.
   //
-  // Reviews section removed from the page (not deleted from the
-  // codebase — Reviews.tsx, the Review Prisma model, and /api/reviews
-  // all stay as-is) per the client's own explicit instruction: a
-  // section that can currently only say "real reviews coming soon" is
-  // exactly the "coming soon" / half-finished production content the
-  // brief forbids. Re-add <Reviews /> once real reviews exist.
+  // Reviews re-added: Reviews.tsx itself now renders nothing at all
+  // while there are zero published reviews (see that file's own note),
+  // so this is safe to mount permanently — the "coming soon" problem
+  // that got it removed earlier is fixed at the component level, not by
+  // conditionally including it here. It'll start appearing on its own
+  // the moment the first real review is approved.
   return (
     <>
       <script
@@ -74,6 +75,7 @@ export default async function HomePage({
       <VehiclesSimple />
       <TwoColumnBanner />
       <FaqAccordion />
+      <Reviews />
       <FinalCta />
     </>
   );

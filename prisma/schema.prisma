@@ -104,6 +104,13 @@ model Booking {
   paymentStatus PaymentStatus  @default(UNPAID)
   paymentMethod PaymentMethod?
 
+  // Set once the review-request email has actually been sent for this
+  // booking (see api/cron/review-requests) — null means "not sent yet",
+  // never re-checked/re-derived from the ride date/time, so a booking
+  // can never get two request emails even if the cron runs more than
+  // once in the same window.
+  reviewRequestSentAt DateTime?
+
   @@index([createdAt])
   @@index([rideType])
 }

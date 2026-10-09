@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
+import { sendReviewPushNotification } from "@/lib/pushNotification";
 
 /**
  * Real, database-backed reviews — replaces relying on a Google Business
@@ -9,13 +10,14 @@ import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
  * for the "published defaults to false" reasoning: nothing submitted
  * here becomes publicly visible on its own.
  *
- * There is no customer-facing submission form wired up on the homepage
- * yet (a deliberate scope decision this pass — spam/moderation UX for a
- * public form deserves its own consideration, not a rushed add-on).
- * This endpoint exists so a review can be added by any trusted internal
- * flow (a direct fetch, a future admin/moderation page, or the booking
- * confirmation flow later) — reviews are only ever surfaced on the site
- * once `published` is flipped to true directly in the database.
+ * Now wired to a real customer-facing form (src/app/[locale]/review),
+ * linked from the review-request email sent ~1 day after each ride (see
+ * api/cron/review-requests + lib/email.ts's sendReviewRequestEmail).
+ * Moderation still has no dedicated admin UI — a push notification
+ * (sendReviewPushNotification) tells the owner to go approve/reject via
+ * Supabase's own Table Editor; reviews are only ever surfaced on the
+ * site once `published` is flipped to true there. Spam-rate-limited the
+ * same way /api/bookings is.
  */
 const reviewInputSchema = z.object({
   customerName: z.string().trim().min(1).max(80),
@@ -43,6 +45,10 @@ export async function POST(request: Request) {
   const review = await prisma.review.create({
     data: { ...parsed.data, published: false },
   });
+
+  // Fire-and-forget, same pattern as the booking notifications — never
+  // delays or fails this response.
+  void sendReviewPushNotification(review);
 
   return NextResponse.json({ id: review.id });
 }

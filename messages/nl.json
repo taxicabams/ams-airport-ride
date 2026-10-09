@@ -204,8 +204,22 @@
   },
   "Reviews": {
     "eyebrow": "Reviews",
-    "title": "Wat klanten zeggen",
-    "empty": "Hier komen binnenkort echte reviews van onze klanten."
+    "title": "Wat klanten zeggen"
+  },
+  "ReviewForm": {
+    "title": "Hoe was uw rit?",
+    "subtitle": "Uw beoordeling helpt andere reizigers en ons team — bedankt voor uw tijd.",
+    "nameLabel": "Uw naam",
+    "namePlaceholder": "Voor- en achternaam",
+    "ratingLabel": "Uw beoordeling",
+    "commentLabel": "Uw ervaring",
+    "commentPlaceholder": "Vertel kort hoe uw rit was...",
+    "submitButton": "Verstuur beoordeling",
+    "submitting": "Versturen...",
+    "submitError": "Versturen is niet gelukt. Probeer het opnieuw.",
+    "thanksTitle": "Bedankt voor uw beoordeling!",
+    "thanksBody": "We bekijken 'm en plaatsen 'm op onze site zodra dat is gebeurd.",
+    "backHome": "← Terug naar home"
   },
   "Faq": {
     "eyebrow": "FAQ",

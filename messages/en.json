@@ -204,8 +204,22 @@
   },
   "Reviews": {
     "eyebrow": "Reviews",
-    "title": "What customers say",
-    "empty": "Real reviews from our customers will appear here soon."
+    "title": "What customers say"
+  },
+  "ReviewForm": {
+    "title": "How was your ride?",
+    "subtitle": "Your review helps other travelers and our team — thanks for taking the time.",
+    "nameLabel": "Your name",
+    "namePlaceholder": "First and last name",
+    "ratingLabel": "Your rating",
+    "commentLabel": "Your experience",
+    "commentPlaceholder": "Tell us briefly how your ride went...",
+    "submitButton": "Submit review",
+    "submitting": "Submitting...",
+    "submitError": "Submitting failed. Please try again.",
+    "thanksTitle": "Thanks for your review!",
+    "thanksBody": "We'll take a look and publish it on our site once that's done.",
+    "backHome": "← Back to home"
   },
   "Faq": {
     "eyebrow": "FAQ",

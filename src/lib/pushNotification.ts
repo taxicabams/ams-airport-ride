@@ -20,14 +20,9 @@ import { bookingReference } from "./bookingReference";
  * configured (same "optional until the client sets a real value"
  * pattern as RESEND_API_KEY/GOOGLE_MAPS_API_KEY).
  */
-export async function sendBookingPushNotification(booking: Booking): Promise<void> {
+async function sendPush(title: string, body: string, tags: string, logLabel: string): Promise<void> {
   const topic = process.env.NTFY_TOPIC;
   if (!topic) return;
-
-  const ref = bookingReference(booking);
-  const vehicle = booking.vehicleType === "BUS" ? "XL Van" : "Comfort";
-  const route = `${booking.pickupAddress} → ${booking.destination}`;
-  const when = `${booking.date} ${booking.time}`;
 
   try {
     const response = await fetch(`https://ntfy.sh/${encodeURIComponent(topic)}`, {
@@ -35,19 +30,49 @@ export async function sendBookingPushNotification(booking: Booking): Promise<voi
       headers: {
         // ntfy reads these as Latin-1 by default — €/→ need explicit
         // UTF-8 encoding or they render as mojibake in the push preview.
-        Title: `Nieuwe boeking ${ref} — €${booking.totalPrice}`,
+        Title: title,
         Priority: "high",
-        Tags: "taxi,moneybag",
+        Tags: tags,
         "Content-Type": "text/plain; charset=utf-8",
       },
-      body: `${route}\n${when} · ${booking.passengers} pers · ${vehicle}\n${booking.customerName} · ${booking.customerPhone}`,
+      body,
     });
     if (!response.ok) {
-      console.error(`[pushNotification] ntfy.sh returned ${response.status} for booking ${ref}`);
+      console.error(`[pushNotification] ntfy.sh returned ${response.status} for ${logLabel}`);
     }
   } catch (error) {
-    // Never let a flaky push service affect the booking itself — the
-    // email notification is still the reliable fallback.
-    console.error("[pushNotification] Failed to send push notification:", error);
+    // Never let a flaky push service affect the caller — email stays
+    // the reliable fallback for both bookings and reviews.
+    console.error(`[pushNotification] Failed to send push for ${logLabel}:`, error);
   }
+}
+
+export async function sendBookingPushNotification(booking: Booking): Promise<void> {
+  const ref = bookingReference(booking);
+  const vehicle = booking.vehicleType === "BUS" ? "XL Van" : "Comfort";
+  const route = `${booking.pickupAddress} → ${booking.destination}`;
+  const when = `${booking.date} ${booking.time}`;
+
+  await sendPush(
+    `Nieuwe boeking ${ref} — €${booking.totalPrice}`,
+    `${route}\n${when} · ${booking.passengers} pers · ${vehicle}\n${booking.customerName} · ${booking.customerPhone}`,
+    "taxi,moneybag",
+    `booking ${ref}`
+  );
+}
+
+/**
+ * Sent whenever a new review is submitted via /api/reviews — reviews
+ * always start unpublished (see Review model), so this is the signal
+ * that tells the owner to go approve/reject it (currently via Supabase's
+ * own Table Editor — no dedicated admin UI yet, see that route's note).
+ */
+export async function sendReviewPushNotification(review: { id: string; customerName: string; rating: number; comment: string }): Promise<void> {
+  const stars = "★".repeat(review.rating) + "☆".repeat(5 - review.rating);
+  await sendPush(
+    `Nieuwe review van ${review.customerName} (${stars})`,
+    review.comment,
+    "speech_balloon,star",
+    `review ${review.id}`
+  );
 }

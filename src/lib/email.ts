@@ -467,3 +467,55 @@ export async function sendBookingEmails(booking: Booking, locale: "nl" | "en") {
     console.error("[email] Failed to send booking emails for", booking.id, error);
   }
 }
+
+/**
+ * Review-request email — sent once per booking, roughly a day after the
+ * ride, by the review-request cron (see api/cron/review-requests). Short
+ * and plain on purpose: this asks for a real opinion, not a marketing
+ * push, so it skips any discount/urgency framing and just links to the
+ * site's own review form. Never claims an existing rating/review count
+ * (see Reviews.tsx/companyInfo.ts's own "never fabricate" convention) —
+ * this email is how real reviews get created in the first place.
+ */
+export async function sendReviewRequestEmail(booking: Booking, locale: "nl" | "en"): Promise<void> {
+  const resend = getResendClient();
+  if (!resend) {
+    console.warn("[email] RESEND_API_KEY is not set — skipping review request for", booking.id);
+    return;
+  }
+
+  const from = process.env.BOOKING_EMAIL_FROM ?? "AMS Airport Ride <onboarding@resend.dev>";
+  const reviewUrl = locale === "nl" ? `${SITE_URL}/review` : `${SITE_URL}/en/review`;
+  const name = escapeHtml(booking.customerName.split(" ")[0] || booking.customerName);
+
+  const body =
+    locale === "nl"
+      ? `<p>Hoi ${name},</p>
+         <p>Bedankt dat u met ons heeft gereisd! We horen graag hoe uw rit was — het kost u een halve minuut en helpt ons enorm.</p>
+         <p style="text-align:center;margin:24px 0;">
+           <a href="${reviewUrl}" style="display:inline-block;padding:12px 24px;background-color:${BRAND_BLUE};color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;border-radius:999px;">Laat een beoordeling achter →</a>
+         </p>
+         <p style="color:${MUTED};font-size:13px;">Geen zin? Dan hoeft u niets te doen — fijne reis verder.</p>`
+      : `<p>Hi ${name},</p>
+         <p>Thanks for riding with us! We'd love to hear how your trip went — it takes half a minute and helps us a lot.</p>
+         <p style="text-align:center;margin:24px 0;">
+           <a href="${reviewUrl}" style="display:inline-block;padding:12px 24px;background-color:${BRAND_BLUE};color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;border-radius:999px;">Leave a review →</a>
+         </p>
+         <p style="color:${MUTED};font-size:13px;">Not feeling it? No action needed — safe travels.</p>`;
+
+  try {
+    await resend.emails.send({
+      from,
+      to: booking.customerEmail,
+      subject: locale === "nl" ? "Hoe was uw rit met AMS Airport Ride?" : "How was your ride with AMS Airport Ride?",
+      html: emailLayout(
+        body,
+        locale === "nl"
+          ? `Boekingsreferentie ${bookingReference(booking)}.`
+          : `Booking reference ${bookingReference(booking)}.`
+      ),
+    });
+  } catch (error) {
+    console.error("[email] Failed to send review request for", booking.id, error);
+  }
+}
