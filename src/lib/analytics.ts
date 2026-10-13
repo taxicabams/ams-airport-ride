@@ -47,17 +47,17 @@ declare global {
  * never did.
  *
  * Fixed by calling the real `window.gtag` function Analytics.tsx
- * defines globally, using its real calling convention — this is what
- * actually reaches both the GA4 property and the Google Ads conversion
- * tag (both configured via separate `gtag('config', ...)` calls sharing
- * one gtag.js instance, so one `gtag('event', ...)` call reaches both
- * automatically, no `send_to` needed). Still also pushes the old
- * GTM-style object afterward — harmless today, and means adding a real
- * GTM container later (NEXT_PUBLIC_GTM_ID) would start working
- * immediately with zero changes here. Guards on `typeof window.gtag
- * === "function"` rather than assuming it's always ready: Analytics.tsx
- * only defines it after consent + script load, so an event fired in
- * that narrow window before it's ready is skipped rather than throwing.
+ * defines globally, using its real calling convention — this reaches
+ * both the GA4 property and the Google Ads account (both configured
+ * via separate `gtag('config', ...)` calls sharing one gtag.js
+ * instance) as a named custom event, good for GA4's own reporting.
+ * Still also pushes the old GTM-style object afterward — harmless
+ * today, and means adding a real GTM container later (NEXT_PUBLIC_GTM_ID)
+ * would start working immediately with zero changes here. Guards on
+ * `typeof window.gtag === "function"` rather than assuming it's always
+ * ready: Analytics.tsx only defines it after consent + script load, so
+ * an event fired in that narrow window before it's ready is skipped
+ * rather than throwing.
  */
 export function track(event: AnalyticsEvent, data?: Record<string, unknown>) {
   if (process.env.NODE_ENV !== "production") {
@@ -71,4 +71,55 @@ export function track(event: AnalyticsEvent, data?: Record<string, unknown>) {
 
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event, ...data });
+}
+
+/**
+ * The Google Ads "Aankoop" conversion ACTION specifically — separate
+ * from the generic `track("booking_completed", ...)` call above. Real
+ * gap found live: a plain named event (even one correctly reaching
+ * Google via `gtag('event', ...)`, see track()'s own note) is NOT
+ * enough for Google Ads to attribute it to a configured conversion
+ * action — Google's own emailed setup instructions for this exact
+ * account require the literal event name `'conversion'` plus a
+ * `send_to` pointing at this specific action's conversion ID *and*
+ * label (`AW-18476470702/neUnCNmiv5QdEK6joupE` — the label is unique
+ * per conversion action, shown once in Google Ads/this exact email,
+ * never guessable from the AW- ID alone). Without it, Google Ads has no
+ * way to know a `booking_completed` GA4-style event is "the" purchase
+ * conversion it's listening for — confirmed live: 428 clicks and one
+ * real booking in, Ads still reported "tag niet geverifieerd" even
+ * after track() itself was fixed.
+ *
+ * `transactionId` is the human-facing booking reference (e.g.
+ * "AMS-7272") — Google's own instructions: this is what stops the same
+ * conversion from ever being double-counted, so it must be unique per
+ * booking, never blank (their own template snippet ships with transaction_id: ''
+ * as a placeholder to fill in, not a real empty default).
+ */
+const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
+const GOOGLE_ADS_PURCHASE_LABEL = process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_LABEL;
+const googleAdsPurchaseSendTo =
+  GOOGLE_ADS_ID && GOOGLE_ADS_PURCHASE_LABEL ? `${GOOGLE_ADS_ID}/${GOOGLE_ADS_PURCHASE_LABEL}` : undefined;
+
+export function trackGoogleAdsPurchase({
+  value,
+  currency,
+  transactionId,
+}: {
+  value: number;
+  currency: string;
+  transactionId: string;
+}) {
+  if (process.env.NODE_ENV !== "production") {
+    console.debug("[analytics] googleAdsPurchase", { value, currency, transactionId });
+  }
+  if (typeof window === "undefined") return;
+  if (typeof window.gtag !== "function" || !googleAdsPurchaseSendTo) return;
+
+  window.gtag("event", "conversion", {
+    send_to: googleAdsPurchaseSendTo,
+    value,
+    currency,
+    transaction_id: transactionId,
+  });
 }

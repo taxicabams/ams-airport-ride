@@ -5,7 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import type { Quote, VehicleType } from "@/lib/pricing";
 import { BUS_SURCHARGE_EUR } from "@/lib/pricing";
 import { companyInfo } from "@/lib/companyInfo";
-import { track } from "@/lib/analytics";
+import { track, trackGoogleAdsPurchase } from "@/lib/analytics";
 import { StepTracker } from "@/components/ui/StepTracker";
 import { RouteStep } from "./steps/RouteStep";
 import { DetailsStep } from "./steps/DetailsStep";
@@ -307,6 +307,17 @@ export function BookingWidget({ initialPickup = "", initialDestination = "" }: {
         bookingId: data.bookingId,
         value: data.totalPrice as number,
         currency: "EUR",
+      });
+      // The actual Google Ads "Aankoop" conversion action — a separate
+      // call from track() above, deliberately: Google Ads needs its own
+      // exact event shape (event name 'conversion' + a send_to with this
+      // specific action's conversion label) to attribute a booking to
+      // that configured goal at all. See trackGoogleAdsPurchase's own
+      // note for the real gap this fixes.
+      trackGoogleAdsPurchase({
+        value: data.totalPrice as number,
+        currency: "EUR",
+        transactionId: data.bookingId as string,
       });
       // Clear the draft the instant a booking actually completes — a
       // second booking started later in the same tab must never inherit
